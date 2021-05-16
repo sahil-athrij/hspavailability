@@ -1,0 +1,174 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css %}
+    <link href="https://cdn.jsdelivr.net/gh/alphardex/aqua.css/dist/aqua.min.css" rel="stylesheet"/>
+    <link href="{% static 'css/index.css' %}" rel="stylesheet"/>
+{% endblock %}
+
+{% block body %}
+
+
+
+
+    <div id="map"></div>
+    <div class="mt-5" id="toper">
+    <div class="m-5 col-12">
+        <div class="mt-5 col-12 p-2 text-center neumorphic_form">
+            <div class="text-center h6 mt-5" id="header"></div>
+            <div class="row">
+                <div class="col">
+                    Care Rating
+                </div>
+                <div class="star-rating col">
+                    <form class="form-check-inline" oninput="">
+                        <div class="rate">
+                            <input type="radio" id="5" value="5" name="rating" disabled/>
+                            <label for="5"></label>
+                            <input type="radio" id="4" value="4" name="rating" disabled/>
+                            <label for="4"></label>
+                            <input type="radio" id="3" value="3" name="rating" disabled/>
+                            <label for="3"></label>
+                            <input type="radio" id="2" value="2" name="rating" disabled/>
+                            <label for="2"></label>
+                            <input type="radio" id="1" value="1" name="rating" disabled/>
+                            <label for="1"></label>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    Covid Rating
+                </div>
+                <div class="star-rating col">
+                    <form class="form-check-inline" oninput="">
+                        <div class="rate">
+                            <input type="radio" id="5" value="5" name="covid" disabled/>
+                            <label for="5"></label>
+                            <input type="radio" id="4" value="4" name="covid" disabled/>
+                            <label for="4"></label>
+                            <input type="radio" id="3" value="3" name="covid" disabled/>
+                            <label for="3"></label>
+                            <input type="radio" id="2" value="2" name="covid" disabled/>
+                            <label for="2"></label>
+                            <input type="radio" id="1" value="1" name="covid" disabled/>
+                            <label for="1"></label>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    Financial Rating
+                </div>
+                <div class="star-rating col">
+                    <form class="form-check-inline" oninput="">
+                        <div class="rate financial">
+                            <input type="radio" id="5" value="5" name="financial" disabled/>
+                            <label for="5"></label>
+                            <input type="radio" id="4" value="4" name="financial" disabled/>
+                            <label for="4"></label>
+                            <input type="radio" id="3" value="3" name="financial" disabled/>
+                            <label for="3"></label>
+                            <input type="radio" id="2" value="2" name="financial" disabled/>
+                            <label for="2"></label>
+                            <input type="radio" id="1" value="1" name="financial" disabled/>
+                            <label for="1"></label>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    Average Cost
+                </div>
+                <div class="star-rating col" id="cost">
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col">
+                    Beds Available
+                </div>
+                <div class="star-rating col" id="beds">
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCZrW79d1U3pgQDJlaErgxHQIq-8MRst-c&callback=initMap&libraries=&v=weekly"
+            async></script>
+    <script>
+
+
+        var icons = [
+
+
+            '{% static 'images/small.png' %}',
+            '{% static 'images/medium.png' %}',
+            '{% static 'images/large.png' %}',
+
+        ]
+
+        function filldata(id) {
+            $.ajax({
+                url: `/more_info/${id}/`,
+                success: function (data) {
+                    console.log(data)
+                    $('#header').text(data.name)
+                    $('#phone').val(data.Phone)
+
+
+                    $('input:radio[name=rating]').val([data.care_rating]);
+                    $('input:radio[name=covid]').val([data.covid_rating]);
+                    $('input:radio[name=financial]').val([data.financial_rating]);
+                    $('#beds').text(data.beds_available)
+                    $('#cost').text(data.avg_cost)
+                }
+            })
+        }
+
+        function initMap() {
+            const map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 12,
+            });
+
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function (position) {
+                    initialLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+                    map.setCenter(initialLocation);
+                });
+            }
+
+            function addMarker(feature) {
+                var marker = new google.maps.Marker({
+                    position: feature.position,
+                    icon: icons[feature.size],
+                    map: map
+                });
+                marker.addListener('click', function () {
+                    filldata(feature.id)
+                });
+            }
+            {% for marker in markers %}
+                addMarker({
+                    'position': {
+                        'lat': {{ marker.lat }},
+                        'lng': {{ marker.lng }},
+                    },
+                    'size':{{ marker.size }},
+                    'id':{{ marker.id }}
+                })
+
+            {% endfor %}
+        }
+
+    </script>
+
+
+{% endblock %}

@@ -1,0 +1,168 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css %}
+    <link href="{% static 'css/form.css' %}" rel="stylesheet"/>
+{% endblock %}
+
+{% block body %}
+
+    <div id="map"></div>
+
+    <div class="container">
+        <form method="post" action="">
+            {% csrf_token %}
+            <div class="row">
+                <div class="form-group col">
+                    <label for="name">Name</label>
+                    <input type="text" class="form-control" id="name" placeholder="Enter Name" name="name">
+                </div>
+                <div class="form-group col">
+                    <label for="phone">Phone</label>
+                    <input type="text" class="form-control" id="phone" placeholder="Enter Phone" name="phone">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group col">
+                    <label for="lat">lat</label>
+                    <input type="text" class="form-control" id="lat" placeholder="Enter latitude" name="lat">
+                </div>
+                <div class="form-group col">
+                    <label for="lng">lng</label>
+                    <input type="text" class="form-control" id="lng" placeholder="Enter longitude" name="lng">
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col">
+                    <label for="size" class="form-label">Size</label>
+                    <input type="range" class="form-range" min="0" value="0" max="2" id="size" name="size">
+                </div>
+                <div class="form-group col">
+                    <label for="financial" class="form-label">Financial Cost (higher is more expensive)</label>
+                    <input type="range" class="form-range" min="1" value="1" max="5" id="financial" name="financial">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group col">
+                    <label for="cost" class="form-label">Avg Cost</label>
+                    <input type="text" class="form-control" id="cost" placeholder="Enter avg cost" name="cost">
+                </div>
+                <div class="form-group col">
+                    <label for="care" class="form-label">Care Rating (higher is more better)</label>
+                    <input type="range" class="form-range" min="1" value="1" max="5" id="care" name="care">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group col">
+                    <label for="beds" class="form-label">Beds Available</label>
+                    <input type="text" class="form-control" id="beds" placeholder="Enter approximate available beds"
+                           name="beds">
+                </div>
+                <div class="form-group col">
+                    <label for="covid" class="form-label">Covid Rating (higher is more better)</label>
+                    <input type="range" class="form-range" min="1" value="1" max="5" id="covid" name="covid">
+                </div>
+            </div>
+            <input id="id" name="id" hidden value="-1">
+            <div class="row mt-5">
+                <div class="col">
+
+                    <input type="submit" class="btn btn-success">
+                </div>
+            </div>
+
+
+        </form>
+
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCZrW79d1U3pgQDJlaErgxHQIq-8MRst-c&callback=initMap&libraries=&v=weekly"
+            async></script>
+    <script>
+
+
+        var icons = [
+
+            '{% static 'images/small.png' %}',
+            '{% static 'images/medium.png' %}',
+            '{% static 'images/large.png' %}',
+
+        ]
+
+        function filldata(id) {
+            $.ajax({
+                url: `/more_info/${id}/`,
+                success: function (data) {
+                    console.log(data)
+                    $('#id').val(data.id)
+                    $('#name').val(data.name)
+                    $('#phone').val(data.Phone)
+                    $('#lat').val(data.lat)
+                    $('#lng').val(data.lng)
+                    $('#size').val(data.size)
+                    $('#financial').val(data.financial_rating)
+                    $('#cost').val(data.avg_cost)
+                    $('#care').val(data.care_rating)
+                    $('#beds').val(data.beds_available)
+                    $('#covid').val(data.covid_rating)
+                }
+            })
+        }
+
+        function initMap() {
+
+            const map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 12,
+            });
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function (position) {
+                    initialLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+                    map.setCenter(initialLocation);
+                });
+            }
+            let infoWindow = new google.maps.InfoWindow({
+                content: "Click the map to get Lat/Lng!",
+            });
+            infoWindow.open(map);
+
+            function addMarker(feature) {
+                var marker = new google.maps.Marker({
+                    position: feature.position,
+                    icon: icons[feature.size],
+                    map: map
+                });
+                marker.addListener('click', function () {
+                    filldata(feature.id)
+                });
+            }
+            {% for marker in markers %}
+                addMarker({
+                    'position': {
+                        'lat': {{ marker.lat }},
+                        'lng': {{ marker.lng }},
+                    },
+                    'size':{{ marker.size }},
+                    'id':{{ marker.id }}
+                })
+
+            {% endfor %}
+            map.addListener("click", (mapsMouseEvent) => {
+                $('#id').val(-1)
+                console.log(mapsMouseEvent.latLng)
+                $('#lat').val(mapsMouseEvent.latLng.lat)
+                $('#lng').val(mapsMouseEvent.latLng.lng)
+                infoWindow.open(map);
+            });
+
+
+        }
+
+    </script>
+
+
+{% endblock %}

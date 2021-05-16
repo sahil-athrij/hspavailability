@@ -105,6 +105,7 @@
             async></script>
     <script>
 
+        $('#toper').hide()
 
         var icons = [
 
@@ -119,6 +120,7 @@
             $.ajax({
                 url: `/more_info/${id}/`,
                 success: function (data) {
+                    $('#toper').hide()
                     console.log(data)
                     $('#header').text(data.name)
                     $('#phone').val(data.Phone)

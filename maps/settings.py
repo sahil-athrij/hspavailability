@@ -24,7 +24,7 @@ SECRET_KEY = 'django-insecure-tr#83t$_--71h1yzg^@w6n^w292lb#$1p2256)5k2-!^f^x9^d
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['hospitals.trebuchet.one']
 
 # Application definition
 

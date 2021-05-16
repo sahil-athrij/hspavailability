@@ -120,7 +120,7 @@
             $.ajax({
                 url: `/more_info/${id}/`,
                 success: function (data) {
-                    $('#toper').hide()
+                    $('#toper').show()
                     console.log(data)
                     $('#header').text(data.name)
                     $('#phone').val(data.Phone)

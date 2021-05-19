@@ -1,6 +1,6 @@
 from django.http import JsonResponse
 from django.shortcuts import render
-from .models import Markers
+from .models import Markers, Reviews
 
 from django.forms.models import model_to_dict
 
@@ -28,6 +28,8 @@ def modify(request):
         ob.covid_rating = int(request.POST['covid'])
         ob.beds_available = int(request.POST['beds'])
         ob.care_rating = int(request.POST['care'])
+        ob.oxygen_rating = int(request.POST['oxy'])
+        ob.ventilator_availability = int(request.POST['vent'])
         ob.lat = float(request.POST['lat'])
         ob.lng = float(request.POST['lng'])
         ob.save()
@@ -39,3 +41,19 @@ def modify(request):
 def more_info(request, key_id):
     ob = Markers.objects.get(id=key_id)
     return JsonResponse(model_to_dict(ob))
+
+def add_review(request):
+    if request.method == 'POST':
+
+        print(request.POST)
+
+        ob = Reviews.objects.create(marker_id=id)
+        ob.financial_rating = int(request.POST['financial'])
+        ob.avg_cost = int(request.POST['cost'])
+        ob.covid_rating = int(request.POST['covid'])
+        ob.beds_available = int(request.POST['beds'])
+        ob.care_rating = int(request.POST['care'])
+        ob.oxygen_rating = int(request.POST['oxy'])
+        ob.ventilator_availability = int(request.POST['vent'])
+        ob.comment = request.POST['comment']
+        ob.save()

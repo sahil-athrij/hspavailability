@@ -43,7 +43,16 @@
                     <input type="range" class="form-range" min="1" value="1" max="5" id="financial" name="financial">
                 </div>
             </div>
-
+            <div class="row">
+                <div class="form-group col">
+                    <label for="oxy" class="form-label">Oxygen Rating</label>
+                    <input type="range" class="form-range" min="1" value="1" max="5" id="oxy" name="oxy">
+                </div>
+                <div class="form-group col">
+                    <label for="vent" class="form-label">Ventilator Availability</label>
+                    <input type="range" class="form-range" min="0" value="0" max="1" id="vent" name="vent">
+                </div>
+            </div>
             <div class="row">
                 <div class="form-group col">
                     <label for="cost" class="form-label">Avg Cost</label>
@@ -106,6 +115,8 @@
                     $('#lng').val(data.lng)
                     $('#size').val(data.size)
                     $('#financial').val(data.financial_rating)
+                    $('#oxy').val(data.oxygen_rating)
+                    $('#vent').val(data.ventilator_availability)
                     $('#cost').val(data.avg_cost)
                     $('#care').val(data.care_rating)
                     $('#beds').val(data.beds_available)

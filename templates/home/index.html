@@ -13,91 +13,174 @@
 
     <div id="map"></div>
     <div class="mt-5" id="toper">
-    <div class="m-5 col-12">
-        <div class="mt-5 col-12 p-2 text-center neumorphic_form">
-            <div class="text-center h6 mt-5" id="header"></div>
-            <div class="row">
-                <div class="col">
-                    Care Rating
+        <div class="m-5 col-12">
+            <div class="mt-5 col-12 p-2 text-center neumorphic_form">
+                <div class="text-center h6 mt-5" id="header"></div>
+                <div class="row">
+                    <div class="col">
+                        Care Rating
+                    </div>
+                    <div class="star-rating col">
+                        <form class="form-check-inline" oninput="">
+                            <div class="rate">
+                                <input type="radio" id="5" value="5" name="rating" disabled/>
+                                <label for="5"></label>
+                                <input type="radio" id="4" value="4" name="rating" disabled/>
+                                <label for="4"></label>
+                                <input type="radio" id="3" value="3" name="rating" disabled/>
+                                <label for="3"></label>
+                                <input type="radio" id="2" value="2" name="rating" disabled/>
+                                <label for="2"></label>
+                                <input type="radio" id="1" value="1" name="rating" disabled/>
+                                <label for="1"></label>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-                <div class="star-rating col">
-                    <form class="form-check-inline" oninput="">
-                        <div class="rate">
-                            <input type="radio" id="5" value="5" name="rating" disabled/>
-                            <label for="5"></label>
-                            <input type="radio" id="4" value="4" name="rating" disabled/>
-                            <label for="4"></label>
-                            <input type="radio" id="3" value="3" name="rating" disabled/>
-                            <label for="3"></label>
-                            <input type="radio" id="2" value="2" name="rating" disabled/>
-                            <label for="2"></label>
-                            <input type="radio" id="1" value="1" name="rating" disabled/>
-                            <label for="1"></label>
-                        </div>
-                    </form>
+                <div class="row">
+                    <div class="col">
+                        Covid Rating
+                    </div>
+                    <div class="star-rating col">
+                        <form class="form-check-inline" oninput="">
+                            <div class="rate">
+                                <input type="radio" id="5" value="5" name="covid" disabled/>
+                                <label for="5"></label>
+                                <input type="radio" id="4" value="4" name="covid" disabled/>
+                                <label for="4"></label>
+                                <input type="radio" id="3" value="3" name="covid" disabled/>
+                                <label for="3"></label>
+                                <input type="radio" id="2" value="2" name="covid" disabled/>
+                                <label for="2"></label>
+                                <input type="radio" id="1" value="1" name="covid" disabled/>
+                                <label for="1"></label>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col">
-                    Covid Rating
+                <div class="row">
+                    <div class="col">
+                        Oxygen Rating
+                    </div>
+                    <div class="star-rating col">
+                        <form class="form-check-inline" oninput="">
+                            <div class="rate">
+                                <input type="radio" id="5" value="5" name="oxy" disabled/>
+                                <label for="5"></label>
+                                <input type="radio" id="4" value="4" name="oxy" disabled/>
+                                <label for="4"></label>
+                                <input type="radio" id="3" value="3" name="oxy" disabled/>
+                                <label for="3"></label>
+                                <input type="radio" id="2" value="2" name="oxy" disabled/>
+                                <label for="2"></label>
+                                <input type="radio" id="1" value="1" name="oxy" disabled/>
+                                <label for="1"></label>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-                <div class="star-rating col">
-                    <form class="form-check-inline" oninput="">
-                        <div class="rate">
-                            <input type="radio" id="5" value="5" name="covid" disabled/>
-                            <label for="5"></label>
-                            <input type="radio" id="4" value="4" name="covid" disabled/>
-                            <label for="4"></label>
-                            <input type="radio" id="3" value="3" name="covid" disabled/>
-                            <label for="3"></label>
-                            <input type="radio" id="2" value="2" name="covid" disabled/>
-                            <label for="2"></label>
-                            <input type="radio" id="1" value="1" name="covid" disabled/>
-                            <label for="1"></label>
-                        </div>
-                    </form>
+                <div class="row">
+                    <div class="col">
+                        Ventilator Availability
+                    </div>
+                    <div class="star-rating col" id="vent">
+                    </div>
                 </div>
-            </div>
+                <div class="row">
+                    <div class="col">
+                        Financial Rating
+                    </div>
+                    <div class="star-rating col">
+                        <form class="form-check-inline" oninput="">
+                            <div class="rate financial">
+                                <input type="radio" id="5" value="5" name="financial" disabled/>
+                                <label for="5"></label>
+                                <input type="radio" id="4" value="4" name="financial" disabled/>
+                                <label for="4"></label>
+                                <input type="radio" id="3" value="3" name="financial" disabled/>
+                                <label for="3"></label>
+                                <input type="radio" id="2" value="2" name="financial" disabled/>
+                                <label for="2"></label>
+                                <input type="radio" id="1" value="1" name="financial" disabled/>
+                                <label for="1"></label>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        Average Cost
+                    </div>
+                    <div class="star-rating col" id="cost">
+                    </div>
 
-            <div class="row">
-                <div class="col">
-                    Financial Rating
                 </div>
-                <div class="star-rating col">
-                    <form class="form-check-inline" oninput="">
-                        <div class="rate financial">
-                            <input type="radio" id="5" value="5" name="financial" disabled/>
-                            <label for="5"></label>
-                            <input type="radio" id="4" value="4" name="financial" disabled/>
-                            <label for="4"></label>
-                            <input type="radio" id="3" value="3" name="financial" disabled/>
-                            <label for="3"></label>
-                            <input type="radio" id="2" value="2" name="financial" disabled/>
-                            <label for="2"></label>
-                            <input type="radio" id="1" value="1" name="financial" disabled/>
-                            <label for="1"></label>
-                        </div>
-                    </form>
+                <div class="row">
+                    <div class="col">
+                        Beds Available
+                    </div>
+                    <div class="star-rating col" id="beds">
+                    </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col">
-                    Average Cost
+                <div>
+                    <a id="rev" class="btn btn-primary">Write Review</a>
                 </div>
-                <div class="star-rating col" id="cost">
-                </div>
-
-            </div>
-            <div class="row">
-                <div class="col">
-                    Beds Available
-                </div>
-                <div class="star-rating col" id="beds">
-                </div>
-
             </div>
         </div>
     </div>
+    <div class="mt-5" id="addreview">
+        <div class="m-5 col-12">
+            <div class="mt-5 col-12 p-2 text-center neumorphic_form">
+                <div class="container">
+                    <form method="post" action="">
+                        {% csrf_token %}
+                        <div class="row">
+                            <label for="financial" class="form-label">Financial Cost (higher is more expensive)</label>
+                            <input type="range" class="form-range" min="1" value="1" max="5" id="financial"
+                                   name="financial">
+                        </div>
+                        <div class="row">
+                            <label for="oxy" class="form-label">Oxygen Rating</label>
+                            <input type="range" class="form-range" min="1" value="1" max="5" id="oxy" name="oxy">
+                        </div>
+                        <div class="row">
+                            <label for="vent" class="form-label">Ventilator Availability</label>
+                            <input type="range" class="form-range" min="0" value="0" max="1" id="vent" name="vent">
+                        </div>
+                        <div class="row">
+                            <label for="cost" class="form-label">Avg Cost</label>
+                            <input type="text" class="form-control" id="cost" placeholder="Enter avg cost" name="cost">
+                        </div>
+                        <div class="row">
+                            <label for="care" class="form-label">Care Rating (higher is more better)</label>
+                            <input type="range" class="form-range" min="1" value="1" max="5" id="care" name="care">
+                        </div>
+
+                        <div class="row">
+                            <label for="beds" class="form-label">Beds Available</label>
+                            <input type="text" class="form-control" id="beds"
+                                   placeholder="Enter approximate available beds"
+                                   name="beds">
+                        </div>
+                        <div class="row">
+                            <label for="covid" class="form-label">Covid Rating (higher is more better)</label>
+                            <input type="range" class="form-range" min="1" value="1" max="5" id="covid" name="covid">
+                        </div>
+                        <input id="id" name="id" hidden value="-1">
+                        <div class="row mt-5">
+                            <div class="col">
+
+                                <input type="submit" class="btn btn-success">
+                            </div>
+                        </div>
+
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
 {% endblock %}
 
 {% block script %}
@@ -106,6 +189,7 @@
     <script>
 
         $('#toper').hide()
+        $('#addreview').hide()
 
         var icons = [
 
@@ -124,16 +208,22 @@
                     console.log(data)
                     $('#header').text(data.name)
                     $('#phone').val(data.Phone)
-
-
                     $('input:radio[name=rating]').val([data.care_rating]);
                     $('input:radio[name=covid]').val([data.covid_rating]);
+                    $('input:radio[name=oxy]').val([data.oxygen_rating])
+                    $('#vent').text(data.ventilator_availability)
                     $('input:radio[name=financial]').val([data.financial_rating]);
                     $('#beds').text(data.beds_available)
                     $('#cost').text(data.avg_cost)
                 }
             })
         }
+
+        $('#rev').on('click', function (id) {
+            $('#toper').hide(id)
+            $('#addreview').show(id)
+
+        })
 
         function initMap() {
             const map = new google.maps.Map(document.getElementById("map"), {

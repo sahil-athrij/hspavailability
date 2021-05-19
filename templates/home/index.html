@@ -222,6 +222,16 @@
         $('#rev').on('click', function (id) {
             $('#toper').hide(id)
             $('#addreview').show(id)
+            $('#id').val(data.id)
+            $('#financial').val(data.financial_rating)
+            $('#oxy').val(data.oxygen_rating)
+            $('#vent').val(data.ventilator_availability)
+            $('#cost').val(data.avg_cost)
+            $('#care').val(data.care_rating)
+            $('#beds').val(data.beds_available)
+            $('#covid').val(data.covid_rating)
+
+
 
         })
 

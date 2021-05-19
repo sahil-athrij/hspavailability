@@ -61,29 +61,33 @@ def add_review(request):
         ob.save()
         update_marker(id)
 
+    reviews = ob
+    return render(request, template_name='home/index.html', context={'reviews': reviews})
+
 def update_marker(id):
-    ob = Markers.objects.get(id)
+    ob = Markers.objects.get(id=id)
     rev = Reviews.objects.filter(marker__id=id)
     fin = []
-    for x in rev.financial_rating:fin.append(x)
-    ob.financial_rating = mean(fin)
     avg = []
-    for x in rev.avg_cost:avg.append(x)
-    ob.avg_cost = mean(avg)
     covid = []
-    for x in rev.covid_rating:covid.append(x)
-    ob.covid_rating = mean(covid)
     bed = []
-    for x in rev.beds_available:bed.append(x)
-    ob.beds_available = sum(bed)
     care = []
-    for x in rev.care_rating:care.append(x)
-    ob.care_rating = mean(care)
     oxy = []
-    for x in rev.oxygen_rating:oxy.append(x)
-    ob.avg_cost = mean(oxy)
     vent = []
-    for x in rev.ventilator_availability:vent.append(x)
+    for x in rev:
+        fin.append(x.financial_rating)
+        avg.append(x.avg_cost)
+        covid.append(x.covid_rating)
+        bed.append(x.beds_available)
+        care.append(x.care_rating)
+        oxy.append(x.oxygen_rating)
+        vent.append(x.ventilator_availability)
+    ob.financial_rating = mean(fin)
+    ob.avg_cost = mean(avg)
+    ob.covid_rating = mean(covid)
+    ob.beds_available = sum(bed)
+    ob.care_rating = mean(care)
+    ob.avg_cost = mean(oxy)
     ob.ventilator_availability = sum(vent)*100/len(vent)
 
 

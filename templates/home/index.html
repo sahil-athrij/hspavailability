@@ -157,7 +157,7 @@
                         </div>
 
                         <div class="row">
-                            <label for="beds" class="form-label">Beds Available</label>
+                            <label for="beds" class="form-label">Bed Available</label>
                             <input type="text" class="form-control" id="beds"
                                    placeholder="Enter approximate available beds"
                                    name="beds">
@@ -219,6 +219,7 @@
                     $('input:radio[name=financial]').val([data.financial_rating]);
                     $('#beds').text(data.beds_available)
                     $('#cost').text(data.avg_cost)
+                    $('#id').val(data.id)
                 }
             })
         }
@@ -226,8 +227,6 @@
         $('#rev').on('click', function (id) {
             $('#toper').hide(id)
             $('#addreview').show(id)
-
-
         })
 
         function initMap() {

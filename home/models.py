@@ -39,6 +39,6 @@ class Reviews(models.Model):
     covid_rating = models.IntegerField(choices=rating,default=1)
     care_rating = models.IntegerField(choices=rating,default=1)
     oxygen_rating = models.IntegerField(choices=rating,default=1)
-    beds_available = models.BooleanField(default=0)
+    beds_available = models.IntegerField(default=0)
     ventilator_availability = models.BooleanField(default=0)
     comment = models.TextField()

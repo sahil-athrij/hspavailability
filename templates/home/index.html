@@ -132,7 +132,7 @@
         <div class="m-5 col-12">
             <div class="mt-5 col-12 p-2 text-center neumorphic_form">
                 <div class="container">
-                    <form method="post" action="">
+                    <form method="post" action="add_review/">
                         {% csrf_token %}
                         <div class="row">
                             <label for="financial" class="form-label">Financial Cost (higher is more expensive)</label>
@@ -222,15 +222,6 @@
         $('#rev').on('click', function (id) {
             $('#toper').hide(id)
             $('#addreview').show(id)
-            $('#id').val(data.id)
-            $('#financial').val(data.financial_rating)
-            $('#oxy').val(data.oxygen_rating)
-            $('#vent').val(data.ventilator_availability)
-            $('#cost').val(data.avg_cost)
-            $('#care').val(data.care_rating)
-            $('#beds').val(data.beds_available)
-            $('#covid').val(data.covid_rating)
-
 
 
         })

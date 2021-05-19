@@ -27,7 +27,7 @@ class Markers(models.Model):
     beds_available = models.IntegerField(default=0)
     care_rating = models.IntegerField(choices=rating,default=1)
     oxygen_rating = models.IntegerField(choices=rating,default=1)
-    ventilator_availability = models.FloatFieldField(default=0)
+    ventilator_availability = models.FloatField(default=0)
     lat = models.FloatField(default=0)
     lng = models.FloatField(default=0)
 

@@ -89,7 +89,7 @@ def update_marker(id):
     ob.care_rating =round(mean(care),1)
     ob.oxygen_rating = round(mean(oxy),1)
     ob.ventilator_availability = round(sum(vent)*100/len(vent),2)
-
+    ob.save()
 
 
 

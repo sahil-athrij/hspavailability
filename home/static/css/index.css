@@ -30,3 +30,6 @@ body{
     width:18px;
     content: url('/static/images/money_end.svg');
 }
+.ot{
+    font-size:15px;
+}

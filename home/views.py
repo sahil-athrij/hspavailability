@@ -82,13 +82,14 @@ def update_marker(id):
         care.append(x.care_rating)
         oxy.append(x.oxygen_rating)
         vent.append(x.ventilator_availability)
-    ob.financial_rating = mean(fin)
+    ob.financial_rating = round(mean(fin),1)
     ob.avg_cost = mean(avg)
-    ob.covid_rating = mean(covid)
+    ob.covid_rating =round(mean(covid),1)
     ob.beds_available = sum(bed)
-    ob.care_rating = mean(care)
-    ob.avg_cost = mean(oxy)
-    ob.ventilator_availability = sum(vent)*100/len(vent)
+    ob.care_rating =round(mean(care),1)
+    ob.oxygen_rating = round(mean(oxy),1)
+    ob.ventilator_availability = round(sum(vent)*100/len(vent),2)
+    ob.save()
 
 
 

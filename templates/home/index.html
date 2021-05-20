@@ -34,6 +34,7 @@
                                 <input type="radio" id="1" value="1" name="rating" disabled/>
                                 <label for="1"></label>
                             </div>
+                            <output class="ot mx-2" id="ratingf"></output>
                         </form>
                     </div>
                 </div>
@@ -55,6 +56,7 @@
                                 <input type="radio" id="1" value="1" name="covid" disabled/>
                                 <label for="1"></label>
                             </div>
+                            <output class="ot mx-2" id="covidf"></output>
                         </form>
                     </div>
                 </div>
@@ -76,12 +78,13 @@
                                 <input type="radio" id="1" value="1" name="oxy" disabled/>
                                 <label for="1"></label>
                             </div>
+                            <output class="ot mx-2" id="oxyf"></output>
                         </form>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col">
-                        Ventilator Availability
+                        Ventilator Availability(%)
                     </div>
                     <div class="star-rating col" id="vent">
                     </div>
@@ -104,6 +107,7 @@
                                 <input type="radio" id="1" value="1" name="financial" disabled/>
                                 <label for="1"></label>
                             </div>
+                            <output class="ot mx-2" id="financialf"></output>
                         </form>
                     </div>
                 </div>
@@ -212,11 +216,15 @@
                     console.log(data)
                     $('#header').text(data.name)
                     $('#phone').val(data.Phone)
-                    $('input:radio[name=rating]').val([data.care_rating]);
-                    $('input:radio[name=covid]').val([data.covid_rating]);
-                    $('input:radio[name=oxy]').val([data.oxygen_rating])
+                    $('input:radio[name=rating]').val([parseInt(data.care_rating)])
+                    $('#ratingf').text(data.care_rating)
+                    $('input:radio[name=covid]').val([parseInt(data.covid_rating)])
+                    $('#covidf').text(data.covid_rating)
+                    $('input:radio[name=oxy]').val([parseInt(data.oxygen_rating)])
+                    $('#oxyf').text(data.oxygen_rating)
                     $('#vent').text(data.ventilator_availability)
-                    $('input:radio[name=financial]').val([data.financial_rating]);
+                    $('input:radio[name=financial]').val([parseInt(data.financial_rating)])
+                    $('#financialf').text(data.financial_rating)
                     $('#beds').text(data.beds_available)
                     $('#cost').text(data.avg_cost)
                     $('#id').val(data.id)

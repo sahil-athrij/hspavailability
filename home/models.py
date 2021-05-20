@@ -28,6 +28,8 @@ class Markers(models.Model):
     care_rating = models.FloatField(default=1)
     oxygen_rating = models.FloatField(default=1)
     ventilator_availability = models.FloatField(default=0)
+    oxygen_availability = models.FloatField(default=0)
+    icu_availability = models.FloatField(default=0)
     lat = models.FloatField(default=0)
     lng = models.FloatField(default=0)
 
@@ -40,5 +42,7 @@ class Reviews(models.Model):
     care_rating = models.IntegerField(choices=rating,default=1)
     oxygen_rating = models.IntegerField(choices=rating,default=1)
     beds_available = models.IntegerField(default=0)
-    ventilator_availability = models.BooleanField(default=0)
+    ventilator_availability = models.IntegerField(default=0)
+    oxygen_availability = models.IntegerField(default=0)
+    icu_availability = models.IntegerField(default=0)
     comment = models.TextField()

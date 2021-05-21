@@ -13,7 +13,7 @@
 
     <div id="map"></div>
     <div class="mt-5" id="toper">
-        <div class="m-5 col-12  col-sm-12 col-md-8 col-lg-6 col-xl-4">
+        <div class="m-5 col-12 col-sm-12 col-md-8 col-lg-6 col-xl-4">
             <div class="mt-5 col-12 p-2 text-center neumorphic_form">
                 <button class="close-icon close"  id="closemarker"></button>
                 <div class="text-center h6 mt-5" id="header"></div>
@@ -195,7 +195,8 @@
                         </div>
                         <div class="row">
                             <label for="vents" class="form-label">Ventilator Availability</label>
-                            <select id="vents" name="vent">
+                            <select id="vents" class="form-select" name="vent">
+                                <option selected>Ventilator</option>
                                 <option value="0">Didn't Require Ventilator</option>
                                 <option value="1">Not Available</option>
                                 <option value="2">Available</option>
@@ -205,7 +206,8 @@
                         </div>
                         <div class="row">
                             <label for="oxyas" class="form-label">Oxygen Availability</label>
-                            <select id="oxyas" name="oxya">
+                            <select id="oxyas" class="form-select" name="oxya">
+                                <option selected>Oxygen</option>
                                 <option value="0">Didn't Require Oxygen Support</option>
                                 <option value="1">Not Available</option>
                                 <option value="2">Available</option>
@@ -213,7 +215,8 @@
                         </div>
                         <div class="row">
                             <label for="icus" class="form-label">ICU Availability</label>
-                            <select id="icus" name="icu">
+                            <select id="icus" class="form-select" name="icu">
+                                <option selected>ICU</option>
                                 <option value="0">Didn't Require ICU</option>
                                 <option value="1">Not Available</option>
                                 <option value="2">Available</option>
@@ -221,7 +224,10 @@
                         </div>
                         <div class="row">
                             <label for="costs" class="form-label">Avg Cost<span class="star">*</span></label>
-                            <input type="text" class="form-control" id="costs" placeholder="Enter avg cost" name="cost" required>
+                            <div class="input-group">
+                                <span class="input-group-text">₹</span>
+                                <input type="text" class="form-control" id="costs" placeholder="Enter avg cost" name="cost" required>
+                            </div>
                         </div>
                         <div class="row">
                             <label for="care" class="form-label">Care Rating (higher is more better)<span class="star">*</span></label>

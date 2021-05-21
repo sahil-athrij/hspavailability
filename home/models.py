@@ -1,5 +1,5 @@
 from django.db import models
-
+import datetime
 # Create your models here.
 
 rating = [
@@ -46,3 +46,4 @@ class Reviews(models.Model):
     oxygen_availability = models.IntegerField(default=0)
     icu_availability = models.IntegerField(default=0)
     comment = models.TextField()
+    date = models.DateField(default=datetime.date.today)

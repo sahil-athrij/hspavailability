@@ -13,8 +13,9 @@
 
     <div id="map"></div>
     <div class="mt-5" id="toper">
-        <div class="m-5 col-12">
+        <div class="m-5 col-12  col-sm-12 col-md-8 col-lg-6 col-xl-4">
             <div class="mt-5 col-12 p-2 text-center neumorphic_form">
+                <button class="close-icon close"  id="closemarker"></button>
                 <div class="text-center h6 mt-5" id="header"></div>
                 <div class="row">
                     <div class="col">
@@ -147,9 +148,10 @@
         </div>
     </div>
     <div class="mt-5" id="addreview">
-        <div class="m-5 col-12">
+        <div class="m-5 col-12 col-sm-6 col-lg-4">
             <div class="mt-5 col-12 p-2 text-center neumorphic_form">
                 <div class="container">
+                    <button class="close-icon close"  id="closereview"></button>
                     <p align="center">only the sections with '<span class="star">*</span>' is compulsory to be filled</p>
                     <form method="post" action="add_review/">
                         {% csrf_token %}
@@ -329,6 +331,12 @@
                 }
             })
         }
+        $('#closemarker').on('click', function(id){
+            $('#toper').hide(id)
+        })
+        $('#closereview').on('click', function(id){
+            $('#addreview').hide(id)
+        })
 
         $('#rev').on('click', function (id) {
             $('#toper').hide(id)

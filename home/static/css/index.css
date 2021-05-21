@@ -10,7 +10,7 @@
 }
 body{
     z-index: -1;
-    width:500px
+
 }
 #toper{
     z-index: 1000003;
@@ -35,4 +35,8 @@ body{
 }
 .star{
     color:Red;
+}
+.close{
+    position:relative;
+    left:93%;
 }

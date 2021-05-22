@@ -94,7 +94,7 @@ def update_marker(id):
         day.append(x.day)
     dmax = max(day)
     for x in rev:
-        d=0.99**(x.day-dmax)
+        d=0.99**(dmax-x.day)
         den.append(d)
         fin.append(d*x.financial_rating)
         avg.append(d*x.avg_cost)
@@ -102,7 +102,7 @@ def update_marker(id):
         bed.append(d*x.beds_available)
         care.append(d*x.care_rating)
         if x.oxygen_rating!=0:
-            oxy.append(d*(x.oxygen_rating-1))
+            oxy.append(d*(x.oxygen_rating))
             deno.append(d)
         if x.ventilator_availability!=0:
             vent.append(d*(x.ventilator_availability-1))
@@ -117,7 +117,7 @@ def update_marker(id):
     ob.financial_rating = round(sum(fin)/dens,1)
     ob.avg_cost = sum(avg)/dens
     ob.covid_rating =round(sum(covid)/dens,1)
-    ob.beds_available = sum(bed)/dens
+    ob.beds_available = sum(bed)
     ob.care_rating =round(sum(care)/dens,1)
     ob.oxygen_rating = round(sum(oxy)/sum(deno),1)
     ob.ventilator_availability = round(sum(vent)*100/sum(denv),2)

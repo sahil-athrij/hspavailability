@@ -32,6 +32,7 @@ class Markers(models.Model):
     icu_availability = models.FloatField(default=0)
     lat = models.FloatField(default=0)
     lng = models.FloatField(default=0)
+    datef = models.DateField(default=datetime.date.today)
 
 
 class Reviews(models.Model):
@@ -46,4 +47,5 @@ class Reviews(models.Model):
     oxygen_availability = models.IntegerField(default=0)
     icu_availability = models.IntegerField(default=0)
     comment = models.TextField()
-    date = models.DateField(default=datetime.date.today)
+    datef = models.DateField(default=datetime.date.today)
+    day = models.IntegerField(default=0)

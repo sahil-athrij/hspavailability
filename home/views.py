@@ -1,8 +1,7 @@
 from django.http import JsonResponse
 from django.shortcuts import render
 from .models import Markers, Reviews
-from statistics import mean
-
+import datetime
 from django.forms.models import model_to_dict
 
 
@@ -49,8 +48,8 @@ def add_review(request):
     if request.method == 'POST':
 
         print(request.POST)
-
         id = int(request.POST['id'])
+        mob = Markers.objects.get(id=id)
         ob = Reviews.objects.create(marker_id=id)
         ob.financial_rating = int(request.POST['financial'])
         ob.avg_cost = int(request.POST['cost'])
@@ -62,6 +61,8 @@ def add_review(request):
         ob.oxygen_availability = int(request.POST['oxya'])
         ob.icu_availability = int(request.POST['icu'])
         ob.comment = request.POST['comment']
+        d = ob.datef-mob.datef
+        ob.day = d.days
         ob.save()
         update_marker(id)
 
@@ -69,6 +70,9 @@ def add_review(request):
     return render(request, template_name='home/index.html', context={'reviews': reviews})
 
 def update_marker(id):
+    """
+    formula for each attribute = Σ(0.99^(x)*sum(data of x days before))/Σ(0.99^x)
+    """
     ob = Markers.objects.get(id=id)
     rev = Reviews.objects.filter(marker__id=id)
     fin = []
@@ -80,30 +84,45 @@ def update_marker(id):
     vent = []
     oxya = []
     icu = []
+    day = []
+    den = []
+    deno = []
+    denv = []
+    deni = []
+    denoa =[]
     for x in rev:
-        fin.append(x.financial_rating)
-        avg.append(x.avg_cost)
-        covid.append(x.covid_rating)
-        bed.append(x.beds_available)
-        care.append(x.care_rating)
+        day.append(x.day)
+    dmax = max(day)
+    for x in rev:
+        d=0.99**(x.day-dmax)
+        den.append(d)
+        fin.append(d*x.financial_rating)
+        avg.append(d*x.avg_cost)
+        covid.append(d*x.covid_rating)
+        bed.append(d*x.beds_available)
+        care.append(d*x.care_rating)
         if x.oxygen_rating!=0:
-            oxy.append(x.oxygen_rating-1)
+            oxy.append(d*(x.oxygen_rating-1))
+            deno.append(d)
         if x.ventilator_availability!=0:
-            vent.append(x.ventilator_availability-1)
+            vent.append(d*(x.ventilator_availability-1))
+            denv.append(d)
         if x.oxygen_availability!=0:
-            oxya.append(x.oxygen_availability-1)
+            oxya.append(d*(x.oxygen_availability-1))
+            denoa.append(d)
         if x.icu_availability!=0:
-            icu.append(x.icu_availability-1)
-
-    ob.financial_rating = round(mean(fin),1)
-    ob.avg_cost = mean(avg)
-    ob.covid_rating =round(mean(covid),1)
-    ob.beds_available = sum(bed)
-    ob.care_rating =round(mean(care),1)
-    ob.oxygen_rating = round(mean(oxy),1)
-    ob.ventilator_availability = round(sum(vent)*100/len(vent),2)
-    ob.oxygen_availability = round(sum(oxya)*100/len(oxya),2)
-    ob.icu_availability = round(sum(icu)*100/len(icu),2)
+            icu.append(d*(x.icu_availability-1))
+            deni.append(d)
+    dens = sum(den)
+    ob.financial_rating = round(sum(fin)/dens,1)
+    ob.avg_cost = sum(avg)/dens
+    ob.covid_rating =round(sum(covid)/dens,1)
+    ob.beds_available = sum(bed)/dens
+    ob.care_rating =round(sum(care)/dens,1)
+    ob.oxygen_rating = round(sum(oxy)/sum(deno),1)
+    ob.ventilator_availability = round(sum(vent)*100/sum(denv),2)
+    ob.oxygen_availability = round(sum(oxya)*100/sum(denoa),2)
+    ob.icu_availability = round(sum(icu)*100/sum(deni),2)
     ob.save()
 
 

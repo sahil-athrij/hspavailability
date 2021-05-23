@@ -12,6 +12,20 @@
 
 
     <div id="map"></div>
+    <nav class="navbar navbar-light bg-light">
+      <form class="form-inline" action="search/" method="post">
+          {% csrf_token %}
+        <div class="row">
+            <div class="col">
+                <input class="form-control" type="search" placeholder="Search" name="search" aria-label="Search">
+            </div>
+            <div class="col">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+            </div>
+        </div>
+      </form>
+    </nav>
+
     <div class="mt-5" id="toper">
         <div class="m-5 col-12 col-sm-12 col-md-8 col-lg-6 col-xl-4">
             <div class="mt-5 col-12 p-2 text-center neumorphic_form">
@@ -319,6 +333,7 @@
             '{% static 'images/large.png' %}',
 
         ]
+
 
         function filldata(id) {
             $.ajax({

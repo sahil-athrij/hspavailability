@@ -126,5 +126,12 @@ def update_marker(id):
     ob.icu_availability = round(sum(icu)*100/sum(deni),2)
     ob.save()
 
+def search_marker(request):
+    if request.method=="POST":
+        query_name=request.POST.get('search', None)
+        if query_name:
+            results = Markers.objects.filter(name__contains=query_name)
+            return render(request,{"results":results})
 
+        return render(request)
 

@@ -34,6 +34,9 @@ class Markers(models.Model):
     lng = models.FloatField(default=0)
     datef = models.DateField(default=datetime.date.today)
 
+    def __str__(self):
+        return self.name
+
 
 class Reviews(models.Model):
     marker = models.ForeignKey(Markers,related_name="comment",on_delete=models.CASCADE)

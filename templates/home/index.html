@@ -19,6 +19,14 @@
                 <div class="text-center h6 mt-5" id="header"></div>
                 <div class="row">
                     <div class="col">
+                        Phone No:
+                    </div>
+                    <div class="col">
+                        <a href="tel:{{ phone }}" id="phone"></a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
                         Care Rating
                     </div>
                     <div class="star-rating col">
@@ -319,7 +327,8 @@
                     $('#toper').show()
                     console.log(data)
                     $('#header').text(data.name)
-                    $('#phone').val(data.Phone)
+                    $('#phone').html(data.Phone)
+                    $('#phone').attr("href",'tel:'+data.Phone)
                     $('input:radio[name=ratingm]').val([parseInt(data.care_rating)])
                     $('#ratingf').text(data.care_rating)
                     $('input:radio[name=covidm]').val([parseInt(data.covid_rating)])

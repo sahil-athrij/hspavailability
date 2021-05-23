@@ -56,11 +56,11 @@
             <div class="row">
                 <div class="form-group col">
                     <label for="oxy" class="form-label">Oxygen Availability(in Percentage)</label>
-                    <input type="range" class="form-range" min="0" value="0" max="100" id="oxya" name="oxy">
+                    <input type="range" class="form-range" min="0" value="0" max="100" id="oxya" name="oxya">
                 </div>
                 <div class="form-group col">
                     <label for="vent" class="form-label">ICU Availability(in Percentage)</label>
-                    <input type="range" class="form-range" min="0" value="0" max="100" id="icu" name="vent">
+                    <input type="range" class="form-range" min="0" value="0" max="100" id="icu" name="icu">
                 </div>
             </div>
             <div class="row">
@@ -84,6 +84,10 @@
                     <label for="covid" class="form-label">Covid Rating (higher is more better)</label>
                     <input type="range" class="form-range" min="1" value="1" max="5" id="covid" name="covid">
                 </div>
+            </div>
+            <div class="row">
+                <label for="datef" class="form-label">Date(input current date)</label>
+                <input type="date" id="datef" name="datef">
             </div>
             <input id="id" name="id" hidden value="-1">
             <div class="row mt-5">
@@ -133,6 +137,7 @@
                     $('#care').val(data.care_rating)
                     $('#beds').val(data.beds_available)
                     $('#covid').val(data.covid_rating)
+                    $('#datef').val(data.datef)
                 }
             })
         }

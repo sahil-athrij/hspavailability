@@ -34,6 +34,7 @@ def modify(request):
         ob.icu_availability = int(request.POST['icu'])
         ob.lat = float(request.POST['lat'])
         ob.lng = float(request.POST['lng'])
+        ob.datef = request.POST['datef']
         ob.save()
 
     markers = Markers.objects.all()

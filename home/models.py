@@ -47,5 +47,5 @@ class Reviews(models.Model):
     oxygen_availability = models.IntegerField(default=0)
     icu_availability = models.IntegerField(default=0)
     comment = models.TextField()
-    datef = models.DateField(default=datetime.date.today)
+    datef    = models.DateField(default=datetime.date.today)
     day = models.IntegerField(default=0)

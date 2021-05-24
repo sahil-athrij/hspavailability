@@ -24,17 +24,19 @@
 
 
                 <div class="row neumorphic_form">
-                    <div class="col-10">
+                    <div class="col-11">
                         <input type="search" class=" form-control wow" placeholder="Search" name="search"
-                               aria-label="Search">
+                               aria-label="Search" id="searchTextField">
                     </div>
                     <div class="col-1">
                         <div class="left-search mt-2"><i class="fa fa-search"></i></div>
                     </div>
-                    <div class="col-1">
-                        <button id="filter" type="button" class="btn btn-outline-primary">Filter</button>
-                    </div>
 
+
+                </div>
+
+                <div class="col-1">
+                    <button id="filter" type="button" class="btn btn-outline-primary">Filter</button>
                 </div>
 
 
@@ -46,7 +48,7 @@
             <div class="col-12 col-sm-6 col-lg-6 offset-lg-3">
                 <div class="col-12 col-sm-3 col-lg-3"></div>
                 <div class="mt-5 col-12 p-2 text-center neumorphic_form">
-                     <button class="close-icon close" id="closefilter"></button>
+                    <button class="close-icon close" id="closefilter"></button>
                     <table>
                         <tr>
                             <th></th>
@@ -419,16 +421,17 @@
         $('#closereview').on('click', function () {
             $('#addreview').hide()
         })
-        $('#closefilter').on('click', function(){
+        $('#closefilter').on('click', function () {
             $('#filters').hide()
         })
-        $('#filter').on('click', function(){
+        $('#filter').on('click', function () {
             $('#filters').show()
         })
         $('#rev').on('click', function (id) {
             $('#toper').hide(id)
             $('#addreview').show(id)
         })
+
         function initMap() {
             const map = new google.maps.Map(document.getElementById("map"), {
                 zoom: 12,
@@ -438,6 +441,11 @@
                 navigator.geolocation.getCurrentPosition(function (position) {
                     initialLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
                     map.setCenter(initialLocation);
+                    console.log(initialLocation.lat())
+                    latleft = Math.round((((initialLocation.lat()) + Number.EPSILON) * 10) - 1) / 100
+                    latright = Math.round((((initialLocation.lat()) + Number.EPSILON) * 10) + 1) / 100
+                    longtop = Math.round((((initialLocation.lng()) + Number.EPSILON) * 10) - 1) / 100
+                    longbottom = Math.round((((initialLocation.lng()) + Number.EPSILON) * 10) + 1) / 100
                 });
             }
 
@@ -462,6 +470,30 @@
                 })
 
             {% endfor %}
+            function searchData() {
+                var search = $('#searchTextField').val()
+                $.ajax({
+                    'url': `https://maps.googleapis.com/maps/api/geocode/json?address=${search}&bounds=${latleft},${longtop}|${latright},${longbottom}&key=AIzaSyCZrW79d1U3pgQDJlaErgxHQIq-8MRst-c`,
+                    'success': function (data) {
+                        console.log(data)
+                        map.setCenter(data.results[0].geometry.location);
+                        latleft = Math.round((((data.results[0].geometry.location.lat) + Number.EPSILON) * 10) - 1) / 100
+                        latright = Math.round((((data.results[0].geometry.location.lat) + Number.EPSILON) * 10) + 1) / 100
+                        longtop = Math.round((((data.results[0].geometry.location.lng) + Number.EPSILON) * 10) - 1) / 100
+                        longbottom = Math.round((((data.results[0].geometry.location.lng) + Number.EPSILON) * 10) + 1) / 100
+
+                    }
+                })
+            }
+
+            $("#searchTextField").on('keyup', function (e) {
+                if (e.key === 'Enter' || e.keyCode === 13) {
+                    // Do something
+                    searchData()
+                }
+            });
+            $('#search_button').on('click', searchData)
+
         }
 
     </script>

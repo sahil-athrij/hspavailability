@@ -1,4 +1,4 @@
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import render
 from .models import Markers, Reviews
 import datetime
@@ -6,7 +6,7 @@ from django.forms.models import model_to_dict
 
 
 # Create your views here.
-def index(request):
+def index(request, ):
     markers = Markers.objects.all()
     return render(request, template_name='home/index.html', context={'markers': markers})
 
@@ -67,8 +67,8 @@ def add_review(request):
         ob.save()
         update_marker(id)
 
-    reviews = ob
-    return render(request, template_name='home/index.html', context={'reviews': reviews})
+    return HttpResponseRedirect('/')
+
 
 def update_marker(id):
     """

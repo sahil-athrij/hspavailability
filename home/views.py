@@ -6,7 +6,7 @@ from django.forms.models import model_to_dict
 
 
 # Create your views here.
-def index(request, ):
+def index(request):
     markers = Markers.objects.all()
     return render(request, template_name='home/index.html', context={'markers': markers})
 
@@ -126,12 +126,29 @@ def update_marker(id):
     ob.icu_availability = round(sum(icu)*100/sum(deni),2)
     ob.save()
 
-def search_marker(request):
+def filter_marker(request):
     if request.method=="GET":
-        query_name=request.GET.get('search')
-        if query_name:
-            results = Markers.objects.filter(name__contains=query_name)
-            return render(request, template_name='home/index.html',context={'results':results})
+        fin = int(request.GET.get('financialfr',0))
+        cost = request.GET.get('costfr',0)
+        covid = int(request.GET.get('covidfr',0))
+        beds = request.GET.get('bedsfr',0)
+        care = int(request.GET.get('carefr',0))
+        oxy = int(request.GET.get('oxyfr',0))
+        vent = request.GET.get('ventfr',0)
+        oxya = request.GET.get('oxyafr',0)
+        icu = request.GET.get('icufr',0)
+        markers = Markers.objects.filter(financial_rating__gt=fin,
+                                         avg_cost__gt=cost,
+                                         covid_rating__gt=covid,
+                                         beds_available__gt=beds,
+                                         care_rating__gt=care,
+                                         oxygen_rating__gt=oxy,
+                                         ventilator_availability__gt=vent,
+                                         oxygen_availability__gt=oxya,
+                                         icu_availability__gt=icu
+                                         )
+
+        return render(request, template_name='home/index.html',context={'markers':markers})
 
     return render(request, template_name='home/index.html')
 

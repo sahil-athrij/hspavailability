@@ -127,11 +127,11 @@ def update_marker(id):
     ob.save()
 
 def search_marker(request):
-    if request.method=="POST":
-        query_name=request.POST.get('search', None)
+    if request.method=="GET":
+        query_name=request.GET.get('search')
         if query_name:
             results = Markers.objects.filter(name__contains=query_name)
-            return render(request,{"results":results})
+            return render(request, template_name='home/index.html',context={'results':results})
 
-        return render(request)
+    return render(request, template_name='home/index.html')
 

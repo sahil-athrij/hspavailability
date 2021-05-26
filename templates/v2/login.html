@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css %}
+    {#        <link href="https://cdn.jsdelivr.net/gh/alphardex/aqua.css/dist/aqua.min.css" rel="stylesheet"/>#}
+    <link href="{% static 'css/main.css' %}" rel="stylesheet"/>
+    <link href="{% static 'css/helper.css' %}" rel="stylesheet"/>
+{% endblock %}
+
+{% block body %}
+    {% include 'nav.html' %}
+    <div class="container my-5 py-5 ">
+        <div class="row my-5 py-5 align-self-center">
+            <div class="col-12 col-md-2 col-lg-3"></div>
+            <div class="col12 col-md-8 col-lg-6  neumorphic_form" id="toplevel">
+                <div class="text-center h3 p-3">Login</div>
+                <div class="form-row mb-3 px-5">
+
+                    <input class="un " type="text" align="center" placeholder="Username" name="username">
+                    <input class="pass" type="password" align="center" placeholder="Password" name="password">
+
+
+                </div>
+                <div class="text-center mb-3">
+                    <a class="links link-primary" href="register" onclick="" id="filtertext">
+                        Register
+                    </a>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script>
+        shown = false
+        $('#filters').hide()
+
+        function toggleFilters() {
+            if (shown) {
+                $('#filters').hide()
+                $('#filtertext').html('Show Filter')
+            } else {
+                $('#filters').show()
+                $('#filtertext').html('Hide Filter')
+            }
+            shown = !shown
+        }
+
+    </script>
+{% endblock %}

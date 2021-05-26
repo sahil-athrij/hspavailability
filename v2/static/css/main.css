@@ -1,0 +1,28 @@
+body {
+    background: url("/static/images/bg.svg") no-repeat;
+    background-size: cover;
+}
+
+
+
+.neumorphic_form {
+    border-radius: 50px;
+    background: #ffffff;
+    box-shadow: 2px 2px 4px #696969,
+    -2px -2px 4px #696969;
+    pointer-events: all;
+}
+
+.search {
+    border-radius: 50px;
+    border: 0;
+}
+
+.input-left{
+    border-bottom-left-radius: 50px;
+    border-top-left-radius: 50px;
+}
+.input-right{
+    border-bottom-right-radius: 50px;
+    border-top-right-radius: 50px;
+}

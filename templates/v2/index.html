@@ -1,0 +1,185 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css %}
+    {#        <link href="https://cdn.jsdelivr.net/gh/alphardex/aqua.css/dist/aqua.min.css" rel="stylesheet"/>#}
+    <link href="{% static 'css/main.css' %}" rel="stylesheet"/>
+    <link href="{% static 'css/helper.css' %}" rel="stylesheet"/>
+{% endblock %}
+
+{% block body %}
+    {% include 'nav.html' %}
+    <div class="container my-5 py-5 ">
+        <div class="row my-5 py-5 align-self-center">
+            <div class="col-12 col-md-2 col-lg-3"></div>
+            <div class="col12 col-md-8 col-lg-6  neumorphic_form" id="toplevel">
+                <div class="text-center h3 p-3">Search For Hospitals</div>
+                <div class="form-row mb-3 px-5">
+                    <div class="input-group">
+                        <input type="text" class="form-control input-left" placeholder="Location"/>
+
+
+                        <input type="text" class="form-control input-right" placeholder="Search"/>
+
+                    </div>
+                </div>
+                <div class="text-center mb-3">
+                    <a class="links link-primary"  href="#" onclick="toggleFilters()" id="filtertext">
+                        Filter Results
+                    </a>
+                </div>
+
+                <div class="container text-center h6" id="filters">
+                    <div class="text-center h6">Filter</div>
+                    <form method="get" action="filter/">
+                        {% csrf_token %}
+                        <div class="row my-4">
+                            <div class="col">
+                                <label for="oxyfr" class="form-label">Oxygen Care</label>
+                                <div class="star-rating col">
+                                    <div id="oxyfr" class="form-check-inline">
+                                        <div class="rate">
+                                            <input type="radio" id="of5" value="5" name="oxyfr">
+                                            <label for="of5"></label>
+                                            <input type="radio" id="of4" value="4" name="oxyfr">
+                                            <label for="of4"></label>
+                                            <input type="radio" id="of3" value="3" name="oxyfr">
+                                            <label for="of3"></label>
+                                            <input type="radio" id="of2" value="2" name="oxyfr">
+                                            <label for="of2"></label>
+                                            <input type="radio" id="of1" value="1" name="oxyfr">
+                                            <label for="of1"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <label for="financialfr" class="form-label">Affordability (higher is more
+                                    expensive)</label>
+                                <div class="star-rating col">
+                                    <div id="financialfr" class="form-check-inline">
+                                        <div class="rate financial">
+                                            <input type="radio" id="ff5" value="5" name="financialfr">
+                                            <label for="ff5"></label>
+                                            <input type="radio" id="ff4" value="4" name="financialfr">
+                                            <label for="ff4"></label>
+                                            <input type="radio" id="ff3" value="3" name="financialfr">
+                                            <label for="ff3"></label>
+                                            <input type="radio" id="ff2" value="2" name="financialfr">
+                                            <label for="ff2"></label>
+                                            <input type="radio" id="ff1" value="1" name="financialfr">
+                                            <label for="ff1"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row my-4">
+                            <div class="col">
+                                <label for="ventsf" class="form-label">Ventilator Availability(in percentage)</label>
+                                <br>
+                                <input id="ventsf" type="range" class="form-control-range" name="ventfr" value="0"
+                                       min="0" max="100" oninput="this.nextElementSibling.value = this.value">
+                                <output for="ventfr"></output>
+                            </div>
+                            <div class="col">
+                                <label for="oxyasf" class="form-label">Oxygen Availability</label>
+                                <br>
+                                <input id="oxyasf" type="range" class="form-control-range" name="oxyafr" value="0"
+                                       min="0" max="100" oninput="this.nextElementSibling.value = this.value">
+                                <output for="oxyasf"></output>
+                            </div>
+                        </div>
+                        <div class="row my-4">
+                            <div class="col">
+                                <label for="icusf" class="form-label">ICU Availability</label>
+                                <br>
+                                <input id="icusf" type="range" class="form-control-range" name="icufr" value="0" min="0"
+                                       max="100" oninput="this.nextElementSibling.value = this.value">
+                                <output for="icusf"></output>
+                            </div>
+                            <div class="col">
+                                <label for="costsf" class="form-label">Avg Cost</label>
+                                <div class="input-group" id="costsf">
+
+                                    <input type="text" class="form-control input-left" value="0"
+                                           placeholder="Enter Minimum avg cost"
+                                           name="price-min">
+                                    <span class="input-group-text">to</span>
+                                    <input type="text" class="form-control input-right" value="100000"
+                                           placeholder="Enter Maximum avg cost"
+                                           name="price-max">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row my-4">
+                            <div class="col">
+                                <label for="caref" class="form-label">Convenience (higher is more better)</label>
+                                <div class="star-rating col">
+                                    <div id="caref" class="form-check-inline">
+                                        <div class="rate">
+                                            <input type="radio" id="cf5" value="5" name="carefr">
+                                            <label for="cf5"></label>
+                                            <input type="radio" id="cf4" value="4" name="carefr">
+                                            <label for="cf4"></label>
+                                            <input type="radio" id="cf3" value="3" name="carefr">
+                                            <label for="cf3"></label>
+                                            <input type="radio" id="cf2" value="2" name="carefr">
+                                            <label for="cf2"></label>
+                                            <input type="radio" id="cf1" value="1" name="carefr">
+                                            <label for="cf1"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <label for="covidfr" class="form-label">Covid Care (higher is more better)</label>
+                                <div class="star-rating col">
+                                    <div id="covidfr" class="form-check-inline">
+                                        <div class="rate">
+                                            <input type="radio" id="cof5" value="5" name="covidfr">
+                                            <label for="cof5"></label>
+                                            <input type="radio" id="cof4" value="4" name="covidfr">
+                                            <label for="cof4"></label>
+                                            <input type="radio" id="cof3" value="3" name="covidfr">
+                                            <label for="cof3"></label>
+                                            <input type="radio" id="cof2" value="2" name="covidfr">
+                                            <label for="cof2"></label>
+                                            <input type="radio" id="cof1" value="1" name="covidfr">
+                                            <label for="cof1"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row my-4">
+                            <div class="col">
+                                <input type="submit" class="btn input-left input-right btn-secondary">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script>
+        shown = false
+        $('#filters').hide()
+        function toggleFilters() {
+            if (shown) {
+                $('#filters').hide()
+                $('#filtertext').html('Show Filter')
+            } else {
+                $('#filters').show()
+                $('#filtertext').html('Hide Filter')
+            }
+            shown = !shown
+        }
+
+    </script>
+{% endblock %}

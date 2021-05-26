@@ -42,7 +42,7 @@
                                 {% csrf_token %}
                                 <div class="row">
                                     <div class="col">
-                                        <label for="oxyfr" class="form-label">Oxygen Rating</label>
+                                        <label for="oxyfr" class="form-label">Oxygen Care</label>
                                         <div class="star-rating col">
                                             <div id="oxyfr" class="form-check-inline">
                                                 <div class="rate">
@@ -61,7 +61,7 @@
                                         </div>
                                     </div>
                                     <div class="col">
-                                        <label for="financialfr" class="form-label">Financial Cost (higher is more
+                                        <label for="financialfr" class="form-label">Affordability (higher is more
                                             expensive)</label>
                                         <div class="star-rating col">
                                             <div id="financialfr" class="form-check-inline">
@@ -85,32 +85,38 @@
                                     <div class="col">
                                         <label for="ventsf" class="form-label">Ventilator Availability(in percentage)</label>
                                         <br>
-                                        <input id="ventsf" type="number" name="ventfr" value="0" min="0" max="100">
+                                        <input id="ventsf" type="range" class="form-control-range"  name="ventfr" value="0" min="0" max="100" oninput="this.nextElementSibling.value = this.value">
+                                        <output for="ventfr"></output>
                                     </div>
                                     <div class="col">
                                         <label for="oxyasf" class="form-label">Oxygen Availability</label>
                                         <br>
-                                        <input id="oxyasf" type="number" name="oxyafr" value="0" min="0" max="100">
+                                        <input id="oxyasf" type="range" class="form-control-range" name="oxyafr" value="0" min="0" max="100" oninput="this.nextElementSibling.value = this.value">
+                                        <output for="oxyasf"></output>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col">
                                         <label for="icusf" class="form-label">ICU Availability</label>
                                         <br>
-                                        <input id="icusf" type="number" name="icufr" value="0" min="0" max="100">
+                                        <input id="icusf" type="range" class="form-control-range"  name="icufr" value="0" min="0" max="100" oninput="this.nextElementSibling.value = this.value">
+                                        <output for="icusf"></output>
                                     </div>
                                     <div class="col">
                                         <label for="costsf" class="form-label">Avg Cost</label>
-                                        <div class="input-group">
-                                            <span class="input-group-text">₹</span>
-                                            <input type="text" class="form-control" id="costsf" value="0" placeholder="Enter avg cost"
-                                                   name="costfr">
+                                        <div class="input-group" id="costsf">
+                                            <span class="input-group-text">Min ₹</span>
+                                            <input type="text" class="form-control"  value="0" placeholder="Enter Minimum avg cost"
+                                                   name="price-min">
+                                            <span class="input-group-text">Max ₹</span>
+                                            <input type="text" class="form-control"  value="1000000" placeholder="Enter Maximum avg cost"
+                                                   name="price-max">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col">
-                                        <label for="caref" class="form-label">Care Rating (higher is more better)></label>
+                                        <label for="caref" class="form-label">Convenience (higher is more better)></label>
                                         <div class="star-rating col">
                                             <div id="caref" class="form-check-inline">
                                                 <div class="rate">
@@ -129,7 +135,7 @@
                                         </div>
                                     </div>
                                     <div class="col">
-                                        <label for="covidfr" class="form-label">Covid Rating (higher is more better)</label>
+                                        <label for="covidfr" class="form-label">Covid Care (higher is more better)</label>
                                         <div class="star-rating col">
                                             <div id="covidfr" class="form-check-inline">
                                                 <div class="rate">
@@ -177,7 +183,7 @@
                     </div>
                     <div class="row">
                         <div class="col">
-                            Care Rating
+                           Convenience
                         </div>
                         <div class="star-rating col">
                             <form class="form-check-inline" oninput="">
@@ -199,7 +205,7 @@
                     </div>
                     <div class="row">
                         <div class="col">
-                            Covid Rating
+                            Covid Care
                         </div>
                         <div class="star-rating col">
                             <form class="form-check-inline" oninput="">
@@ -221,7 +227,7 @@
                     </div>
                     <div class="row">
                         <div class="col">
-                            Oxygen Rating
+                            Oxygen Care
                         </div>
                         <div class="star-rating col">
                             <form class="form-check-inline" oninput="">
@@ -300,7 +306,7 @@
                         </div>
                     </div>
                     <div>
-                        <a id="rev" class="btn btn-primary">Write Review</a>
+                        <a id="rev" class="btn btn-primary">Share Your Experiance</a>
                     </div>
                 </div>
             </div>
@@ -319,7 +325,7 @@
                             <div class="row">
                                 <div class="col">
 
-                                    <label for="oxy" class="form-label">Oxygen Rating</label>
+                                    <label for="oxy" class="form-label">Oxygen Care</label>
                                     <div class="star-rating col">
                                         <div id="oxy" class="form-check-inline">
                                             <div class="rate">
@@ -338,7 +344,7 @@
                                     </div>
                                 </div>
                                 <div class="col">
-                                    <label for="financial" class="form-label">Financial Cost (higher is more
+                                    <label for="financial" class="form-label">Affordability (higher is more
                                         expensive)<span
                                                 class="star">*</span></label>
                                     <div class="star-rating col">
@@ -403,7 +409,7 @@
                             </div>
                             <div class="row">
                                 <div class="col">
-                                    <label for="care" class="form-label">Care Rating (higher is more better)<span
+                                    <label for="care" class="form-label">Convenience (higher is more better)<span
 
                                             class="star">*</span></label>
                                     <div class="star-rating col">
@@ -426,7 +432,7 @@
 
 
                                 <div class="col">
-                                    <label for="covid" class="form-label">Covid Rating (higher is more better)<span
+                                    <label for="covid" class="form-label">Covid Care (higher is more better)<span
                                             class="star">*</span></label>
                                     <div class="star-rating col">
                                         <div id="covid" class="form-check-inline">
@@ -519,7 +525,6 @@
                 }
             })
         }
-
         $('#closemarker').on('click', function () {
             $('#toper').hide()
         })

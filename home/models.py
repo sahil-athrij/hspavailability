@@ -33,6 +33,7 @@ class Markers(models.Model):
     lat = models.FloatField(default=0)
     lng = models.FloatField(default=0)
     datef = models.DateField(default=datetime.date.today)
+    place_id = models.CharField(max_length=60,default="")
 
     def __str__(self):
         return self.name

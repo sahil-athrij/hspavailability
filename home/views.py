@@ -129,7 +129,8 @@ def update_marker(id):
 def filter_marker(request):
     if request.method=="GET":
         fin = int(request.GET.get('financialfr',0))
-        cost = request.GET.get('costfr',0)
+        costmin = request.GET.get('price-min',0)
+        costmax = request.GET.get('price-max',1000000)
         covid = int(request.GET.get('covidfr',0))
         beds = request.GET.get('bedsfr',0)
         care = int(request.GET.get('carefr',0))
@@ -137,15 +138,16 @@ def filter_marker(request):
         vent = request.GET.get('ventfr',0)
         oxya = request.GET.get('oxyafr',0)
         icu = request.GET.get('icufr',0)
-        markers = Markers.objects.filter(financial_rating__gt=fin,
-                                         avg_cost__gt=cost,
-                                         covid_rating__gt=covid,
-                                         beds_available__gt=beds,
-                                         care_rating__gt=care,
-                                         oxygen_rating__gt=oxy,
-                                         ventilator_availability__gt=vent,
-                                         oxygen_availability__gt=oxya,
-                                         icu_availability__gt=icu
+        markers = Markers.objects.filter(financial_rating__gte=fin,
+                                         avg_cost__gte=costmin,
+                                         avg_cost__lte=costmax,
+                                         covid_rating__gte=covid,
+                                         beds_available__gte=beds,
+                                         care_rating__gte=care,
+                                         oxygen_rating__gte=oxy,
+                                         ventilator_availability__gte=vent,
+                                         oxygen_availability__gte=oxya,
+                                         icu_availability__gte=icu
                                          )
 
         return render(request, template_name='home/index.html',context={'markers':markers})

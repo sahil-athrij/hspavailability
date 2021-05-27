@@ -13,7 +13,7 @@
 
 
 
-    <div id="mapdiv"></div>
+    <div div id="map" style="float: left;"></div>
     <div class="overlay">
         <div class="pt-5  row">
             {% csrf_token %}
@@ -482,7 +482,7 @@
 {% endblock %}
 
 {% block script %}
-<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
+	 <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
     <script>
 
         $('#toper').hide()
@@ -498,32 +498,32 @@
 
         ]
 
-<!--        function filldata(id) {-->
-<!--            $.ajax({-->
-<!--                url: `/more_info/${id}/`,-->
-<!--                success: function (data) {-->
-<!--                    $('#toper').show()-->
-<!--                    console.log(data)-->
-<!--                    $('#header').text(data.name)-->
-<!--                    $('#phone').html(data.Phone)-->
-<!--                    $('#phone').attr("href", 'tel:' + data.Phone)-->
-<!--                    $('input:radio[name=ratingm]').val([parseInt(data.care_rating)])-->
-<!--                    $('#ratingf').text(data.care_rating)-->
-<!--                    $('input:radio[name=covidm]').val([parseInt(data.covid_rating)])-->
-<!--                    $('#covidf').text(data.covid_rating)-->
-<!--                    $('input:radio[name=oxym]').val([parseInt(data.oxygen_rating)])-->
-<!--                    $('#oxyf').text(data.oxygen_rating)-->
-<!--                    $('#vent').text(data.ventilator_availability)-->
-<!--                    $('#oxya').text(data.oxygen_availability)-->
-<!--                    $('#icu').text(data.icu_availability)-->
-<!--                    $('input:radio[name=financialm]').val([parseInt(data.financial_rating)])-->
-<!--                    $('#financialf').text(data.financial_rating)-->
-<!--                    $('#beds').text(data.beds_available)-->
-<!--                    $('#cost').text(data.avg_cost)-->
-<!--                    $('#id').val(data.id)-->
-<!--                }-->
-<!--            })-->
-<!--        }-->
+        function filldata(id) {
+            $.ajax({
+                url: `/more_info/${id}/`,
+                success: function (data) {
+                    $('#toper').show()
+                    console.log(data)
+                    $('#header').text(data.name)
+                    $('#phone').html(data.Phone)
+                    $('#phone').attr("href", 'tel:' + data.Phone)
+                    $('input:radio[name=ratingm]').val([parseInt(data.care_rating)])
+                    $('#ratingf').text(data.care_rating)
+                    $('input:radio[name=covidm]').val([parseInt(data.covid_rating)])
+                    $('#covidf').text(data.covid_rating)
+                    $('input:radio[name=oxym]').val([parseInt(data.oxygen_rating)])
+                    $('#oxyf').text(data.oxygen_rating)
+                    $('#vent').text(data.ventilator_availability)
+                    $('#oxya').text(data.oxygen_availability)
+                    $('#icu').text(data.icu_availability)
+                    $('input:radio[name=financialm]').val([parseInt(data.financial_rating)])
+                    $('#financialf').text(data.financial_rating)
+                    $('#beds').text(data.beds_available)
+                    $('#cost').text(data.avg_cost)
+                    $('#id').val(data.id)
+                }
+            })
+        }
         $('#closemarker').on('click', function () {
             $('#toper').hide()
         })
@@ -604,16 +604,34 @@
 <!--            $('#search_button').on('click', searchData)-->
 
 <!--        }-->
-            //Google maps API initialisation
-            var element = document.getElementById("map");
+		// Start position for the map (hardcoded here for simplicity,
+		// but maybe you want to get from URL params)
+		var lat=10.0
+		var lon=50.0
+		var zoom=12
+		var map; //complex object of type OpenLayers.Map
+
+                var element = document.getElementById("map");
 
             var map = new google.maps.Map(element, {
                 center: new google.maps.LatLng(57, 21),
-                zoom: 3,
+                zoom: 12,
                 mapTypeId: "OSM",
                 mapTypeControl: false,
                 streetViewControl: false
             });
+                        if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function (position) {
+                    initialLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+                    map.setCenter(initialLocation);
+                    console.log(initialLocation.lat())
+                    latleft = Math.round((((initialLocation.lat()) + Number.EPSILON) * 10) - 1) / 100
+                    latright = Math.round((((initialLocation.lat()) + Number.EPSILON) * 10) + 1) / 100
+                    longtop = Math.round((((initialLocation.lng()) + Number.EPSILON) * 10) - 1) / 100
+                    longbottom = Math.round((((initialLocation.lng()) + Number.EPSILON) * 10) + 1) / 100
+
+                });
+            }
 
             //Define OSM map type pointing at the OpenStreetMap tile server
             map.mapTypes.set("OSM", new google.maps.ImageMapType({
@@ -633,6 +651,50 @@
                 name: "OpenStreetMap",
                 maxZoom: 18
             }));
+            function addMarker(feature) {
+                var marker = new google.maps.Marker({
+                    position: feature.position,
+                    icon: icons[feature.size],
+                    map: map
+                });
+                marker.addListener('click', function () {
+                    filldata(feature.id)
+                });
+            }
+            {% for marker in markers %}
+                addMarker({
+                    'position': {
+                        'lat': {{ marker.lat }},
+                        'lng': {{ marker.lng }},
+                    },
+                    'size':{{ marker.size }},
+                    'id':{{ marker.id }}
+                })
+
+            {% endfor %}
+                                    function searchData() {
+                var search = $('#searchTextField').val()
+                $.ajax({
+                    'url': `https://maps.googleapis.com/maps/api/geocode/json?address=${search}&bounds=${latleft},${longtop}|${latright},${longbottom}&key=AIzaSyCZrW79d1U3pgQDJlaErgxHQIq-8MRst-c`,
+                    'success': function (data) {
+                        console.log(data)
+                        map.setCenter(data.results[0].geometry.location);
+                        latleft = Math.round((((data.results[0].geometry.location.lat) + Number.EPSILON) * 10) - 1) / 100
+                        latright = Math.round((((data.results[0].geometry.location.lat) + Number.EPSILON) * 10) + 1) / 100
+                        longtop = Math.round((((data.results[0].geometry.location.lng) + Number.EPSILON) * 10) - 1) / 100
+                        longbottom = Math.round((((data.results[0].geometry.location.lng) + Number.EPSILON) * 10) + 1) / 100
+
+                    }
+                })
+            }
+
+            $("#searchTextField").on('keyup', function (e) {
+                if (e.key === 'Enter' || e.keyCode === 13) {
+                    // Do something
+                    searchData()
+                }
+            });
+            $('#search_button').on('click', searchData)
     </script>
 
 

@@ -1,24 +1,30 @@
+{% extends 'base.html' %}
 {% load static %}
-<html>
 
-<head>
-    <link rel="stylesheet" href="{% static 'login_style.css' %}">
-    <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"/>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>
+{% block css %}
+    {#        <link href="https://cdn.jsdelivr.net/gh/alphardex/aqua.css/dist/aqua.min.css" rel="stylesheet"/>#}
+    <!-- Latest compiled and minified CSS -->
 
-    <title>Sign in</title>
-</head>
 
-<body>
-<div class="main">
-    <p class="sign" align="center">{{ sign_text }}</p>
-    {% block form %}
-    {% endblock %}
-</div>
+    <link href="{% static 'css/main.css' %}" rel="stylesheet"/>
+    <link href="{% static 'css/login.css' %}" rel="stylesheet"/>
+    <link href="{% static 'css/helper.css' %}" rel="stylesheet"/>
 
-</body>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"/>
+{% endblock %}
 
-</html>
+{% block body %}
+    {% include 'nav.html' %}
+    <div class="container">
+
+        <div class="main">
+            {% block form %}
+
+            {% endblock %}
+
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+
+{% endblock %}

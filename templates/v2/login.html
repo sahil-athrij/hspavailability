@@ -1,53 +1,22 @@
-{% extends 'base.html' %}
-{% load static %}
+{% extends 'auth_base.html' %}
+{% block form %}
+    <p class="sign" align="center">Sign In</p>
 
-{% block css %}
-    {#        <link href="https://cdn.jsdelivr.net/gh/alphardex/aqua.css/dist/aqua.min.css" rel="stylesheet"/>#}
-    <link href="{% static 'css/main.css' %}" rel="stylesheet"/>
-    <link href="{% static 'css/helper.css' %}" rel="stylesheet"/>
-{% endblock %}
-
-{% block body %}
-    {% include 'nav.html' %}
-    <div class="container my-5 py-5 ">
-        <div class="row my-5 py-5 align-self-center">
-            <div class="col-12 col-md-2 col-lg-3"></div>
-            <div class="col12 col-md-8 col-lg-6  neumorphic_form" id="toplevel">
-                <div class="text-center h3 p-3">Login</div>
-                <div class="form-row mb-3 px-5">
-
-                    <input class="un " type="text" align="center" placeholder="Username" name="username">
-                    <input class="pass" type="password" align="center" placeholder="Password" name="password">
-
-
-                </div>
-                <div class="text-center mb-3">
-                    <a class="links link-primary" href="register" onclick="" id="filtertext">
-                        Register
-                    </a>
-                </div>
+    <form class="form1" action="/v2/login/" method="POST">
+        {% csrf_token %}
+        {% if pswderr %}
+            <div class=" text-danger " align='center' role="alert">
+                <i class="fa fa-exclamation-circle"></i> {{ pswderr }}
             </div>
-        </div>
+        {% endif %}
 
-
-    </div>
-{% endblock %}
-
-{% block script %}
-    <script>
-        shown = false
-        $('#filters').hide()
-
-        function toggleFilters() {
-            if (shown) {
-                $('#filters').hide()
-                $('#filtertext').html('Show Filter')
-            } else {
-                $('#filters').show()
-                $('#filtertext').html('Hide Filter')
-            }
-            shown = !shown
-        }
-
-    </script>
+        <input class="un " type="text" align="center" placeholder="Username" name="username"
+               autocomplete="off">
+        <input class="pass" type="password" align="center" placeholder="Password" name="password"
+               autocomplete="off">
+        <button class="submit" align="left">Sign in</button>
+        <p class="forgot" align="center"><a href="#">Forgot Password?</a></p><a href="#">
+    </a>
+        <p class="forgot" align="center"><a href="#"></a><a href="/v2/signup">New User?</a></p>
+    </form>
 {% endblock %}

@@ -3,10 +3,21 @@ from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
+def get_client_ip(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    print(x_forwarded_for)
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
 
+    return ip
 # Create your views here.
 def index(request):
-    return render(request, template_name='v2/index.html')
+    context = {}
+    ipaddress = get_client_ip(request)
+    context['ip'] = ipaddress
+    return render(request, template_name='v2/index.html',context=context)
 
 
 def signin(request):

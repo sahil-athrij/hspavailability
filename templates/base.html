@@ -22,6 +22,11 @@
 {% block body %}
 {% endblock %}
 
+{% if ip %}
+    <script>
+        let ip = "{{ ip }}"
+    </script>
+{% endif %}
 {% block script %}
 {% endblock %}
 </body>

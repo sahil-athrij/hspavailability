@@ -2,6 +2,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
+from home.models import *
 
 
 # Create your views here.
@@ -53,3 +54,60 @@ def signup(request):
                 context1['pswderr'] = 'Password Does not match'
     context1['sign_text'] = "Register"
     return render(request, template_name="v2/signup.html", context=context1)
+
+
+def search(request):
+    if (request.method == "GET"):
+        template_name = "v2/search.html"
+        context = {}
+        query = request.GET["query"]
+        oxy = int(request.GET.get('oxyfr', 0))
+        print(oxy)
+        fin = int(request.GET.get('financialfr', 0))
+        print(fin)
+        vent = request.GET.get('ventfr', 0)
+        print(vent)
+        oxya = request.GET.get('oxyafr', 0)
+        print(oxya)
+        icu = request.GET.get('icufr', 0)
+        print(icu)
+        costmax = request.GET.get('price-max', 1000000)
+        print(costmax)
+        costmin = request.GET.get('price-min', 0)
+        print(costmin)
+        care = int(request.GET.get('carefr', 0))
+        print(care)
+        covid = int(request.GET.get('covidfr', 0))
+        print(covid)
+        # beds = request.GET.get('bedsfr', 0)
+        # print(beds)
+
+        # context["search_results"] = Markers.objects.filter(financial_rating__gte=fin,
+        #                                                    avg_cost__gte=costmin,
+        #                                                    avg_cost__lte=costmax,
+        #                                                    covid_rating__gte=covid,
+        #                                                    beds_available__gte=beds,
+        #                                                    care_rating__gte=care,
+        #                                                    oxygen_rating__gte=oxy,
+        #                                                    ventilator_availability__gte=vent,
+        #                                                    oxygen_availability__gte=oxya,
+        #                                                    icu_availability__gte=icu,
+        #                                                    name__icontains=query
+        #                                                    )
+
+        context["search_results"] = Markers.objects.filter(financial_rating__gte=fin,
+                                                           avg_cost__gte=costmin,
+                                                           avg_cost__lte=costmax,
+                                                           covid_rating__gte=covid,
+                                                           care_rating__gte=care,
+                                                           oxygen_rating__gte=oxy,
+                                                           ventilator_availability__gte=vent,
+                                                           oxygen_availability__gte=oxya,
+                                                           icu_availability__gte=icu,
+                                                           name__icontains=query
+                                                           )
+        print(context)
+
+        return render(request, template_name='v2/search.html', context=context)
+
+    return render(request, template_name='v2/index.html')

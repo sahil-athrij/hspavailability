@@ -1,15 +1,19 @@
-let ipsearchurl = `http://api.ipstack.com/${ip}?access_key=a9bf777070b0b0feda3eb80895bdaa86`
+let ipsearchurl = `https://ipapi.co/${ip}/json/`
 
 console.log(ipsearchurl)
 
 function GetIp() {
-    $.ajax({
-        'url': ipsearchurl,
+    $.ajax(ipsearchurl,{
+
         success: function (data) {
             console.log(data)
         },
         error: function (data) {
-            console.log(data)
+            $.ajax('/v2/getlocation',{
+                success:function (data){
+                    console.log(data)
+                }
+            })
         }
     })
 }

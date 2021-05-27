@@ -1,7 +1,11 @@
+import json
+
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
-from django.http import HttpResponseRedirect
+import requests
+from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.shortcuts import render
+
 
 def get_client_ip(request):
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
@@ -12,12 +16,14 @@ def get_client_ip(request):
         ip = request.META.get('REMOTE_ADDR')
 
     return ip
+
+
 # Create your views here.
 def index(request):
     context = {}
     ipaddress = get_client_ip(request)
     context['ip'] = ipaddress
-    return render(request, template_name='v2/index.html',context=context)
+    return render(request, template_name='v2/index.html', context=context)
 
 
 def signin(request):
@@ -64,3 +70,11 @@ def signup(request):
                 context1['pswderr'] = 'Password Does not match'
     context1['sign_text'] = "Register"
     return render(request, template_name="v2/signup.html", context=context1)
+
+
+def get_location(request):
+    ip = get_client_ip(request)
+    ipsearchurl = f'https://ipapi.co/{ip}/json/'
+    loc_data = requests.get(ipsearchurl, headers={
+        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36'})
+    return JsonResponse(json.loads(loc_data.content))

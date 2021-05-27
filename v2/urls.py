@@ -7,5 +7,6 @@ urlpatterns = [
     path('', index),
     path('login/',signin),
     path('signup/',signup),
-    path('search/', search, name='search')
+    path('search/', search, name='search'),
+    path('getlocation/',get_location)
 ]

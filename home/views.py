@@ -3,6 +3,7 @@ from django.shortcuts import render
 from .models import Markers, Reviews
 import datetime
 from django.forms.models import model_to_dict
+from django.core import serializers
 
 
 # Create your views here.
@@ -160,11 +161,12 @@ def marker_nearby(request):
         print(request)
         lat = float(request.POST['lat'])
         lng = float(request.POST['lng'])
-        marker = []
-        markers = Markers.objects.all()
-        for mkr in markers:
-            if mkr.lat > lat - 1 and mkr.lat < lat + 1 and mkr.lng > lng - 1 and mkr.lng < +1:
-                marker.append(mkr)
-        return JsonResponse(marker, safe=False)
+        print(lat,lng)
+        marker = Markers.objects.filter(lat__gte=lat-0.2,
+                                        lat__lte=lat+0.2,
+                                        lng__gte=lng-0.2,
+                                        lng__lte=lng+0.2)
+        marker_json = serializers.serialize('json',marker)
+        return JsonResponse(marker_json, safe=False)
 
     return render(request, template_name='home/index.html')

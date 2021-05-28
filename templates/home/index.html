@@ -27,58 +27,7 @@
                 <div class="row neumorphic_form">
                     <div class="col-10">
                         <div class="container">
-                            <div id="search-box">
-                                <div class="mapboxgl-ctrl-geocoder mapboxgl-ctrl">
-                                    <svg class="mapboxgl-ctrl-geocoder--icon mapboxgl-ctrl-geocoder--icon-search"
-                                         viewBox="0 0 18 18" xml:space="preserve" width="18" height="18"><path d="M7.4 2.5c-2.7 0-4.9 2.2-4.9 4.9s2.2 4.9 4.9 4.9c1 0 1.8-.2 2.5-.8l3.7 3.7c.2.2.4.3.8.3.7 0 1.1-.4 1.1-1.1 0-.3-.1-.5-.3-.8L11.4 10c.4-.8.8-1.6.8-2.5.1-2.8-2.1-5-4.8-5zm0 1.6c1.8 0 3.2 1.4 3.2 3.2s-1.4 3.2-3.2 3.2-3.3-1.3-3.3-3.1 1.4-3.3 3.3-3.3z"></path></svg>
-                                    <input type="text" class="mapboxgl-ctrl-geocoder--input" placeholder="Search"
-                                           aria-label="Search">
-                                    <div class="suggestions-wrapper">
-                                        <ul class="suggestions" style="display: none;">
-                                            <li class=" active">
-                                                <a>
-                                                    <div class="mapboxgl-ctrl-geocoder--suggestion">
-                                                        <div class="mapboxgl-ctrl-geocoder--suggestion-title"></div>
-                                                        <div class="mapboxgl-ctrl-geocoder--suggestion-address"></div>
-                                                    </div>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a>
-                                                    <div class="mapboxgl-ctrl-geocoder--suggestion">
-                                                        <div class="mapboxgl-ctrl-geocoder--suggestion-title"></div>
-                                                        <div class="mapboxgl-ctrl-geocoder--suggestion-address"></div>
-                                                    </div>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a>
-                                                    <div class="mapboxgl-ctrl-geocoder--suggestion">
-                                                        <div class="mapboxgl-ctrl-geocoder--suggestion-title"></div>
-                                                        <div class="mapboxgl-ctrl-geocoder--suggestion-address"></div>
-                                                    </div>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <div class="mapboxgl-ctrl-geocoder--pin-right">
-                                        <button aria-label="Clear" class="mapboxgl-ctrl-geocoder--button"
-                                                style="display: block;">
-                                            <svg class="mapboxgl-ctrl-geocoder--icon mapboxgl-ctrl-geocoder--icon-close"
-                                                 viewBox="0 0 18 18" xml:space="preserve" width="18" height="18">
-                                                <path d="M3.8 2.5c-.6 0-1.3.7-1.3 1.3 0 .3.2.7.5.8L7.2 9 3 13.2c-.3.3-.5.7-.5 1 0 .6.7 1.3 1.3 1.3.3 0 .7-.2 1-.5L9 10.8l4.2 4.2c.2.3.7.3 1 .3.6 0 1.3-.7 1.3-1.3 0-.3-.2-.7-.3-1l-4.4-4L15 4.6c.3-.2.5-.5.5-.8 0-.7-.7-1.3-1.3-1.3-.3 0-.7.2-1 .3L9 7.1 4.8 2.8c-.3-.1-.7-.3-1-.3z"></path>
-                                            </svg>
-                                        </button>
-                                        <svg class="mapboxgl-ctrl-geocoder--icon mapboxgl-ctrl-geocoder--icon-loading"
-                                             viewBox="0 0 18 18" xml:space="preserve" width="18" height="18"
-                                             style="display: none;">
-                                            <path fill="#333"
-                                                  d="M4.4 4.4l.8.8c2.1-2.1 5.5-2.1 7.6 0l.8-.8c-2.5-2.5-6.7-2.5-9.2 0z"></path>
-                                            <path opacity=".1"
-                                                  d="M12.8 12.9c-2.1 2.1-5.5 2.1-7.6 0-2.1-2.1-2.1-5.5 0-7.7l-.8-.8c-2.5 2.5-2.5 6.7 0 9.2s6.6 2.5 9.2 0 2.5-6.6 0-9.2l-.8.8c2.2 2.1 2.2 5.6 0 7.7z"></path>
-                                        </svg>
-                                    </div>
-                                </div>
+                            <div id="search-box"></div>
                             </div>
                         </div>
                         <!--                        <input type="search" class=" form-control wow" placeholder="Search" name="search"-->
@@ -631,67 +580,90 @@
             $.ajax({
                 type: 'POST',
                 url: `/markers/`,
+                dataType:'json',
                 data: LatLon,
                 success: function (data) {
-                    console.log(data)
                     var i;
-                    for (i = 0; i < data.length; i++) {
+                    ob = JSON.parse(data);
+                    console.log(ob);
+                    for (i = 0; i < ob.length; i++) {
+                        console.log(ob[i].fields.name)
                         addMarker({
                             'position': {
-                                'lat': data[i].lat,
-                                'lng': data[i].lng,
+                                'lat': ob[i].fields.lat,
+                                'lng': ob[i].fields.lng,
                             },
-                            'size': data[i].size,
-                            'id': data[i].id
+                            'size': ob[i].fields.size,
+                            'id': ob[i].fields.id
                         })
                     }
                 }
-            })
-        }
+            })}
 
 
-        function filldata(id) {
-            $.ajax({
-                url: `/more_info/${id}/`,
-                success: function (data) {
-                    $('#toper').show()
-                    console.log(data)
-                    $('#header').text(data.name)
-                    $('#phone').html(data.Phone)
-                    $('#phone').attr("href", 'tel:' + data.Phone)
-                    $('input:radio[name=ratingm]').val([parseInt(data.care_rating)])
-                    $('#ratingf').text(data.care_rating)
-                    $('input:radio[name=covidm]').val([parseInt(data.covid_rating)])
-                    $('#covidf').text(data.covid_rating)
-                    $('input:radio[name=oxym]').val([parseInt(data.oxygen_rating)])
-                    $('#oxyf').text(data.oxygen_rating)
-                    $('#vent').text(data.ventilator_availability)
-                    $('#oxya').text(data.oxygen_availability)
-                    $('#icu').text(data.icu_availability)
-                    $('input:radio[name=financialm]').val([parseInt(data.financial_rating)])
-                    $('#financialf').text(data.financial_rating)
-                    $('#beds').text(data.beds_available)
-                    $('#cost').text(data.avg_cost)
-                    $('#id').val(data.id)
-                }
-            })
-        }
+            function filldata(id) {
+                $.ajax({
+                    url: `/more_info/${id}/`,
+                    success: function (data) {
+                        $('#toper').show()
+                        console.log(data)
+                        $('#header').text(data.name)
+                        $('#phone').html(data.Phone)
+                        $('#phone').attr("href", 'tel:' + data.Phone)
+                        $('input:radio[name=ratingm]').val([parseInt(data.care_rating)])
+                        $('#ratingf').text(data.care_rating)
+                        $('input:radio[name=covidm]').val([parseInt(data.covid_rating)])
+                        $('#covidf').text(data.covid_rating)
+                        $('input:radio[name=oxym]').val([parseInt(data.oxygen_rating)])
+                        $('#oxyf').text(data.oxygen_rating)
+                        $('#vent').text(data.ventilator_availability)
+                        $('#oxya').text(data.oxygen_availability)
+                        $('#icu').text(data.icu_availability)
+                        $('input:radio[name=financialm]').val([parseInt(data.financial_rating)])
+                        $('#financialf').text(data.financial_rating)
+                        $('#beds').text(data.beds_available)
+                        $('#cost').text(data.avg_cost)
+                        $('#id').val(data.id)
+                    }
+                })
+            }
 
-        function getCookie(name) {
-            let cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                const cookies = document.cookie.split(';');
-                for (let i = 0; i < cookies.length; i++) {
-                    const cookie = cookies[i].trim();
-                    // Does this cookie string begin with the name we want?
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        // Does this cookie string begin with the name we want?
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
                     }
                 }
+                return cookieValue;
             }
-            return cookieValue;
-        }
+
+        //Add your LocationIQ Maps Access Token here (not the API token!)
+        locationiq.key = 'pk.959200a41370341f608a91b67be6e8eb';
+
+        //Add Geocoder control to the map
+        var geocoder = new MapboxGeocoder({
+            accessToken: locationiq.key,
+            limit: 5,
+            dedupe: 1,
+            getItemValue: function (item) {
+                map.setCenter({lat: item.center[1], lng: item.center[0]})
+                return item.place_name
+            }
+        });
+        geocoder.addTo('#search-box');
+
+
+
+
+
+
 
 
         $('#closemarker').on('click', function () {
@@ -767,21 +739,6 @@
         {#<!--            });-->#}
         {#<!--            $('#search_button').on('click', searchData)-->#}
         {#<!--        }-->#}
-
-        //Add your LocationIQ Maps Access Token here (not the API token!)
-        locationiq.key = 'pk.959200a41370341f608a91b67be6e8eb';
-
-        //Add Geocoder control to the map
-        var geocoder = new MapboxGeocoder({
-            accessToken: locationiq.key,
-            limit: 5,
-            dedupe: 1,
-            getItemValue: function (item) {
-                map.setCenter({lat: item.center[1], lng: item.center[0]})
-                return item.place_name
-            }
-        });
-
 
         {#<!--                $.ajax({-->#}
         {#<!--                    'url': `https://maps.googleapis.com/maps/api/geocode/json?address=${search}&bounds=${latleft},${longtop}|${latright},${longbottom}&key=AIzaSyCZrW79d1U3pgQDJlaErgxHQIq-8MRst-c`,-->#}

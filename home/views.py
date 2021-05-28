@@ -7,8 +7,7 @@ from django.forms.models import model_to_dict
 
 # Create your views here.
 def index(request):
-    markers = Markers.objects.all()
-    return render(request, template_name='home/index.html', context={'markers': markers})
+    return render(request, template_name='home/index.html')
 
 
 def modify(request):
@@ -154,3 +153,16 @@ def filter_marker(request):
 
     return render(request, template_name='home/index.html')
 
+def marker_nearby(request):
+    if request.method=="POST":
+        print(request)
+        lat=float(request.POST['lat'])
+        lng=float(request.POST['lng'])
+        marker=[]
+        markers = Markers.objects.all()
+        for mkr in markers:
+            if mkr.lat>lat-1 and mkr.lat<lat+1 and mkr.lng>lng-1 and mkr.lng<+1:
+                marker.append(mkr)
+        return JsonResponse(marker,safe=False)
+
+    return render(request, template_name='home/index.html')

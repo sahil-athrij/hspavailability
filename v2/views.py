@@ -96,8 +96,12 @@ def search(request):
         print(care)
         covid = int(request.GET.get('covidfr', 0))
         print(covid)
-        lat = float(request.GET.get('lat', 0))
-        lng = float(request.GET.get('lng', 0))
+        try:
+            lat = float(request.GET.get('lat', 0))
+            lng = float(request.GET.get('lng', 0))
+        except:
+            lat = 0
+            lng = 0
         if lat == 0 and lng == 0:
             data = get_loction_python(request)
             try:

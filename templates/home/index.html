@@ -571,17 +571,18 @@
         var element = document.getElementById("map");
         var cen
 
+        map = new google.maps.Map(element, {
+            center: initialLocation,
+            zoom: 12,
+            mapTypeId: "OSM",
+            mapTypeControl: false,
+            streetViewControl: false
+        });
         if (navigator.geolocation) {
 
             navigator.geolocation.getCurrentPosition(function (position) {
                 initialLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-                map = new google.maps.Map(element, {
-                    center: initialLocation,
-                    zoom: 12,
-                    mapTypeId: "OSM",
-                    mapTypeControl: false,
-                    streetViewControl: false
-                });
+                map.setCenter(initialLocation)
                 console.log(initialLocation.lat())
                 cen = initialLocation
                 latleft = Math.round((((initialLocation.lat()) + Number.EPSILON) * 10) - 1) / 100

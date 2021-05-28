@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% firstof title 'Need Medicals' %}</title>
     <!-- CSS only -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -22,6 +23,11 @@
 {% block body %}
 {% endblock %}
 
+{% if ip %}
+    <script>
+        let ip = "{{ ip }}"
+    </script>
+{% endif %}
 {% block script %}
 {% endblock %}
 </body>

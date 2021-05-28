@@ -553,25 +553,27 @@
 		var map; //complex object of type OpenLayers.Map
 
                 var element = document.getElementById("map");
-                var cen = navigator.geolocation.getCurrentPosition(function loc(){console.log("Hello There")})
-            var map = new google.maps.Map(element, {
-                center:  cen,
-                zoom: 12,
-                mapTypeId: "OSM",
-                mapTypeControl: false,
-                streetViewControl: false
-            });
-                        if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function (position) {
-                    initialLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-                    map.setCenter(initialLocation);
-                    console.log(initialLocation.lat())
-                    latleft = Math.round((((initialLocation.lat()) + Number.EPSILON) * 10) - 1) / 100
-                    latright = Math.round((((initialLocation.lat()) + Number.EPSILON) * 10) + 1) / 100
-                    longtop = Math.round((((initialLocation.lng()) + Number.EPSILON) * 10) - 1) / 100
-                    longbottom = Math.round((((initialLocation.lng()) + Number.EPSILON) * 10) + 1) / 100
+                var cen
 
-                });
+                        if (navigator.geolocation) {
+                               map = new google.maps.Map(element, {
+                                    center:  cen,
+                                    zoom: 12,
+                                    mapTypeId: "OSM",
+                                    mapTypeControl: false,
+                                    streetViewControl: false
+                                });
+                            navigator.geolocation.getCurrentPosition(function (position) {
+                                initialLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+                                map.setCenter(initialLocation);
+                                console.log(initialLocation.lat())
+                                cen = initialLocation
+                                latleft = Math.round((((initialLocation.lat()) + Number.EPSILON) * 10) - 1) / 100
+                                latright = Math.round((((initialLocation.lat()) + Number.EPSILON) * 10) + 1) / 100
+                                longtop = Math.round((((initialLocation.lng()) + Number.EPSILON) * 10) - 1) / 100
+                                longbottom = Math.round((((initialLocation.lng()) + Number.EPSILON) * 10) + 1) / 100
+
+                            });
             }
 
             //Define OSM map type pointing at the OpenStreetMap tile server

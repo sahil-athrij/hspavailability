@@ -28,14 +28,13 @@
                     <div class="col-10">
                         <div class="container">
                             <div id="search-box"></div>
-                            </div>
                         </div>
-                        <!--                        <input type="search" class=" form-control wow" placeholder="Search" name="search"-->
-                        <!--                               aria-label="Search" id="searchTextField">-->
                     </div>
-                    <div class="col-1">
-                        <button id="filter" type="button" class="btn btn-outline-primary">Filter</button>
-                    </div>
+                    <!--                        <input type="search" class=" form-control wow" placeholder="Search" name="search"-->
+                    <!--                               aria-label="Search" id="searchTextField">-->
+                </div>
+                <div class="col-1">
+                    <button id="filter" type="button" class="btn btn-outline-primary">Filter</button>
                 </div>
             </div>
         </div>
@@ -492,6 +491,8 @@
             </div>
         </div>
     </div>
+
+    </div>
 {% endblock %}
 
 {% block script %}
@@ -580,7 +581,7 @@
             $.ajax({
                 type: 'POST',
                 url: `/markers/`,
-                dataType:'json',
+                dataType: 'json',
                 data: LatLon,
                 success: function (data) {
                     var i;
@@ -598,51 +599,52 @@
                         })
                     }
                 }
-            })}
+            })
+        }
 
 
-            function filldata(id) {
-                $.ajax({
-                    url: `/more_info/${id}/`,
-                    success: function (data) {
-                        $('#toper').show()
-                        console.log(data)
-                        $('#header').text(data.name)
-                        $('#phone').html(data.Phone)
-                        $('#phone').attr("href", 'tel:' + data.Phone)
-                        $('input:radio[name=ratingm]').val([parseInt(data.care_rating)])
-                        $('#ratingf').text(data.care_rating)
-                        $('input:radio[name=covidm]').val([parseInt(data.covid_rating)])
-                        $('#covidf').text(data.covid_rating)
-                        $('input:radio[name=oxym]').val([parseInt(data.oxygen_rating)])
-                        $('#oxyf').text(data.oxygen_rating)
-                        $('#vent').text(data.ventilator_availability)
-                        $('#oxya').text(data.oxygen_availability)
-                        $('#icu').text(data.icu_availability)
-                        $('input:radio[name=financialm]').val([parseInt(data.financial_rating)])
-                        $('#financialf').text(data.financial_rating)
-                        $('#beds').text(data.beds_available)
-                        $('#cost').text(data.avg_cost)
-                        $('#id').val(data.id)
-                    }
-                })
-            }
+        function filldata(id) {
+            $.ajax({
+                url: `/more_info/${id}/`,
+                success: function (data) {
+                    $('#toper').show()
+                    console.log(data)
+                    $('#header').text(data.name)
+                    $('#phone').html(data.Phone)
+                    $('#phone').attr("href", 'tel:' + data.Phone)
+                    $('input:radio[name=ratingm]').val([parseInt(data.care_rating)])
+                    $('#ratingf').text(data.care_rating)
+                    $('input:radio[name=covidm]').val([parseInt(data.covid_rating)])
+                    $('#covidf').text(data.covid_rating)
+                    $('input:radio[name=oxym]').val([parseInt(data.oxygen_rating)])
+                    $('#oxyf').text(data.oxygen_rating)
+                    $('#vent').text(data.ventilator_availability)
+                    $('#oxya').text(data.oxygen_availability)
+                    $('#icu').text(data.icu_availability)
+                    $('input:radio[name=financialm]').val([parseInt(data.financial_rating)])
+                    $('#financialf').text(data.financial_rating)
+                    $('#beds').text(data.beds_available)
+                    $('#cost').text(data.avg_cost)
+                    $('#id').val(data.id)
+                }
+            })
+        }
 
-            function getCookie(name) {
-                let cookieValue = null;
-                if (document.cookie && document.cookie !== '') {
-                    const cookies = document.cookie.split(';');
-                    for (let i = 0; i < cookies.length; i++) {
-                        const cookie = cookies[i].trim();
-                        // Does this cookie string begin with the name we want?
-                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                            break;
-                        }
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
                     }
                 }
-                return cookieValue;
             }
+            return cookieValue;
+        }
 
         //Add your LocationIQ Maps Access Token here (not the API token!)
         locationiq.key = 'pk.959200a41370341f608a91b67be6e8eb';
@@ -658,12 +660,6 @@
             }
         });
         geocoder.addTo('#search-box');
-
-
-
-
-
-
 
 
         $('#closemarker').on('click', function () {

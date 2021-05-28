@@ -624,6 +624,10 @@
         }
 
         function getMarkers() {
+            const csrftoken = getCookie('csrftoken');
+            var coor = map.getCenter()
+            var LatLon = {csrfmiddlewaretoken: csrftoken, lat: coor.lat(), lng: coor.lng()}
+            console.log(LatLon)
             $.ajax({
                 type: 'POST',
                 url: `/markers/`,
@@ -642,61 +646,54 @@
                         })
                     }
                 }
-            })}
-
-
-            function filldata(id) {
-                $.ajax({
-                    url: `/more_info/${id}/`,
-                    success: function (data) {
-                        $('#toper').show()
-                        console.log(data)
-                        $('#header').text(data.name)
-                        $('#phone').html(data.Phone)
-                        $('#phone').attr("href", 'tel:' + data.Phone)
-                        $('input:radio[name=ratingm]').val([parseInt(data.care_rating)])
-                        $('#ratingf').text(data.care_rating)
-                        $('input:radio[name=covidm]').val([parseInt(data.covid_rating)])
-                        $('#covidf').text(data.covid_rating)
-                        $('input:radio[name=oxym]').val([parseInt(data.oxygen_rating)])
-                        $('#oxyf').text(data.oxygen_rating)
-                        $('#vent').text(data.ventilator_availability)
-                        $('#oxya').text(data.oxygen_availability)
-                        $('#icu').text(data.icu_availability)
-                        $('input:radio[name=financialm]').val([parseInt(data.financial_rating)])
-                        $('#financialf').text(data.financial_rating)
-                        $('#beds').text(data.beds_available)
-                        $('#cost').text(data.avg_cost)
-                        $('#id').val(data.id)
-                    }
-                })
-            }
-
-            function getCookie(name) {
-                let cookieValue = null;
-                if (document.cookie && document.cookie !== '') {
-                    const cookies = document.cookie.split(';');
-                    for (let i = 0; i < cookies.length; i++) {
-                        const cookie = cookies[i].trim();
-                        // Does this cookie string begin with the name we want?
-                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                            break;
-                        }
-                    }
-                }
-                return cookieValue;
-            }
-
-            const csrftoken = getCookie('csrftoken');
-            var coor = map.getCenter()
-            var LatLon = {csrfmiddlewaretoken: csrftoken, lat: coor.lat(), lng: coor.lng()}
-            console.log(LatLon)
-
-
+            })
         }
 
-        )
+
+        function filldata(id) {
+            $.ajax({
+                url: `/more_info/${id}/`,
+                success: function (data) {
+                    $('#toper').show()
+                    console.log(data)
+                    $('#header').text(data.name)
+                    $('#phone').html(data.Phone)
+                    $('#phone').attr("href", 'tel:' + data.Phone)
+                    $('input:radio[name=ratingm]').val([parseInt(data.care_rating)])
+                    $('#ratingf').text(data.care_rating)
+                    $('input:radio[name=covidm]').val([parseInt(data.covid_rating)])
+                    $('#covidf').text(data.covid_rating)
+                    $('input:radio[name=oxym]').val([parseInt(data.oxygen_rating)])
+                    $('#oxyf').text(data.oxygen_rating)
+                    $('#vent').text(data.ventilator_availability)
+                    $('#oxya').text(data.oxygen_availability)
+                    $('#icu').text(data.icu_availability)
+                    $('input:radio[name=financialm]').val([parseInt(data.financial_rating)])
+                    $('#financialf').text(data.financial_rating)
+                    $('#beds').text(data.beds_available)
+                    $('#cost').text(data.avg_cost)
+                    $('#id').val(data.id)
+                }
+            })
+        }
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+
         $('#closemarker').on('click', function () {
             $('#toper').hide()
         })

@@ -44,9 +44,9 @@ def more_info(request, key_id):
     ob = Markers.objects.get(id=key_id)
     return JsonResponse(model_to_dict(ob))
 
+
 def add_review(request):
     if request.method == 'POST':
-
         print(request.POST)
         id = int(request.POST['id'])
         mob = Markers.objects.get(id=id)
@@ -61,7 +61,7 @@ def add_review(request):
         ob.oxygen_availability = int(request.POST['oxya'])
         ob.icu_availability = int(request.POST['icu'])
         ob.comment = request.POST['comment']
-        d = ob.datef-mob.datef
+        d = ob.datef - mob.datef
         ob.day = d.days
         ob.save()
         update_marker(id)
@@ -89,54 +89,55 @@ def update_marker(id):
     deno = []
     denv = []
     deni = []
-    denoa =[]
+    denoa = []
     for x in rev:
         day.append(x.day)
     dmax = max(day)
     for x in rev:
-        d=0.99**(dmax-x.day)
+        d = 0.99 ** (dmax - x.day)
         den.append(d)
-        fin.append(d*x.financial_rating)
-        avg.append(d*x.avg_cost)
-        covid.append(d*x.covid_rating)
-        bed.append(d*x.beds_available)
-        care.append(d*x.care_rating)
-        if x.oxygen_rating!=0:
-            oxy.append(d*(x.oxygen_rating))
+        fin.append(d * x.financial_rating)
+        avg.append(d * x.avg_cost)
+        covid.append(d * x.covid_rating)
+        bed.append(d * x.beds_available)
+        care.append(d * x.care_rating)
+        if x.oxygen_rating != 0:
+            oxy.append(d * (x.oxygen_rating))
             deno.append(d)
-        if x.ventilator_availability!=0:
-            vent.append(d*(x.ventilator_availability-1))
+        if x.ventilator_availability != 0:
+            vent.append(d * (x.ventilator_availability - 1))
             denv.append(d)
-        if x.oxygen_availability!=0:
-            oxya.append(d*(x.oxygen_availability-1))
+        if x.oxygen_availability != 0:
+            oxya.append(d * (x.oxygen_availability - 1))
             denoa.append(d)
-        if x.icu_availability!=0:
-            icu.append(d*(x.icu_availability-1))
+        if x.icu_availability != 0:
+            icu.append(d * (x.icu_availability - 1))
             deni.append(d)
     dens = sum(den)
-    ob.financial_rating = round(sum(fin)/dens,1)
-    ob.avg_cost = sum(avg)/dens
-    ob.covid_rating =round(sum(covid)/dens,1)
+    ob.financial_rating = round(sum(fin) / dens, 1)
+    ob.avg_cost = sum(avg) / dens
+    ob.covid_rating = round(sum(covid) / dens, 1)
     ob.beds_available = sum(bed)
-    ob.care_rating =round(sum(care)/dens,1)
-    ob.oxygen_rating = round(sum(oxy)/sum(deno),1)
-    ob.ventilator_availability = round(sum(vent)*100/sum(denv),2)
-    ob.oxygen_availability = round(sum(oxya)*100/sum(denoa),2)
-    ob.icu_availability = round(sum(icu)*100/sum(deni),2)
+    ob.care_rating = round(sum(care) / dens, 1)
+    ob.oxygen_rating = round(sum(oxy) / sum(deno), 1)
+    ob.ventilator_availability = round(sum(vent) * 100 / sum(denv), 2)
+    ob.oxygen_availability = round(sum(oxya) * 100 / sum(denoa), 2)
+    ob.icu_availability = round(sum(icu) * 100 / sum(deni), 2)
     ob.save()
 
+
 def filter_marker(request):
-    if request.method=="GET":
-        fin = int(request.GET.get('financialfr',0))
-        costmin = request.GET.get('price-min',0)
-        costmax = request.GET.get('price-max',1000000)
-        covid = int(request.GET.get('covidfr',0))
-        beds = request.GET.get('bedsfr',0)
-        care = int(request.GET.get('carefr',0))
-        oxy = int(request.GET.get('oxyfr',0))
-        vent = request.GET.get('ventfr',0)
-        oxya = request.GET.get('oxyafr',0)
-        icu = request.GET.get('icufr',0)
+    if request.method == "GET":
+        fin = int(request.GET.get('financialfr', 0))
+        costmin = request.GET.get('price-min', 0)
+        costmax = request.GET.get('price-max', 1000000)
+        covid = int(request.GET.get('covidfr', 0))
+        beds = request.GET.get('bedsfr', 0)
+        care = int(request.GET.get('carefr', 0))
+        oxy = int(request.GET.get('oxyfr', 0))
+        vent = request.GET.get('ventfr', 0)
+        oxya = request.GET.get('oxyafr', 0)
+        icu = request.GET.get('icufr', 0)
         markers = Markers.objects.filter(financial_rating__gte=fin,
                                          avg_cost__gte=costmin,
                                          avg_cost__lte=costmax,
@@ -149,33 +150,21 @@ def filter_marker(request):
                                          icu_availability__gte=icu
                                          )
 
-        return render(request, template_name='home/index.html',context={'markers':markers})
+        return render(request, template_name='home/index.html', context={'markers': markers})
 
     return render(request, template_name='home/index.html')
 
-def marker_nearby(request):
-    if request.method=="POST":
-        print(request)
-        lat=float(request.POST['lat'])
-        lng=float(request.POST['lng'])
-        marker=[]
-        markers = Markers.objects.all()
-        for mkr in markers:
-            if mkr.lat>lat-1 and mkr.lat<lat+1 and mkr.lng>lng-1 and mkr.lng<+1:
-                marker.append(mkr)
-        return JsonResponse(marker,safe=False)
 
-    return render(request, template_name='home/index.html')
 def marker_nearby(request):
-    if request.method=="POST":
+    if request.method == "POST":
         print(request)
-        lat=float(request.POST['lat'])
-        lng=float(request.POST['lng'])
-        marker=[]
+        lat = float(request.POST['lat'])
+        lng = float(request.POST['lng'])
+        marker = []
         markers = Markers.objects.all()
         for mkr in markers:
-            if mkr.lat>lat-1 and mkr.lat<lat+1 and mkr.lng>lng-1 and mkr.lng<+1:
+            if mkr.lat > lat - 1 and mkr.lat < lat + 1 and mkr.lng > lng - 1 and mkr.lng < +1:
                 marker.append(mkr)
-        return JsonResponse(marker,safe=False)
+        return JsonResponse(marker, safe=False)
 
     return render(request, template_name='home/index.html')

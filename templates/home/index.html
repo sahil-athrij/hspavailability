@@ -584,17 +584,17 @@
                 data: LatLon,
                 success: function (data) {
                     var i;
-                    ob = JSON.parse(data);
+                    ob = data;
                     console.log(ob);
                     for (i = 0; i < ob.length; i++) {
-                        console.log(ob[i].fields.name)
+                        console.log(ob[i].name)
                         addMarker({
                             'position': {
-                                'lat': ob[i].fields.lat,
-                                'lng': ob[i].fields.lng,
+                                'lat': ob[i].lat,
+                                'lng': ob[i].lng,
                             },
-                            'size': ob[i].fields.size,
-                            'id': ob[i].fields.id
+                            'size': ob[i].size,
+                            'id': ob[i].id
                         })
                     }
                 }

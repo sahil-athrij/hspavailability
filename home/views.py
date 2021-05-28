@@ -166,7 +166,9 @@ def marker_nearby(request):
                                         lat__lte=lat+0.2,
                                         lng__gte=lng-0.2,
                                         lng__lte=lng+0.2)
-        marker_json = serializers.serialize('json',marker)
+        marker_json = []
+        for i in marker:
+            marker_json.append(model_to_dict(i))
         return JsonResponse(marker_json, safe=False)
 
     return render(request, template_name='home/index.html')

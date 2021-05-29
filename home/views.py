@@ -1,6 +1,6 @@
 from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import render
-from .models import Markers, Reviews, Suspicious
+from .models import Markers, Reviews, SuspiciousMarking
 import datetime
 from django.forms.models import model_to_dict
 from django.core import serializers
@@ -71,7 +71,7 @@ def add_review(request):
         ob.day = d.days
         ob.save()
         if 'review_pic' in request.Files:
-
+            pass
         update_marker(id)
 
     return HttpResponseRedirect('/')
@@ -168,11 +168,11 @@ def marker_nearby(request):
         print(request)
         lat = float(request.POST['lat'])
         lng = float(request.POST['lng'])
-        print(lat,lng)
-        marker = Markers.objects.filter(lat__gte=lat-1,
-                                        lat__lte=lat+1,
-                                        lng__gte=lng-1,
-                                        lng__lte=lng+1)
+        print(lat, lng)
+        marker = Markers.objects.filter(lat__gte=lat - 1,
+                                        lat__lte=lat + 1,
+                                        lng__gte=lng - 1,
+                                        lng__lte=lng + 1)
         marker_json = []
         for i in marker:
             marker_json.append(model_to_dict(i))
@@ -180,15 +180,16 @@ def marker_nearby(request):
 
     return render(request, template_name='home/index.html')
 
+
 def suspicious(request):
     if request.method == "POST":
         print(request.POST)
         id = int(request.POST['id'])
         mob = Markers.objects.get(id=id)
         user = request.user
-        ob = Suspicious.objects.create(marker_id=id, created_by = user, comment = request.POST['comments'])
+        ob = SuspiciousMarking.objects.create(marker_id=id, created_by=user, comment=request.POST['comments'])
         ob.save()
-        mob.Suspicious+=1
+        mob.Suspicious += 1
         mob.save()
 
     return HttpResponseRedirect('/')

@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.db import models
 import datetime
+
 # Create your models here.
 
 rating = [
@@ -21,7 +22,7 @@ sizes = [
 class Markers(models.Model):
     name = models.CharField(max_length=500)
     Phone = models.CharField(max_length=20)
-    size = models.IntegerField(choices=sizes ,default=0)
+    size = models.IntegerField(choices=sizes, default=0)
     financial_rating = models.FloatField(default=1)
     avg_cost = models.IntegerField(default=0)
     covid_rating = models.FloatField(default=1)
@@ -34,23 +35,22 @@ class Markers(models.Model):
     lat = models.FloatField(default=0)
     lng = models.FloatField(default=0)
     datef = models.DateField(default=datetime.date.today)
-    place_id = models.CharField(max_length=60,default="")
+    place_id = models.CharField(max_length=60, default="")
     added_by = models.ForeignKey(User, default=1, on_delete=models.CASCADE)
     Suspicious = models.IntegerField(default=0)
-    hospital_pic = models.ImageField(upload_to="hospital_pic",blank=True)
-
+    hospital_pic = models.ImageField(upload_to="hospital_pic", blank=True)
 
     def __str__(self):
         return self.name
 
 
 class Reviews(models.Model):
-    marker = models.ForeignKey(Markers,related_name="comment",on_delete=models.CASCADE)
-    financial_rating = models.IntegerField(choices=rating,default=1)
+    marker = models.ForeignKey(Markers, related_name="comment", on_delete=models.CASCADE)
+    financial_rating = models.IntegerField(choices=rating, default=1)
     avg_cost = models.IntegerField(default=0)
-    covid_rating = models.IntegerField(choices=rating,default=1)
-    care_rating = models.IntegerField(choices=rating,default=1)
-    oxygen_rating = models.IntegerField(choices=rating,default=1)
+    covid_rating = models.IntegerField(choices=rating, default=1)
+    care_rating = models.IntegerField(choices=rating, default=1)
+    oxygen_rating = models.IntegerField(choices=rating, default=1)
     beds_available = models.IntegerField(default=0)
     ventilator_availability = models.IntegerField(default=0)
     oxygen_availability = models.IntegerField(default=0)
@@ -60,12 +60,14 @@ class Reviews(models.Model):
     day = models.IntegerField(default=0)
     written_by = models.ForeignKey(User, default=1, on_delete=models.CASCADE)
 
-class Suspicious(models.Model):
-    marker = models.ForeignKey(Markers,on_delete=models.CASCADE)
+
+class SuspiciousMarking(models.Model):
+    marker = models.ForeignKey(Markers, on_delete=models.CASCADE)
     comment = models.TextField()
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
     datef = models.DateField(default=datetime.date.today)
 
+
 class Review_Images(models.Model):
-    image = models.ImageField(upload_to="/review_pic",blank=True)
-    review = models.ForeignKey(Reviews,on_delete=models.CASCADE)
+    image = models.ImageField(upload_to="review_pic", blank=True)
+    review = models.ForeignKey(Reviews, on_delete=models.CASCADE)

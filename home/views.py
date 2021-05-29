@@ -1,6 +1,6 @@
 from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import render
-from .models import Markers, Reviews
+from .models import Markers, Reviews, Suspicious
 import datetime
 from django.forms.models import model_to_dict
 from django.core import serializers
@@ -35,6 +35,10 @@ def modify(request):
         ob.lat = float(request.POST['lat'])
         ob.lng = float(request.POST['lng'])
         ob.datef = request.POST['datef']
+        ob.added_by = request.user
+        if 'hospital_pic' in request.FILES:
+            ob.hospital_pic = request.FILES['hospital_pic']
+
         ob.save()
 
     markers = Markers.objects.all()
@@ -51,7 +55,8 @@ def add_review(request):
         print(request.POST)
         id = int(request.POST['id'])
         mob = Markers.objects.get(id=id)
-        ob = Reviews.objects.create(marker_id=id)
+        user = request.user
+        ob = Reviews.objects.create(marker_id=id, written_by=user)
         ob.financial_rating = int(request.POST['financial'])
         ob.avg_cost = int(request.POST['cost'])
         ob.covid_rating = int(request.POST['covid'])
@@ -65,6 +70,8 @@ def add_review(request):
         d = ob.datef - mob.datef
         ob.day = d.days
         ob.save()
+        if 'review_pic' in request.Files:
+
         update_marker(id)
 
     return HttpResponseRedirect('/')
@@ -162,13 +169,26 @@ def marker_nearby(request):
         lat = float(request.POST['lat'])
         lng = float(request.POST['lng'])
         print(lat,lng)
-        marker = Markers.objects.filter(lat__gte=lat-0.2,
-                                        lat__lte=lat+0.2,
-                                        lng__gte=lng-0.2,
-                                        lng__lte=lng+0.2)
+        marker = Markers.objects.filter(lat__gte=lat-1,
+                                        lat__lte=lat+1,
+                                        lng__gte=lng-1,
+                                        lng__lte=lng+1)
         marker_json = []
         for i in marker:
             marker_json.append(model_to_dict(i))
         return JsonResponse(marker_json, safe=False)
 
     return render(request, template_name='home/index.html')
+
+def suspicious(request):
+    if request.method == "POST":
+        print(request.POST)
+        id = int(request.POST['id'])
+        mob = Markers.objects.get(id=id)
+        user = request.user
+        ob = Suspicious.objects.create(marker_id=id, created_by = user, comment = request.POST['comments'])
+        ob.save()
+        mob.Suspicious+=1
+        mob.save()
+
+    return HttpResponseRedirect('/')

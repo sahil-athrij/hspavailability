@@ -28,7 +28,6 @@
                     <div class="col-10">
                         <div class="container">
                             <div id="search-box"></div>
-                            </div>
                         </div>
                         <!--                        <input type="search" class=" form-control wow" placeholder="Search" name="search"-->
                         <!--                               aria-label="Search" id="searchTextField">-->
@@ -321,6 +320,9 @@
                     <div>
                         <a id="rev" class="btn btn-primary">Share Your Experiance</a>
                     </div>
+                    <div>
+                        <a id="sus" class="btn btn-danger btn-sm">Mark as Suspicious</a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -480,17 +482,35 @@
                             <input id="id" name="id" hidden value="-1">
                             <div class="row mt-5">
                                 <div class="col">
-
                                     <input type="submit" class="btn btn-success">
                                 </div>
                             </div>
-
-
                         </form>
                     </div>
                 </div>
             </div>
         </div>
+         <div class="mt-5" id="suspicious">
+                    <div class="col-12 col-sm-3 col-lg-3"></div>
+                    <div class=" col-12 col-sm-6 col-lg-6 offset-lg-3">
+                        <div class="mt-5 col-12 p-2 text-center neumorphic_form">
+                            <div class="container">
+                                <button class="close-icon close" id="closesus"></button>
+                                <p align="center">Please tell us why you think this marker is suspicious. If our staff finds your reason legitimate, we shall delete this marker</p>
+                                <form method="post" action="suspicious/">
+                                    {% csrf_token %}
+                                    <div class="row">
+                                        <textarea name="comments"></textarea>
+                                    </div>
+                                    <input name="id" id="ids" hidden value="-1">
+                                    <div class="mt-5 col-5">
+                                        <input type="submit" class="btn btn-success">
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+         </div>
     </div>
 {% endblock %}
 
@@ -501,6 +521,7 @@
         $('#toper').hide()
         $('#addreview').hide()
         $('#filters').hide()
+        $('#suspicious').hide()
 
         var icons = [
 
@@ -518,7 +539,7 @@
         var map; //complex object of type OpenLayers.Map
 
         var element = document.getElementById("map");
-        var cen
+        var cen;
 
         map = new google.maps.Map(element, {
             zoom: 12,
@@ -532,7 +553,7 @@
                 initialLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
                 map.setCenter(initialLocation)
                 console.log(initialLocation.lat())
-                cen = initialLocation
+                cen = initialLocation;
                 getMarkers()
                 latleft = Math.round((((initialLocation.lat()) + Number.EPSILON) * 10) - 1) / 100
                 latright = Math.round((((initialLocation.lat()) + Number.EPSILON) * 10) + 1) / 100
@@ -560,18 +581,38 @@
             name: "OpenStreetMap",
             maxZoom: 18
         }));
-
+        google.maps.event.addListener(map,'dragend',function(){
+            var coor = map.getCenter();
+            console.log(cen.lat(),cen.lng());
+            console.log(coor.lat(),coor.lng());
+            if(coor.lat()>(cen.lat()+1) || coor.lat()<(cen.lat()-1) || coor.lng()>(cen.lng()+1) || coor.lng()<(cen.lng()-1)){
+                console.log(coor);
+                deleteMarkers();
+                getMarkers();
+                cen = coor;
+            }
+        });
+        var markers = [];
         function addMarker(feature) {
-            var marker = new google.maps.Marker({
+            const marker = new google.maps.Marker({
                 position: feature.position,
                 icon: icons[feature.size],
                 map: map
             });
+            markers.push(marker);
             marker.addListener('click', function () {
                 filldata(feature.id)
             });
         }
-
+        function setMapOnAll(map){
+            for(i=0;i<markers.length;i++){
+                markers[i].setMap(map);
+            }
+        }
+        function deleteMarkers(){
+            setMapOnAll(null);
+            markers=[];
+        }
         function getMarkers() {
             const csrftoken = getCookie('csrftoken');
             var coor = map.getCenter()
@@ -587,7 +628,7 @@
                     ob = data;
                     console.log(ob);
                     for (i = 0; i < ob.length; i++) {
-                        console.log(ob[i].name)
+                        console.log(i,ob[i].name)
                         addMarker({
                             'position': {
                                 'lat': ob[i].lat,
@@ -624,6 +665,7 @@
                         $('#beds').text(data.beds_available)
                         $('#cost').text(data.avg_cost)
                         $('#id').val(data.id)
+                        $('#ids').val(data.id)
                     }
                 })
             }
@@ -654,6 +696,7 @@
             dedupe: 1,
             getItemValue: function (item) {
                 map.setCenter({lat: item.center[1], lng: item.center[0]})
+                getMarkers()
                 return item.place_name
             }
         });
@@ -675,8 +718,15 @@
         $('#closefilter').on('click', function () {
             $('#filters').hide()
         })
+        $('#closesus').on('click', function () {
+            $('#suspicious').hide()
+        })
         $('#filter').on('click', function () {
             $('#filters').show()
+        })
+        $('#sus').on('click', function (id) {
+            $('#toper').hide(id)
+            $('#suspicious').show(id)
         })
         $('#rev').on('click', function (id) {
             $('#toper').hide(id)

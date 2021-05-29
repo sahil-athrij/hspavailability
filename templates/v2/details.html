@@ -1,13 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
-
 {% block css %}
-    {#        <link href="https://cdn.jsdelivr.net/gh/alphardex/aqua.css/dist/aqua.min.css" rel="stylesheet"/>#}
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
-
-    <!-- Latest compiled and minified JavaScript -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
     <link href="{% static 'css/main.css' %}" rel="stylesheet"/>
     <link href="{% static 'css/helper.css' %}" rel="stylesheet"/>
     <link href="{% static 'css/details.css' %}" rel="stylesheet"/>
@@ -34,13 +27,19 @@
                             </div>
                         </div>
                         <ol class="widget-49-meeting-points">
-                            <li class="widget-49-meeting-item"><span>Financial Rating : {{ hospital.financial_rating }}</span></li>
+                            <li class="widget-49-meeting-item">
+                                <span>Financial Rating : {{ hospital.financial_rating }}</span></li>
                             <li class="widget-49-meeting-item"><span>Average Cost : {{ hospital.avg_cost }}</span></li>
-                            <li class="widget-49-meeting-item"><span>Covid Rating : {{ hospital.covid_rating }}</span></li>
-                            <li class="widget-49-meeting-item"><span>Oxygen Rating : {{ hospital.oxygen_rating }}</span></li>
-                            <li class="widget-49-meeting-item"><span>Oxygen Availability : {{ hospital.oxygen_availability }}</span></li>
-                            <li class="widget-49-meeting-item"><span>Ventilator Availability : {{ hospital.ventilator_availability }}</span></li>
-                            <li class="widget-49-meeting-item"><span>ICU Availability : {{ hospital.icu_availability }}</span></li>
+                            <li class="widget-49-meeting-item"><span>Covid Rating : {{ hospital.covid_rating }}</span>
+                            </li>
+                            <li class="widget-49-meeting-item"><span>Oxygen Rating : {{ hospital.oxygen_rating }}</span>
+                            </li>
+                            <li class="widget-49-meeting-item">
+                                <span>Oxygen Availability : {{ hospital.oxygen_availability }}</span></li>
+                            <li class="widget-49-meeting-item">
+                                <span>Ventilator Availability : {{ hospital.ventilator_availability }}</span></li>
+                            <li class="widget-49-meeting-item">
+                                <span>ICU Availability : {{ hospital.icu_availability }}</span></li>
                         </ol>
                     </div>
                 </div>

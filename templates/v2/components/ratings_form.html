@@ -1,15 +1,15 @@
 <div class="row mt-4 mb-2">
     {% include 'v2/components/star_ratings.html' with name="oxyfr"  label="Oxygen Care" content="Quality Rating for Oxyen Care" %}
-    {% include 'v2/components/star_ratings.html' with name="financialfr" extra_class="financial" label="Affordability" content="Affordability of the hospital .higher is expensive" %}
+    {% include 'v2/components/range.html' with name="oxyafr"  label="Oxygen Availability" content="Chance of Getting a Oxygen Supplied Beds (%) " %}
 
 </div>
 <div class="row">
     {% include 'v2/components/range.html' with name="ventfr"  label="Ventilator Availability" content="Chance of Getting a Ventilator Beds (%) " %}
-    {% include 'v2/components/range.html' with name="oxyafr"  label="Oxygen Availability" content="Chance of Getting a Oxygen Supplied Beds (%) " %}
+    {% include 'v2/components/range.html' with name="icufr"  label="ICU Availability" content="Chance of Getting into ICU if needed (%) " %}
 </div>
 <div class="row ">
-    {% include 'v2/components/double_input.html' with name="costsf"  label="Average Cost" content="Average Daily Cost of Stay (including Beds, Doctor Fees , Test ,Excluding Medicines" %}
-    {% include 'v2/components/range.html' with name="icufr"  label="ICU Availability" content="Chance of Getting into ICU if needed (%) " %}
+    {% include 'v2/components/star_ratings.html' with name="financialfr" extra_class="financial" label="Affordability" content="Affordability of the hospital .higher is expensive" %}
+    {% include 'v2/components/double_input.html' with name="price"  label="Average Cost" content="Average Daily Cost of Stay (including Beds, Doctor Fees , Test ,Excluding Medicines" %}
 
 </div>
 <div class="row ">

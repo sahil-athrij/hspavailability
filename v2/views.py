@@ -24,6 +24,8 @@ def index(request):
     context = {}
     ipaddress = get_client_ip(request)
     context['ip'] = ipaddress
+    context['searchbar'] = True
+
     return render(request, template_name='v2/index.html', context=context)
 
 
@@ -70,6 +72,7 @@ def signup(request):
             else:
                 context1['pswderr'] = 'Password Does not match'
     context1['sign_text'] = "Register"
+
     return render(request, template_name="v2/signup.html", context=context1)
 
 
@@ -127,6 +130,8 @@ def search(request):
             name__icontains=query
         )
         print(context)
+        ipaddress = get_client_ip(request)
+        context['ip'] = ipaddress
 
         return render(request, template_name='v2/search.html', context=context)
 

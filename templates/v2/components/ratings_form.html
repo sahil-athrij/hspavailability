@@ -1,0 +1,18 @@
+<div class="row mt-4 mb-2">
+    {% include 'v2/components/star_ratings.html' with name="oxyfr"  label="Oxygen Care" content="Quality Rating for Oxyen Care" %}
+    {% include 'v2/components/star_ratings.html' with name="financialfr" extra_class="financial" label="Affordability" content="Affordability of the hospital .higher is expensive" %}
+
+</div>
+<div class="row">
+    {% include 'v2/components/range.html' with name="ventfr"  label="Ventilator Availability" content="Chance of Getting a Ventilator Beds (%) " %}
+    {% include 'v2/components/range.html' with name="oxyafr"  label="Oxygen Availability" content="Chance of Getting a Oxygen Supplied Beds (%) " %}
+</div>
+<div class="row ">
+    {% include 'v2/components/double_input.html' with name="costsf"  label="Average Cost" content="Average Daily Cost of Stay (including Beds, Doctor Fees , Test ,Excluding Medicines" %}
+    {% include 'v2/components/range.html' with name="icufr"  label="ICU Availability" content="Chance of Getting into ICU if needed (%) " %}
+
+</div>
+<div class="row ">
+    {% include 'v2/components/star_ratings.html' with name="carefr"  label="Convenience" content="Convenience of Getting Care (higher is Better) the ease with dealing with Administrative" %}
+    {% include 'v2/components/star_ratings.html' with name="covidfr"  label="Covid Care" content="Quality of Covid Care (higher is better)" %}
+</div>

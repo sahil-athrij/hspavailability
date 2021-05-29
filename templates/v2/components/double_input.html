@@ -1,0 +1,23 @@
+<div class="col">
+    <label for="{{ name }}" class="">{{ label }}
+        <a data-toggle="popover"
+           href="javascript:void(0)"
+           data-bs-trigger="focus"
+           title="{{ label }}"
+           data-bs-content="{{ content }}">
+            <i class="fa fa-info-circle text-dark" aria-hidden="true"></i>
+        </a>
+    </label>
+    <div class="input-group" id="{{ name }}">
+        <input type="text" class="form-control input-left" value="0"
+               placeholder="Enter Minimum avg cost"
+               name="price-min">
+        <span class="input-group-text">to</span>
+        <input type="text" class="form-control input-right" value="100000"
+               placeholder="Enter Maximum avg cost"
+               name="price-max">
+    </div>
+</div>
+<script>
+
+</script>

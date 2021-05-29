@@ -108,17 +108,18 @@ def search(request):
             lng = 0
         if lat == 0 and lng == 0:
             data = get_loction_python(request)
+            print(data)
             try:
                 lat = float(data['latitude'])
                 lng = float(data['longitude'])
-            except:
-                pass
-
+            except Exception as e:
+                print(e)
+        print(lat,lng)
         context["search_results"] = Markers.objects.filter(
-            lat__gte=lat - 0.2,
-            lat__lte=lat + 0.2,
-            lng__gte=lng - 0.2,
-            lng__lte=lng + 0.2,
+            lat__gte=lat - 0.5,
+            lat__lte=lat + 0.5,
+            lng__gte=lng - 0.5,
+            lng__lte=lng + 0.5,
             financial_rating__gte=fin,
             avg_cost__gte=costmin,
             avg_cost__lte=costmax,

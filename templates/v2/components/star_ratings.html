@@ -1,13 +1,24 @@
 <div class="col my-2">
     <label for="financialfr" class="">{{ label }}
         {% if content %}
-        {% include 'v2/components/popover.html' %}
+            {% include 'v2/components/popover.html' %}
         {% endif %}
     </label>
     <div class="star-rating col">
+
         <div id="{{ name }}" class="form-check-inline">
             <div class="rate {{ extra_class }}">
-                <output class="ot mx-2" id="{{ name }}_output">{{ value }}</output>
+
+
+                {% if disabled != "disabled" %}
+                    <span>
+                    <i class="fa fa-times-circle move-up" onclick="$('input:radio[name={{ name }}]').val([0])"></i>
+                    </span>
+
+                {% else %}
+                    <output class="ot mx-2" id="{{ name }}_output">{{ value }}</output>
+                {% endif %}
+
                 {% for i in "54321" %}
                     <input type="radio" id="{{ name }}{{ i }}" value="{{ i }}" name="{{ name }}" {{ disabled }}
                             {% if value|add:"0" == i|add:"0" %}

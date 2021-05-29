@@ -112,3 +112,8 @@ body {
     box-shadow: 0 0 10px 2px rgba(0, 0, 0,  .1);
     border:none;
 }
+
+.move-up{
+    transform: translateY(-3px);
+    cursor: pointer;
+}

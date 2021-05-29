@@ -63,23 +63,24 @@ C406.1,207.121,398.689,233.688,384.866,256.818z"/>
 C316.1,212.683,289.784,240.2,256,240.2z"/>
 </g>
 </g>
-
 </svg>
 `)
+if (!lat || !lng) {
 
-if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(function (position) {
-        console.log(position);
-        latitude = position.coords.latitude
-        longiude = position.coords.longitude
-        $('#lat').val(latitude)
-        $('#lng').val(longiude)
-    }, function () {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function (position) {
+            console.log(position);
+            latitude = position.coords.latitude
+            longiude = position.coords.longitude
+            $('#lat').val(latitude)
+            $('#lng').val(longiude)
+        }, function () {
+            GetIp()
+        });
+
+    } else {
         GetIp()
-    });
-
-} else {
-    GetIp()
+    }
 }
 
 

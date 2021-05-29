@@ -1,25 +1,21 @@
 <div class="col my-2">
     <label for="{{ name }}" class="">{{ label }}
-        <a data-toggle="popover"
-           href="javascript:void(0)"
-           data-bs-trigger="focus"
-           title="{{ content }}"
-           data-bs-content="{{ content }}">
-            <i class="fa fa-info-circle text-dark" aria-hidden="true"></i>
-        </a></label>
+        {% include 'v2/components/popover.html' %}
+    </label>
     <br>
     <input id="{{ name }}" type="range" class="form-control-range" name="{{ name }}" value="{% firstof value "0" %}"
-           min="0" max="100" oninput="this.nextElementSibling.value = this.value">
+           min="0" max="100" oninput="this.nextElementSibling.value = this.value" {{ disabled }} >
     <output id="{{ name }}_output" for="{{ name }}">{% firstof value "0" %}</output>
 </div>
+{% if not disabled %}
+    <script>
+        if (url) {
+            let num = url.searchParams.get("{{name}}")
+            if (num) {
+                $('#{{name}}').val([parseInt(num)])
+                $('#{{name}}_output').val([parseInt(num)])
+            }
 
-<script>
-    if (url) {
-        let num = url.searchParams.get("{{name}}")
-        if (num) {
-            $('#{{name}}').val([parseInt(num)])
-            $('#{{name}}_output').val([parseInt(num)])
         }
-
-    }
-</script>
+    </script>
+{% endif %}

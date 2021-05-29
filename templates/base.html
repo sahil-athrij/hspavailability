@@ -21,18 +21,24 @@
           type="text/css">
     <link href="https://tiles.locationiq.com/v2/css/liq-styles-ctrl-gl.css?v=0.1.6" rel="stylesheet">
     <script src="https://tiles.locationiq.com/v2/js/liq-styles-ctrl-gl.js?v=0.1.6"></script>
+    {% if ip %}
+
+        <script>
+            let ip = "{{ ip }}"
+            let url_string = window.location.href
+            let url = new URL(url_string);
+        </script>
+    {% endif %}
     {% block css %}
     {% endblock %}
+
 </head>
 <body>
+
 {% block body %}
 {% endblock %}
 
-{% if ip %}
-    <script>
-        let ip = "{{ ip }}"
-    </script>
-{% endif %}
+
 {% block script %}
 {% endblock %}
 </body>

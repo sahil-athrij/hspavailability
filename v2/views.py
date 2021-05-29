@@ -3,6 +3,7 @@ import json
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 import requests
+from django.forms import model_to_dict
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.shortcuts import render
 from home.models import *
@@ -24,6 +25,8 @@ def index(request):
     context = {}
     ipaddress = get_client_ip(request)
     context['ip'] = ipaddress
+    context['searchbar'] = True
+
     return render(request, template_name='v2/index.html', context=context)
 
 
@@ -70,6 +73,7 @@ def signup(request):
             else:
                 context1['pswderr'] = 'Password Does not match'
     context1['sign_text'] = "Register"
+
     return render(request, template_name="v2/signup.html", context=context1)
 
 
@@ -96,43 +100,61 @@ def search(request):
         print(care)
         covid = int(request.GET.get('covidfr', 0))
         print(covid)
-        # beds = request.GET.get('bedsfr', 0)
-        # print(beds)
+        try:
+            lat = float(request.GET.get('lat', 0))
+            lng = float(request.GET.get('lng', 0))
+        except:
+            lat = 0
+            lng = 0
+        if lat == 0 and lng == 0:
+            data = get_loction_python(request)
+            try:
+                lat = float(data['latitude'])
+                lng = float(data['longitude'])
+            except:
+                pass
 
-        # context["search_results"] = Markers.objects.filter(financial_rating__gte=fin,
-        #                                                    avg_cost__gte=costmin,
-        #                                                    avg_cost__lte=costmax,
-        #                                                    covid_rating__gte=covid,
-        #                                                    beds_available__gte=beds,
-        #                                                    care_rating__gte=care,
-        #                                                    oxygen_rating__gte=oxy,
-        #                                                    ventilator_availability__gte=vent,
-        #                                                    oxygen_availability__gte=oxya,
-        #                                                    icu_availability__gte=icu,
-        #                                                    name__icontains=query
-        #                                                    )
-
-        context["search_results"] = Markers.objects.filter(financial_rating__gte=fin,
-                                                           avg_cost__gte=costmin,
-                                                           avg_cost__lte=costmax,
-                                                           covid_rating__gte=covid,
-                                                           care_rating__gte=care,
-                                                           oxygen_rating__gte=oxy,
-                                                           ventilator_availability__gte=vent,
-                                                           oxygen_availability__gte=oxya,
-                                                           icu_availability__gte=icu,
-                                                           name__icontains=query
-                                                           )
+        context["search_results"] = Markers.objects.filter(
+            lat__gte=lat - 0.2,
+            lat__lte=lat + 0.2,
+            lng__gte=lng - 0.2,
+            lng__lte=lng + 0.2,
+            financial_rating__gte=fin,
+            avg_cost__gte=costmin,
+            avg_cost__lte=costmax,
+            covid_rating__gte=covid,
+            care_rating__gte=care,
+            oxygen_rating__gte=oxy,
+            ventilator_availability__gte=vent,
+            oxygen_availability__gte=oxya,
+            icu_availability__gte=icu,
+            name__icontains=query
+        )
         print(context)
+        ipaddress = get_client_ip(request)
+        context['ip'] = ipaddress
 
         return render(request, template_name='v2/search.html', context=context)
 
     return render(request, template_name='v2/index.html')
 
 
-def get_location(request):
+def get_loction_python(request):
     ip = get_client_ip(request)
     ipsearchurl = f'https://ipapi.co/{ip}/json/'
     loc_data = requests.get(ipsearchurl, headers={
         'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36'})
-    return JsonResponse(json.loads(loc_data.content))
+    return json.loads(loc_data.content)
+
+
+def get_location(request):
+    loc_data = get_loction_python(request)
+    return JsonResponse(loc_data)
+
+
+def details(request, hospital_id):
+    context = {}
+    query = Markers.objects.get(id=hospital_id)
+    context['hospital'] = query
+    print(model_to_dict(query))
+    return render(request, template_name='v2/details.html', context=context)

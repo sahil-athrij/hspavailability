@@ -1,0 +1,17 @@
+<script>
+    $(document).ready(function () {
+        $('[data-toggle="popover"]').popover();
+    });
+
+    var url_string = window.location.href
+    var url = new URL(url_string);
+    var c = url.searchParams.get("query");
+
+</script>
+<div style='height:100vh;width:205px;position:fixed;z-index:100' class="sidebar bg-grey p-4">
+    <div style="width: 100%;height: 50px"></div>
+    {% include 'v2/components/ratings_form.html' %}
+    <div style="width: 100%;height: 50px"></div>
+    🇮🇳
+    <div style="width: 100%;height: 50px"></div>
+</div>

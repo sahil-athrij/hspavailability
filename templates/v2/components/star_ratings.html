@@ -1,20 +1,16 @@
 <div class="col my-2">
     <label for="financialfr" class="">{{ label }}
-        <a data-toggle="popover"
-           title="{{ label }}"
-           href="javascript:void(0)"
-           data-bs-trigger="focus"
-           data-bs-content="{{ content }}">
-            <i class="fa fa-info-circle text-dark" aria-hidden="true"></i>
-        </a>
-
+        {% if content %}
+        {% include 'v2/components/popover.html' %}
+        {% endif %}
     </label>
     <div class="star-rating col">
         <div id="{{ name }}" class="form-check-inline">
             <div class="rate {{ extra_class }}">
+                <output class="ot mx-2" id="{{ name }}_output">{{ value }}</output>
                 {% for i in "54321" %}
-                    <input type="radio" id="{{ name }}{{ i }}" value="{{ i }}" name="{{ name }}"
-                            {% if value == i %}
+                    <input type="radio" id="{{ name }}{{ i }}" value="{{ i }}" name="{{ name }}" {{ disabled }}
+                            {% if value|add:"0" == i|add:"0" %}
                            checked
                             {% endif %}>
                     <label for="{{ name }}{{ i }}"></label>
@@ -23,8 +19,10 @@
         </div>
     </div>
 </div>
-<script>
-    if (url) {
-        $('input:radio[name={{name}}]').val([parseInt(url.searchParams.get("{{name}}"))])
-    }
-</script>
+{% if not disabled %}
+    <script>
+        if (url) {
+            $('input:radio[name={{name}}]').val([parseInt(url.searchParams.get("{{name}}"))])
+        }
+    </script>
+{% endif %}

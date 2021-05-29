@@ -1,23 +1,31 @@
 <div class="col">
     <label for="{{ name }}" class="">{{ label }}
-        <a data-toggle="popover"
-           href="javascript:void(0)"
-           data-bs-trigger="focus"
-           title="{{ label }}"
-           data-bs-content="{{ content }}">
-            <i class="fa fa-info-circle text-dark" aria-hidden="true"></i>
-        </a>
+        {% include 'v2/components/popover.html' %}
     </label>
     <div class="input-group" id="{{ name }}">
-        <input type="text" class="form-control input-left" value="0"
+        <input type="text" class="form-control input-left neumorphic-input" value="0"
                placeholder="Enter Minimum avg cost"
-               name="price-min">
-        <span class="input-group-text">to</span>
-        <input type="text" class="form-control input-right" value="100000"
+               name="{{ name }}-min" id="{{ name }}-min"
+        >
+        <span class="input-group-text neumorphic-input bg-grey">to</span>
+        <input type="text" class="form-control input-right neumorphic-input" value="100000"
                placeholder="Enter Maximum avg cost"
-               name="price-max">
+               name="{{ name }}-max" id="{{ name }}-max">
     </div>
 </div>
-<script>
+{% if not disabled %}
+    <script>
+        if (url) {
 
-</script>
+            let num1 = url.searchParams.get("{{name}}-min")
+            let num2 = url.searchParams.get("{{name}}-max")
+            if (num1) {
+                $('#{{name}}-min').val(parseInt(num1))
+            }
+            if (num2) {
+                $('#{{name}}-max').val(parseInt(num2))
+            }
+
+        }
+    </script>
+{% endif %}

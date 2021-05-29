@@ -38,7 +38,6 @@ class Markers(models.Model):
     place_id = models.CharField(max_length=60, default="")
     added_by = models.ForeignKey(User, default=1, on_delete=models.CASCADE)
     Suspicious = models.IntegerField(default=0)
-    hospital_pic = models.ImageField(upload_to="hospital_pic", blank=True)
 
     def __str__(self):
         return self.name
@@ -68,6 +67,8 @@ class SuspiciousMarking(models.Model):
     datef = models.DateField(default=datetime.date.today)
 
 
-class Review_Images(models.Model):
-    image = models.ImageField(upload_to="review_pic", blank=True)
-    review = models.ForeignKey(Reviews, on_delete=models.CASCADE)
+class Images(models.Model):
+    image = models.ImageField(upload_to="pic", blank=True)
+    review = models.ForeignKey(Reviews,default=None, on_delete=models.CASCADE)
+    hospital = models.ForeignKey(Markers, on_delete=models.CASCADE)
+    useinmarker = models.BooleanField(default=False)

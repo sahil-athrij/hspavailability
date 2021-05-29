@@ -19,7 +19,7 @@
 {% block body %}
     {% include 'nav.html' %}
     <div class="d-flex">
-        {% include 'v2/sidebar.html' %}
+        {% include 'v2/components/sidebar.html' %}
         <div class="container my-5 py-5 ">
             <div class="text-center h3 p-3">Search Results</div>
             <div class="text-center ">
@@ -39,6 +39,4 @@
     </div>
 {% endblock %}
 {% block script %}
-    <script src="{% static 'js/location.js' %}"></script>
-
 {% endblock %}

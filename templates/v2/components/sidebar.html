@@ -1,0 +1,41 @@
+<div style='height:100vh;width:205px;position:fixed;z-index:100' class="sidebar bg-grey p-4">
+    <div style="width: 100%;height: 50px"></div>
+    <form action="/v2/search/" onsubmit="submitForm()">
+        <input name="lat" id="lat1" hidden>
+        <input name="lng" id="lng1" hidden>
+        <input id="qry" name="query" hidden>
+        {% include 'v2/components/ratings_form.html' %}
+        <div class="mb-3" id="bottomsearch">
+            <b>
+                <button type="submit" class="btn input-left input-right bg-dark btn-dark">Search
+                </button>
+            </b>
+        </div>
+    </form>
+
+    🇮🇳
+    <div style="width: 100%;height: 50px"></div>
+</div>
+<script>
+    $(document).ready(function () {
+        $('[data-toggle="popover"]').popover();
+    });
+
+
+</script>
+<script>
+    function submitForm() {
+        let lat = $('#lat').val()
+        let lng = $('#lng').val()
+        let query = $('#hspsearch').val()
+        if (lat) {
+            $('#lat1').val(parseFloat(lat))
+        }
+        if (lng) {
+            $('#lng1').val(parseFloat(lng))
+        }
+        if (query) {
+            $('#qry').val(query)
+        }
+    }
+</script>

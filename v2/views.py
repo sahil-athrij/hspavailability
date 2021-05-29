@@ -3,6 +3,7 @@ import json
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 import requests
+from django.forms import model_to_dict
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.shortcuts import render
 from home.models import *
@@ -149,3 +150,11 @@ def get_loction_python(request):
 def get_location(request):
     loc_data = get_loction_python(request)
     return JsonResponse(loc_data)
+
+
+def details(request, hospital_id):
+    context = {}
+    query = Markers.objects.get(id=hospital_id)
+    context['hospital'] = query
+    print(model_to_dict(query))
+    return render(request, template_name='v2/details.html', context=context)

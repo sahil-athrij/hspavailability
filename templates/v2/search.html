@@ -23,10 +23,12 @@
                     <div class="text-center h3 p-3">Search Results</div>
                     {% for marker in search_results %}
                         <div class="form-row mb-3 px-5">
-                            <div class="input-group">
-                                <p class="form-control input-left">Name</p>
-                                <p class="form-control input-left">{{ marker.name }}</p>
-                            </div>
+                            <a class="text-reset text-decoration-none" href="/v2/details/{{ marker.id }}">
+                                <div class="input-group">
+                                    <p class="form-control input-left">Name</p>
+                                    <p class="form-control input-left">{{ marker.name }}</p>
+                                </div>
+                            </a>
                         </div>
                     {% endfor %}
                 </div>

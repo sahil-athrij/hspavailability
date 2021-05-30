@@ -51,11 +51,6 @@ def modify(request):
     return render(request, template_name='home/forms.html', context={'markers': markers})
 
 
-def more_info(request, key_id):
-    ob = Markers.objects.get(id=key_id)
-    return JsonResponse(model_to_dict(ob))
-
-
 def add_review(request):
     if request.method == 'POST':
         print(request.POST)
@@ -169,23 +164,6 @@ def filter_marker(request):
     return render(request, template_name='home/index.html')
 
 
-def marker_nearby(request):
-    if request.method == "POST":
-        print(request)
-        lat = float(request.POST['lat'])
-        lng = float(request.POST['lng'])
-        print(lat, lng)
-        marker = Markers.objects.filter(lat__gte=lat - 1,
-                                        lat__lte=lat + 1,
-                                        lng__gte=lng - 1,
-                                        lng__lte=lng + 1)
-        marker_json = []
-        for i in marker:
-            marker_json.append(model_to_dict(i))
-        return JsonResponse(marker_json, safe=False)
-
-    return render(request, template_name='home/index.html')
-
 
 def suspicious(request):
     if request.method == "POST":
@@ -206,4 +184,4 @@ class MarkerApiViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
     serializer_class = getMarkerSerializer
     http_method_names = ["get", 'options']
     filter_backends = [django_filters.rest_framework.DjangoFilterBackend]
-    filterset_fields = '__all__'
+    filterset_fields = {'lat':['gte','lte'],'lng':['gte','lte']}

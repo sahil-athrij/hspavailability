@@ -622,10 +622,7 @@
             var LatLon = {csrfmiddlewaretoken: csrftoken, lat: coor.lat(), lng: coor.lng()}
             console.log(LatLon)
             $.ajax({
-                type: 'POST',
-                url: `/markers/`,
-                dataType:'json',
-                data: LatLon,
+                url: `/marker/?lat__gte=${lat-1}&lat__lte=${lat+1}&lng__gte=${lng-1}&lng__lte=${lng+1}',
                 success: function (data) {
                     var i;
                     ob = data;
@@ -647,7 +644,7 @@
 
             function filldata(id) {
                 $.ajax({
-                    url: `/more_info/${id}/`,
+                    url: `/marker/${id}/`,
                     success: function (data) {
                         $('#toper').show()
                         console.log(data)
@@ -669,6 +666,7 @@
                         $('#cost').text(data.avg_cost)
                         $('#id').val(data.id)
                         $('#ids').val(data.id)
+                        $('#imgs').val(data.images)
                     }
                 })
             }

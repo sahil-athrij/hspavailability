@@ -27,6 +27,10 @@
         <script>
             let ip = "{{ ip }}"
         </script>
+    {% else %}
+        <script>
+            let ip = "0.0.0.0"
+        </script>
     {% endif %}
     <script src="{% static 'js/main.js' %}"></script>
     {% block css %}

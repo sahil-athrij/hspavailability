@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html >
 <html lang="en">
 <head>
@@ -25,10 +26,9 @@
 
         <script>
             let ip = "{{ ip }}"
-            let url_string = window.location.href
-            let url = new URL(url_string);
         </script>
     {% endif %}
+    <script src="{% static 'js/main.js' %}"></script>
     {% block css %}
     {% endblock %}
 

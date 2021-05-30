@@ -1,5 +1,8 @@
+import django_filters
 from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import render
+from rest_framework import viewsets, generics
+
 from .models import Markers, Reviews, SuspiciousMarking, Images
 import datetime
 from django.forms.models import model_to_dict
@@ -40,7 +43,7 @@ def modify(request):
         ob.datef = request.POST['datef']
         ob.added_by = request.user
         if 'hospital_pic' in request.FILES:
-            im = Images.get_or_create(image = request.FILES['hospital_pic'], hospital = 'id')
+            im = Images.get_or_create(image=request.FILES['hospital_pic'], hospital='id')
         im.save()
         ob.save()
 
@@ -197,7 +200,10 @@ def suspicious(request):
 
     return HttpResponseRedirect('/')
 
-class getMarker(ListAPIView):
-    queryset = Markers.objects.all()[:10]
+
+class MarkerApiViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
+    queryset = Markers.objects.all()
     serializer_class = getMarkerSerializer
-    http_method_names = ["get"]
+    http_method_names = ["get", 'options']
+    filter_backends = [django_filters.rest_framework.DjangoFilterBackend]
+    filterset_fields = '__all__'

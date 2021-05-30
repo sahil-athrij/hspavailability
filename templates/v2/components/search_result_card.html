@@ -1,29 +1,32 @@
 {% load static %}
 
+
 <div class="card card-left neumorphic_input card-margin bg-grey">
-
-
-        <img src="{% static 'images/hospital.svg' %}"
-             class="card-img-top  p-5"/>
+    <img src="{% static 'images/hospital.svg' %}"
+         class="card-img-top  p-5"/>
     <div class="card-body card-body-left widget-49 bg-white">
-        <h5 class="card-title card-title-left">{{ marker.name }}</h5>
+        <h5 class="card-title card-title-left" id="{{ id }}title">{{ marker.name }}</h5>
         <div class="widget-49-meeting-points  row">
-            {% include 'v2/components/star_ratings.html' with name=marker.id|add:"oxy"   label="Oxygen Care" content="Quality Rating for Oxyen Care" disabled="disabled" value=marker.oxygen_rating %}
-            {% include 'v2/components/star_ratings.html' with name=marker.id|add:"aff"   extra_class="financial" label="Affordability" content="Affordability of the hospital .higher is expensive" disabled="disabled" value=marker.financial_rating %}
+            {% include 'v2/components/star_ratings.html' with name=id|add:"oxy"   label="Oxygen Care" content="Quality Rating for Oxyen Care" disabled="disabled" value=marker.oxygen_rating %}
+            {% include 'v2/components/star_ratings.html' with name=id|add:"aff"   extra_class="financial" label="Affordability" content="Affordability of the hospital .higher is expensive" disabled="disabled" value=marker.financial_rating %}
         </div>
         <div class="widget-49-meeting-points  row">
-            {% include 'v2/components/star_ratings.html' with name=marker.id|add:"con"  label="Convenience" content="Convenience of Getting Care (higher is Better) the ease with dealing with Administrative" disabled="disabled" value=marker.care_rating %}
-            {% include 'v2/components/star_ratings.html' with name=marker.id|add:"cov"   label="Covid Care" content="Quality of Covid Care (higher is better)" disabled="disabled" value=marker.covid_rating %}
-            {#            {% include 'v2/components/star_ratings.html' with name=marker.id  disabled="disabled" label="Oxygen Care" content="Quality Rating for Oxyen Care" value=marker.oxygen_rating %}#}
+            {% include 'v2/components/star_ratings.html' with name=id|add:"con"  label="Convenience" content="Convenience of Getting Care (higher is Better) the ease with dealing with Administrative" disabled="disabled" value=marker.care_rating %}
+            {% include 'v2/components/star_ratings.html' with name=id|add:"cov"   label="Covid Care" content="Quality of Covid Care (higher is better)" disabled="disabled" value=marker.covid_rating %}
         </div>
         <div class="widget-49-meeting-points mt-2 row">
-            <div class="col">Average Cost : <span id="{{ marker.id|add:"cost" }}">{{ marker.avg_cost }}</span> Rs</div>
-            <div class="col">Oxygen Availability : <span id="{{ marker.id|add:"oxya" }}">{{ marker.oxygen_availability }}</span> %</div>
+            <div class="col">Average Cost : <span id="{{ id|add:"cost" }}">{{ marker.avg_cost }}</span> Rs</div>
+            <div class="col">Oxygen Availability : <span
+                    id="{{ id|add:"oxya" }}">{{ marker.oxygen_availability }}</span> %
+            </div>
         </div>
         <div class="widget-49-meeting-points my-2 row">
-            <div class="col">Ventilator Availability : <span id="{{ marker.id|add:"venta" }}">{{ marker.ventilator_availability }}</span> %</div>
-            <div class="col">ICU Availability : <span id="{{ marker.id|add:"icu" }}"> {{ marker.icu_availability }}</span> %</div>
+            <div class="col">Ventilator Availability : <span
+                    id="{{ id|add:"venta" }}">{{ marker.ventilator_availability }}</span> %
+            </div>
+            <div class="col">ICU Availability : <span id="{{ id|add:"icu" }}"> {{ marker.icu_availability }}</span> %
+            </div>
         </div>
-        <a href="/v2/details/{{ marker.id }}" class="btn input-right input-left bg-dark btn-dark">More Info</a>
+        <a href="/v2/details/{{ marker.id }}" id="{{ id }}redirect" class="btn input-right input-left bg-dark btn-dark">More Info</a>
     </div>
 </div>

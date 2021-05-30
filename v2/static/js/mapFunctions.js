@@ -65,26 +65,32 @@ function getMarkers() {
 
 function filldata(id) {
     $.ajax({
-        url: `/more_info/${id}/`,
+        url: `/marker/${id}/`,
         success: function (data) {
-
             console.log(data)
-            $('#header').text(data.name)
+            $('#valuetitle').text(data.name)
+
+
+            $('input:radio[name=valuecon]').val([parseInt(data.care_rating)])
+            $('input:radio[name=valueaff]').val([parseInt(data.financial_rating)])
+            $('input:radio[name=valuecov]').val([parseInt(data.covid_rating)])
+            $('input:radio[name=valueoxy]').val([parseInt(data.oxygen_rating)])
+            $('#valueoxy_output').text(data.oxygen_rating)
+            $('#valuecov_output').text(data.covid_rating)
+            $('#valueaff_output').text(data.financial_rating)
+            $('#valuecon_output').text(data.care_rating)
+
+            $('#valuecost').text(data.avg_cost)
+            $('#valueventa').text(data.ventilator_availability)
+            $('#valueoxya').text(data.oxygen_availability)
+            $('#valueicu').text(data.icu_availability)
+
+            $('#valueredirect').attr('href', `/v2/details/${data.id}`)
+
             $('#phone').html(data.Phone)
             $('#phone').attr("href", 'tel:' + data.Phone)
-            $('input:radio[name=ratingm]').val([parseInt(data.care_rating)])
-            $('#ratingf').text(data.care_rating)
-            $('input:radio[name=covidm]').val([parseInt(data.covid_rating)])
-            $('#covidf').text(data.covid_rating)
-            $('input:radio[name=oxym]').val([parseInt(data.oxygen_rating)])
-            $('#oxyf').text(data.oxygen_rating)
-            $('#vent').text(data.ventilator_availability)
-            $('#oxya').text(data.oxygen_availability)
-            $('#icu').text(data.icu_availability)
-            $('input:radio[name=financialm]').val([parseInt(data.financial_rating)])
-            $('#financialf').text(data.financial_rating)
-            $('#beds').text(data.beds_available)
-            $('#cost').text(data.avg_cost)
+
+
             $('#id').val(data.id)
             $('#ids').val(data.id)
         }

@@ -25,16 +25,16 @@
                 <div class="col-12 col-md-2 col-lg-2"></div>
                 <div class="col12 col-md-8 col-lg-8 " id="toplevel">
                     {% for marker in search_results %}
-                        {% include 'v2/components/search_result_card.html' %}
+                        {% include 'v2/components/search_result_card.html' with id=marker.id %}
                     {% endfor %}
                 </div>
             </div>
             <div class="row my-2  align-self-center " id="mapview" role="tabpanel" aria-labelledby="mapview-tab">
                 <div class="col-12 col-md-2 col-lg-2"></div>
                 <div class="col12 col-md-8 col-lg-8  " id="toplevel1">
-                    {% with id='value' %}
-                        {% include 'v2/components/search_result_card.html' %}
-                    {% endwith %}
+
+                        {% include 'v2/components/search_result_card.html' with id='value' %}
+
                     <div id="map"></div>
 
                 </div>

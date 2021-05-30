@@ -1,9 +1,11 @@
 from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import render
-from .models import Markers, Reviews, SuspiciousMarking
+from .models import Markers, Reviews, SuspiciousMarking, Images
 import datetime
 from django.forms.models import model_to_dict
 from django.core import serializers
+from rest_framework.generics import ListAPIView
+from .serializer import *
 
 
 # Create your views here.
@@ -20,6 +22,7 @@ def modify(request):
             ob = Markers.objects.get(id=int(request.POST['id']))
         else:
             ob = Markers.objects.create()
+
         ob.name = request.POST['name']
         ob.Phone = request.POST['phone']
         ob.size = int(request.POST['size'])
@@ -37,8 +40,8 @@ def modify(request):
         ob.datef = request.POST['datef']
         ob.added_by = request.user
         if 'hospital_pic' in request.FILES:
-            ob.hospital_pic = request.FILES['hospital_pic']
-
+            im = Images.get_or_create(image = request.FILES['hospital_pic'], hospital = 'id')
+        im.save()
         ob.save()
 
     markers = Markers.objects.all()
@@ -193,3 +196,8 @@ def suspicious(request):
         mob.save()
 
     return HttpResponseRedirect('/')
+
+class getMarker(ListAPIView):
+    queryset = Markers.objects.all()[:10]
+    serializer_class = getMarkerSerializer
+    http_method_names = ["get"]

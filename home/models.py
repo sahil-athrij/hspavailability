@@ -69,6 +69,6 @@ class SuspiciousMarking(models.Model):
 
 class Images(models.Model):
     image = models.ImageField(upload_to="pic", blank=True)
-    review = models.ForeignKey(Reviews,default=None, on_delete=models.CASCADE)
-    hospital = models.ForeignKey(Markers, on_delete=models.CASCADE)
+    review = models.ForeignKey(Reviews,default=None,related_name='images', on_delete=models.CASCADE)
+    hospital = models.ForeignKey(Markers, related_name='images', on_delete=models.CASCADE)
     useinmarker = models.BooleanField(default=False)

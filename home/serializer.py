@@ -18,7 +18,7 @@ class getMarkerSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'name', 'Phone', 'size', 'financial_rating', 'avg_cost', 'covid_rating', 'beds_available',
             'care_rating', 'oxygen_rating', 'ventilator_availability', 'oxygen_availability', 'icu_availability',
-            'images'
+            'lat', 'lng', 'images'
         ]
 
 

@@ -44,138 +44,135 @@
                 <div class="mt-5 col-12 p-2 text-center neumorphic_form">
                     <button class="close-icon close" id="closefilter"></button>
                     <div class="container">
-                        <form method="get" action="filter/">
-                            {% csrf_token %}
-                            <div class="row">
-                                <div class="col">
-                                    <label for="oxyfr" class="form-label">Oxygen Care</label>
-                                    <div class="star-rating col">
-                                        <div id="oxyfr" class="form-check-inline">
-                                            <div class="rate">
-                                                <input type="radio" id="of5" value="5" name="oxyfr">
-                                                <label for="of5"></label>
-                                                <input type="radio" id="of4" value="4" name="oxyfr">
-                                                <label for="of4"></label>
-                                                <input type="radio" id="of3" value="3" name="oxyfr">
-                                                <label for="of3"></label>
-                                                <input type="radio" id="of2" value="2" name="oxyfr">
-                                                <label for="of2"></label>
-                                                <input type="radio" id="of1" value="1" name="oxyfr">
-                                                <label for="of1"></label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <label for="financialfr" class="form-label">Affordability (higher is more
-                                        expensive)</label>
-                                    <div class="star-rating col">
-                                        <div id="financialfr" class="form-check-inline">
-                                            <div class="rate financial">
-                                                <input type="radio" id="ff5" value="5" name="financialfr">
-                                                <label for="ff5"></label>
-                                                <input type="radio" id="ff4" value="4" name="financialfr">
-                                                <label for="ff4"></label>
-                                                <input type="radio" id="ff3" value="3" name="financialfr">
-                                                <label for="ff3"></label>
-                                                <input type="radio" id="ff2" value="2" name="financialfr">
-                                                <label for="ff2"></label>
-                                                <input type="radio" id="ff1" value="1" name="financialfr">
-                                                <label for="ff1"></label>
-                                            </div>
+                        <div class="row">
+                            <div class="col">
+                                <label for="oxyfr" class="form-label">Oxygen Care</label>
+                                <div class="star-rating col">
+                                    <div id="oxyfr" class="form-check-inline">
+                                        <div class="rate">
+                                            <input type="radio" id="of5" value="5" name="oxyfr">
+                                            <label for="of5"></label>
+                                            <input type="radio" id="of4" value="4" name="oxyfr">
+                                            <label for="of4"></label>
+                                            <input type="radio" id="of3" value="3" name="oxyfr">
+                                            <label for="of3"></label>
+                                            <input type="radio" id="of2" value="2" name="oxyfr">
+                                            <label for="of2"></label>
+                                            <input type="radio" id="of1" value="1" name="oxyfr">
+                                            <label for="of1"></label>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col">
-                                    <label for="ventsf" class="form-label">Ventilator Availability(in
-                                        percentage)</label>
-                                    <br>
-                                    <input id="ventsf" type="range" class="form-control-range" name="ventfr" value="0"
-                                           min="0" max="100" oninput="this.nextElementSibling.value = this.value">
-                                    <output for="ventfr"></output>
-                                </div>
-                                <div class="col">
-                                    <label for="oxyasf" class="form-label">Oxygen Availability</label>
-                                    <br>
-                                    <input id="oxyasf" type="range" class="form-control-range" name="oxyafr" value="0"
-                                           min="0" max="100" oninput="this.nextElementSibling.value = this.value">
-                                    <output for="oxyasf"></output>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <label for="icusf" class="form-label">ICU Availability</label>
-                                    <br>
-                                    <input id="icusf" type="range" class="form-control-range" name="icufr" value="0"
-                                           min="0" max="100" oninput="this.nextElementSibling.value = this.value">
-                                    <output for="icusf"></output>
-                                </div>
-                                <div class="col">
-                                    <label for="costsf" class="form-label">Avg Cost</label>
-                                    <div class="input-group" id="costsf">
-                                        <span class="input-group-text">Min ₹</span>
-                                        <input type="text" class="form-control" value="0"
-                                               placeholder="Enter Minimum avg cost"
-                                               name="price-min">
-                                        <span class="input-group-text">Max ₹</span>
-                                        <input type="text" class="form-control" value="1000000"
-                                               placeholder="Enter Maximum avg cost"
-                                               name="price-max">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <label for="caref" class="form-label">Convenience (higher is more better)></label>
-                                    <div class="star-rating col">
-                                        <div id="caref" class="form-check-inline">
-                                            <div class="rate">
-                                                <input type="radio" id="cf5" value="5" name="carefr">
-                                                <label for="cf5"></label>
-                                                <input type="radio" id="cf4" value="4" name="carefr">
-                                                <label for="cf4"></label>
-                                                <input type="radio" id="cf3" value="3" name="carefr">
-                                                <label for="cf3"></label>
-                                                <input type="radio" id="cf2" value="2" name="carefr">
-                                                <label for="cf2"></label>
-                                                <input type="radio" id="cf1" value="1" name="carefr">
-                                                <label for="cf1"></label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <label for="covidfr" class="form-label">Covid Care (higher is more better)</label>
-                                    <div class="star-rating col">
-                                        <div id="covidfr" class="form-check-inline">
-                                            <div class="rate">
-                                                <input type="radio" id="cof5" value="5" name="covidfr">
-                                                <label for="cof5"></label>
-                                                <input type="radio" id="cof4" value="4" name="covidfr">
-                                                <label for="cof4"></label>
-                                                <input type="radio" id="cof3" value="3" name="covidfr">
-                                                <label for="cof3"></label>
-                                                <input type="radio" id="cof2" value="2" name="covidfr">
-                                                <label for="cof2"></label>
-                                                <input type="radio" id="cof1" value="1" name="covidfr">
-                                                <label for="cof1"></label>
-                                            </div>
+                            <div class="col">
+                                <label for="financialfr" class="form-label">Affordability (higher is more
+                                    expensive)</label>
+                                <div class="star-rating col">
+                                    <div id="financialfr" class="form-check-inline">
+                                        <div class="rate financial">
+                                            <input type="radio" id="ff5" value="5" name="financialfr">
+                                            <label for="ff5"></label>
+                                            <input type="radio" id="ff4" value="4" name="financialfr">
+                                            <label for="ff4"></label>
+                                            <input type="radio" id="ff3" value="3" name="financialfr">
+                                            <label for="ff3"></label>
+                                            <input type="radio" id="ff2" value="2" name="financialfr">
+                                            <label for="ff2"></label>
+                                            <input type="radio" id="ff1" value="1" name="financialfr">
+                                            <label for="ff1"></label>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <label for="bedf" class="form-label">Bed Available</label>
-                                <input type="number" class="form-control" id="bedf" value="0" min="0" name="bedsfr">
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <label for="ventsf" class="form-label">Ventilator Availability(in
+                                    percentage)</label>
+                                <br>
+                                <input id="ventsf" type="range" class="form-control-range" name="ventfr" value="0"
+                                       min="0" max="100" oninput="this.nextElementSibling.value = this.value">
+                                <output for="ventfr"></output>
                             </div>
-                            <div class="row mt-5">
-                                <div class="col">
-                                    <input type="submit" class="btn btn-success">
+                            <div class="col">
+                                <label for="oxyasf" class="form-label">Oxygen Availability</label>
+                                <br>
+                                <input id="oxyasf" type="range" class="form-control-range" name="oxyafr" value="0"
+                                       min="0" max="100" oninput="this.nextElementSibling.value = this.value">
+                                <output for="oxyasf"></output>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <label for="icusf" class="form-label">ICU Availability</label>
+                                <br>
+                                <input id="icusf" type="range" class="form-control-range" name="icufr" value="0"
+                                       min="0" max="100" oninput="this.nextElementSibling.value = this.value">
+                                <output for="icusf"></output>
+                            </div>
+                            <div class="col">
+                                <label for="costsf" class="form-label">Avg Cost</label>
+                                <div class="input-group" id="costsf">
+                                    <span class="input-group-text">Min ₹</span>
+                                    <input type="text" class="form-control" value="0"
+                                           placeholder="Enter Minimum avg cost"
+                                           name="price-min">
+                                    <span class="input-group-text">Max ₹</span>
+                                    <input type="text" class="form-control" value="1000000"
+                                           placeholder="Enter Maximum avg cost"
+                                           name="price-max">
                                 </div>
                             </div>
-                        </form>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <label for="caref" class="form-label">Convenience (higher is more better)></label>
+                                <div class="star-rating col">
+                                    <div id="caref" class="form-check-inline">
+                                        <div class="rate">
+                                            <input type="radio" id="cf5" value="5" name="carefr">
+                                            <label for="cf5"></label>
+                                            <input type="radio" id="cf4" value="4" name="carefr">
+                                            <label for="cf4"></label>
+                                            <input type="radio" id="cf3" value="3" name="carefr">
+                                            <label for="cf3"></label>
+                                            <input type="radio" id="cf2" value="2" name="carefr">
+                                            <label for="cf2"></label>
+                                            <input type="radio" id="cf1" value="1" name="carefr">
+                                            <label for="cf1"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <label for="covidfr" class="form-label">Covid Care (higher is more better)</label>
+                                <div class="star-rating col">
+                                    <div id="covidfr" class="form-check-inline">
+                                        <div class="rate">
+                                            <input type="radio" id="cof5" value="5" name="covidfr">
+                                            <label for="cof5"></label>
+                                            <input type="radio" id="cof4" value="4" name="covidfr">
+                                            <label for="cof4"></label>
+                                            <input type="radio" id="cof3" value="3" name="covidfr">
+                                            <label for="cof3"></label>
+                                            <input type="radio" id="cof2" value="2" name="covidfr">
+                                            <label for="cof2"></label>
+                                            <input type="radio" id="cof1" value="1" name="covidfr">
+                                            <label for="cof1"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label for="bedf" class="form-label">Bed Available</label>
+                            <input type="number" class="form-control" id="bedf" value="0" min="0" name="bedsfr">
+                        </div>
+                        <div class="row mt-5">
+                            <div class="col">
+                                <input type="submit" id="filtern" class="btn btn-success">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -616,30 +613,40 @@
             setMapOnAll(null);
             markers=[];
         }
+        var dict = {}//variable used for filter
         function getMarkers() {
             const csrftoken = getCookie('csrftoken');
             var coor = map.getCenter()
-            var LatLon = {csrfmiddlewaretoken: csrftoken, lat: coor.lat(), lng: coor.lng()}
-            console.log(LatLon)
-            $.ajax({
-                url: `/marker/?lat__gte=${lat-1}&lat__lte=${lat+1}&lng__gte=${lng-1}&lng__lte=${lng+1}',
-                success: function (data) {
-                    var i;
-                    ob = data;
-                    console.log(ob);
-                    for (i = 0; i < ob.length; i++) {
-                        console.log(i,ob[i].name)
-                        addMarker({
-                            'position': {
-                                'lat': ob[i].lat,
-                                'lng': ob[i].lng,
-                            },
-                            'size': ob[i].size,
-                            'id': ob[i].id
-                        })
+            let lat = coor.lat(), lng = coor.lng()
+            console.log(lat,lng)
+            let p=1;
+            function getData(){
+                $.ajax({
+                    url: `/marker/`,
+                    data: {lat__gte: lat-1, lat__lte: lat+1, lng__gte: lng-1, lng__lte: lng+1, page: p, ...dict},
+                    success: function (data) {
+                        let i;
+                        ob = data;
+                        console.log(ob);
+                        for (i = 0; i < ob.results.length; i++) {
+                            console.log((p-1)*100+i+1,ob.results[i].name)
+                            addMarker({
+                                'position': {
+                                    'lat': ob.results[i].lat,
+                                    'lng': ob.results[i].lng,
+                                },
+                                'size': ob.results[i].size,
+                                'id': ob.results[i].id
+                            })
+                        }
+                        p++;
+                        if(data.next){
+                            getData();
+                        }
                     }
-                }
-            })}
+                })}
+                getData();
+            }
 
 
             function filldata(id) {
@@ -704,6 +711,35 @@
         geocoder.addTo('#search-box');
 
 
+        // Filter variables
+        var oxy = $('input[name="oxyfr"]:checked').val()
+        var fin = $('input[name="financialfr"]:checked').val()
+        var vent = $('input[name="ventfr"]').val()
+        var oxya = $('input[name="oxyafr"]').val()
+        var icu = $('input[name="icufr"]').val()
+        var costmin = $('input[name="price-min"]').val()
+        var costmax = $('input[name="price-max"]').val()
+        var care = $('input[name="carefr"]:checked').val()
+        var covid = $('input[name="covidfr"]:checked').val()
+        var bed = $('input[name="bedf"]').val()
+
+        $('#filtern').on('click', function() {
+            $('#filters').hide()
+            console.log(oxy,fin, icu)
+            dict = {financial_rating__gte: fin,
+                    oxygen_rating__gte: oxy,
+                    ventilator_availability__gte: vent,
+                    oxygen_availability__gte: oxya,
+                    icu_availability__gte: icu,
+                    avg_cost__gte: costmin,
+                    avg_cost__lte: costmax,
+                    care_rating__gte: care,
+                    covid_rating__gte: covid,
+                    beds_available__gte: bed}
+            console.log(dict)
+            deleteMarkers()
+            getMarkers()
+        })
 
 
 

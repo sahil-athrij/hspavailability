@@ -135,36 +135,6 @@ def update_marker(id):
     ob.save()
 
 
-def filter_marker(request):
-    if request.method == "GET":
-        fin = int(request.GET.get('financialfr', 0))
-        costmin = request.GET.get('price-min', 0)
-        costmax = request.GET.get('price-max', 1000000)
-        covid = int(request.GET.get('covidfr', 0))
-        beds = request.GET.get('bedsfr', 0)
-        care = int(request.GET.get('carefr', 0))
-        oxy = int(request.GET.get('oxyfr', 0))
-        vent = request.GET.get('ventfr', 0)
-        oxya = request.GET.get('oxyafr', 0)
-        icu = request.GET.get('icufr', 0)
-        markers = Markers.objects.filter(financial_rating__gte=fin,
-                                         avg_cost__gte=costmin,
-                                         avg_cost__lte=costmax,
-                                         covid_rating__gte=covid,
-                                         beds_available__gte=beds,
-                                         care_rating__gte=care,
-                                         oxygen_rating__gte=oxy,
-                                         ventilator_availability__gte=vent,
-                                         oxygen_availability__gte=oxya,
-                                         icu_availability__gte=icu
-                                         )
-
-        return render(request, template_name='home/index.html', context={'markers': markers})
-
-    return render(request, template_name='home/index.html')
-
-
-
 def suspicious(request):
     if request.method == "POST":
         print(request.POST)
@@ -184,4 +154,7 @@ class MarkerApiViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
     serializer_class = getMarkerSerializer
     http_method_names = ["get", 'options']
     filter_backends = [django_filters.rest_framework.DjangoFilterBackend]
-    filterset_fields = {'lat':['gte','lte'],'lng':['gte','lte']}
+    filterset_fields = {'lat':['gte','lte'],'lng':['gte','lte'], 'financial_rating':['gte','lte','exact'],
+                        'oxygen_rating':['gte','lte','exact'],'ventilator_availability':['gte','lte','exact'],
+                        'oxygen_availability':['gte','lte','exact'], 'icu_availability':['gte','lte','exact'], 'avg_cost':['gte','lte','exact'],
+                        'care_rating':['gte','lte','exact'], 'covid_rating':['gte','lte','exact'], 'beds_available':['gte','lte','exact']}

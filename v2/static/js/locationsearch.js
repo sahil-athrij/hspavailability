@@ -1,43 +1,19 @@
-ipsearchurl = `https://ipapi.co/${ip}/json/`
-latitude = ''
-longiude = ''
+
 let lat = url.searchParams.get("lat")
 let lng = url.searchParams.get("lng")
 let query = url.searchParams.get("query")
 
 if (lat) {
     $('#lat').val(parseFloat(lat))
+    latitude = parseFloat(lat)
 }
 if (lng) {
     $('#lng').val(parseFloat(lng))
+    longitude = parseFloat(lng)
 }
 if (query) {
     $('#hspsearch').val(query)
 }
-
-console.log(ipsearchurl)
-
-function GetIp() {
-    $.ajax(ipsearchurl, {
-
-        success: function (data) {
-            latitude = data.latitude
-            longiude = data.longitude
-        },
-        error: function (data) {
-            $.ajax('/v2/getlocation', {
-                success: function (data) {
-                    latitude = data.latitude
-                    longiude = data.longitude
-                    $('#lat').val(latitude)
-                    $('#lng').val(longiude)
-                }
-            })
-        }
-    })
-}
-
-locationiq.key = 'pk.959200a41370341f608a91b67be6e8eb';
 
 var geocoder = new MapboxGeocoder({
     accessToken: locationiq.key,
@@ -46,13 +22,17 @@ var geocoder = new MapboxGeocoder({
     className: 'input-right',
     placeholder: 'Location (Auto)',
     getItemValue: function (item) {
-        console.log(item)
         latitude = parseFloat(item.lat)
-        longiude = parseFloat(item.lon)
+        longitude = parseFloat(item.lon)
         $('#lat').val(latitude)
-        $('#lng').val(longiude)
+        $('#lng').val(longitude)
+        if (map) {
+            map.setCenter({lat: item.center[1], lng: item.center[0]})
+        }
+        if (getMarkers) {
+            getMarkers()
+        }
         return item.place_name
-
     }
 });
 geocoder.addTo('#search-box');
@@ -79,24 +59,9 @@ C316.1,212.683,289.784,240.2,256,240.2z"/>
 </g>
 </svg>
 `)
-console.log(lat, lng)
+
+
 if (!lat || !lng) {
-
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function (position) {
-            console.log(position);
-            latitude = position.coords.latitude
-            longiude = position.coords.longitude
-            $('#lat').val(latitude)
-            $('#lng').val(longiude)
-        }, function () {
-            GetIp()
-        });
-
-    } else {
-        GetIp()
-    }
+    setupLatLng()
 }
 
-
-//Add Geocoder control to the map

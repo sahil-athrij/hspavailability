@@ -17,11 +17,11 @@
             {#            {% include 'v2/components/star_ratings.html' with name=marker.id  disabled="disabled" label="Oxygen Care" content="Quality Rating for Oxyen Care" value=marker.oxygen_rating %}#}
         </div>
         <div class="widget-49-meeting-points mt-2 row">
-            <div class="col">Average Cost : {{ marker.avg_cost }} Rs</div>
-            <div class="col">Oxygen Availability : {{ marker.oxygen_availability }} %</div>
+            <div class="col">Average Cost : <span>{{ marker.avg_cost }}</span> Rs</div>
+            <div class="col">Oxygen Availability : <span>{{ marker.oxygen_availability }}</span> %</div>
         </div>
         <div class="widget-49-meeting-points my-2 row">
-            <div class="col">Ventilator Availability : {{ marker.ventilator_availability }} %</div>
+            <div class="col">Ventilator Availability : <span>{{ marker.ventilator_availability }}</span> %</div>
             <div class="col">ICU Availability : {{ marker.icu_availability }} %</div>
         </div>
         <a href="/v2/details/{{ marker.id }}" class="btn input-right input-left bg-dark btn-dark">More Info</a>

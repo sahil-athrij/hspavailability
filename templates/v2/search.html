@@ -14,13 +14,20 @@
 {% block body %}
     {% include 'nav.html' %}
     <div class="d-flex">
-        {% include 'v2/components/sidebar.html' %}
         <div class="container my-5 py-5 ">
             <div class="text-center h3 p-3">Search Results</div>
+
             <div class="text-center ">
+                {% include 'v2/components/tab_selector.html' with id='filter' name='Hide Filter' active='filterpanel' tab='filter' %}
                 {% include 'v2/components/tab_selector.html' with id='listview' name='List View' active='u-active' %}
                 {% include 'v2/components/tab_selector.html' with id='mapview' name='Map View' active='' %}
             </div>
+            <div class="row my-1  align-self-center" id="filter" role="filterpanel" aria-labelledby="filter-tab">
+                  <div class="col-12 col-md-2 col-lg-2"></div>
+                <div class="col12 col-md-8 col-lg-8 " id="toplevel"></div>
+                {% include 'v2/components/sidebar.html' %}
+            </div>
+
             <div class="row my-2  align-self-center" id="listview" role="tabpanel" aria-labelledby="listview-tab">
                 <div class="col-12 col-md-2 col-lg-2"></div>
                 <div class="col12 col-md-8 col-lg-8 " id="toplevel">
@@ -33,7 +40,7 @@
                 <div class="col-12 col-md-2 col-lg-2"></div>
                 <div class="col12 col-md-8 col-lg-8  " id="toplevel1">
 
-                        {% include 'v2/components/search_result_card.html' with id='value' %}
+                    {% include 'v2/components/search_result_card.html' with id='value' %}
 
                     <div id="map"></div>
 
@@ -52,6 +59,14 @@
             console.log(target)
             $(target).show()
         })
+
+        $('[data-toggle="filter"]').click(function (){
+            fil = $('#filter-tab')
+
+            fil.html(fil.html() === 'Hide Filter' ? 'Show Filter' : 'Hide Filter');
+            $('[role="filterpanel"]').toggle()
+        })
+
         $('#mapview').hide()
     </script>
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>

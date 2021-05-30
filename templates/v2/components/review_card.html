@@ -1,0 +1,42 @@
+<div class="row">
+    {% for review in reviews %}
+        <div class="col-lg-4">
+            <div class="card card-margin">
+                <div class="card-header no-border">
+                    <h5 class="card-title mx-3">{{ review.written_by }}</h5>
+                </div>
+                <div class="card-body pt-0">
+                    <div class="widget-49">
+                        <div class="widget-49-title-wrapper">
+                            {#                        <div class="widget-49-date-primary">#}
+                            {#                            <span class="widget-49-date-day">{{ hospital.beds_available }}</span>#}
+                            {#                            <span class="widget-49-date-month">Beds</span>#}
+                            {#                        </div>#}
+                            <div class="widget-49-meeting-info">
+                                <span class="widget-49-pro-title">"{{ review.comment }}"</span>
+                                <span class="widget-49-meeting-time">{{ review.datef }}</span>
+                            </div>
+                        </div>
+                        <div class="widget-49-meeting-points  row">
+                            {% include 'v2/components/star_ratings.html' with name=review.id|add:"oxy"   label="Oxygen Care" content="Quality Rating for Oxyen Care" disabled="disabled" value=review.oxygen_rating %}
+                            {% include 'v2/components/star_ratings.html' with name=review.id|add:"aff"   extra_class="financial" label="Affordability" content="Affordability of the hospital .higher is expensive" disabled="disabled" value=review.financial_rating %}
+                        </div>
+                        <div class="widget-49-meeting-points  row">
+                            {% include 'v2/components/star_ratings.html' with name=review.id|add:"con"  label="Convenience" content="Convenience of Getting Care (higher is Better) the ease with dealing with Administrative" disabled="disabled" value=review.care_rating %}
+                            {% include 'v2/components/star_ratings.html' with name=review.id|add:"cov"   label="Covid Care" content="Quality of Covid Care (higher is better)" disabled="disabled" value=review.covid_rating %}
+                            {#            {% include 'v2/components/star_ratings.html' with name=marker.id  disabled="disabled" label="Oxygen Care" content="Quality Rating for Oxyen Care" value=marker.oxygen_rating %}#}
+                        </div>
+                        <div class="widget-49-meeting-points mt-2 row">
+                            <div class="col">Average Cost : {{ review.avg_cost }} Rs</div>
+                            <div class="col">Oxygen Availability : {{ review.oxygen_availability }} %</div>
+                        </div>
+                        <div class="widget-49-meeting-points my-2 row">
+                            <div class="col">Ventilator Availability : {{ review.ventilator_availability }} %</div>
+                            <div class="col">ICU Availability : {{ review.icu_availability }} %</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>

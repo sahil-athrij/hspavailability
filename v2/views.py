@@ -156,6 +156,8 @@ def get_location(request):
 def details(request, hospital_id):
     context = {}
     query = Markers.objects.get(id=hospital_id)
+    review = Reviews.objects.filter(marker=hospital_id)
     context['hospital'] = query
-    print(model_to_dict(query))
+    stuff = review.values()
+    context["reviews"] = review
     return render(request, template_name='v2/details.html', context=context)

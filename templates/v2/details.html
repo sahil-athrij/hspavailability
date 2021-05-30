@@ -9,42 +9,11 @@
 {% block body %}
     {% include 'nav.html' %}
     <div class="container my-5 py-5">
-        <div class="row">
-            <div class="card card-margin">
-                <div class="card-header no-border">
-                    <h5 class="card-title">{{ hospital.name }}</h5>
-                </div>
-                <div class="card-body pt-0">
-                    <div class="widget-49">
-                        <div class="widget-49-title-wrapper">
-                            <div class="widget-49-date-primary">
-                                <span class="widget-49-date-day">{{ hospital.beds_available }}</span>
-                                <span class="widget-49-date-month">Beds</span>
-                            </div>
-                            <div class="widget-49-meeting-info">
-                                <span class="widget-49-pro-title">Phone : {{ hospital.Phone }}</span>
-                                <span class="widget-49-meeting-time">{{ hospital.datef }}</span>
-                            </div>
-                        </div>
-                        <ol class="widget-49-meeting-points">
-                            <li class="widget-49-meeting-item">
-                                <span>Financial Rating : {{ hospital.financial_rating }}</span></li>
-                            <li class="widget-49-meeting-item"><span>Average Cost : {{ hospital.avg_cost }}</span></li>
-                            <li class="widget-49-meeting-item"><span>Covid Rating : {{ hospital.covid_rating }}</span>
-                            </li>
-                            <li class="widget-49-meeting-item"><span>Oxygen Rating : {{ hospital.oxygen_rating }}</span>
-                            </li>
-                            <li class="widget-49-meeting-item">
-                                <span>Oxygen Availability : {{ hospital.oxygen_availability }}</span></li>
-                            <li class="widget-49-meeting-item">
-                                <span>Ventilator Availability : {{ hospital.ventilator_availability }}</span></li>
-                            <li class="widget-49-meeting-item">
-                                <span>ICU Availability : {{ hospital.icu_availability }}</span></li>
-                        </ol>
-                    </div>
-                </div>
-            </div>
-        </div>
+        {% include 'v2/components/hospital_details_card.html' %}
+    </div>
+    <div class="text-center h2">Reviews</div>
+    <div class="container mt-5">
+        {% include 'v2/components/review_card.html' %}
     </div>
 {% endblock %}
 

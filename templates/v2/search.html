@@ -32,10 +32,9 @@
             <div class="row my-2  align-self-center " id="mapview" role="tabpanel" aria-labelledby="mapview-tab">
                 <div class="col-12 col-md-2 col-lg-2"></div>
                 <div class="col12 col-md-8 col-lg-8  " id="toplevel1">
-                    {% include 'v2/components/search_result_card.html' %}
-                    {#                    {% for marker in search_results %}#}
-                    {#                        {% include 'v2/components/search_result_card.html' %}#}
-                    {#                    {% endfor %}#}
+                    {% with id='value' %}
+                        {% include 'v2/components/search_result_card.html' %}
+                    {% endwith %}
                     <div id="map"></div>
 
                 </div>
@@ -59,14 +58,11 @@
     <script>
 
 
-
         var icons = [
             '{% static 'images/small.png' %}',
             '{% static 'images/medium.png' %}',
             '{% static 'images/large.png' %}',
         ]
-
-
 
 
     </script>

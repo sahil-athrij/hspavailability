@@ -15,7 +15,6 @@
                         <span class="widget-49-meeting-time">{{ hospital.datef }}</span>
                     </div>
                 </div>
-                <h5 class="card-title card-title-left">{{ hospital.name }}</h5>
                 <div class="widget-49-meeting-points  row">
                     {% include 'v2/components/star_ratings.html' with name=hospital.id|add:"oxy"   label="Oxygen Care" content="Quality Rating for Oxyen Care" disabled="disabled" value=hospital.oxygen_rating %}
                     {% include 'v2/components/star_ratings.html' with name=hospital.id|add:"aff"   extra_class="financial" label="Affordability" content="Affordability of the hospital .higher is expensive" disabled="disabled" value=hospital.financial_rating %}

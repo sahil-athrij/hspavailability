@@ -1,6 +1,20 @@
 ipsearchurl = `https://ipapi.co/${ip}/json/`
 latitude = ''
 longiude = ''
+let lat = url.searchParams.get("lat")
+let lng = url.searchParams.get("lng")
+let query = url.searchParams.get("query")
+
+if (lat) {
+    $('#lat').val(parseFloat(lat))
+}
+if (lng) {
+    $('#lng').val(parseFloat(lng))
+}
+if (query) {
+    $('#hspsearch').val(query)
+}
+
 console.log(ipsearchurl)
 
 function GetIp() {
@@ -65,7 +79,7 @@ C316.1,212.683,289.784,240.2,256,240.2z"/>
 </g>
 </svg>
 `)
-console.log(lat,lng)
+console.log(lat, lng)
 if (!lat || !lng) {
 
     if (navigator.geolocation) {

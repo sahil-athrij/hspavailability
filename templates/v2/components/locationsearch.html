@@ -25,22 +25,5 @@
     </div>
 </div>
 
-<script>
-    let lat = url.searchParams.get("lat")
-    let lng = url.searchParams.get("lng")
-    let query = url.searchParams.get("query")
-
-    if (lat) {
-        $('#lat').val(parseFloat(lat))
-    }
-    if (lng) {
-        $('#lng').val(parseFloat(lng))
-    }
-    if (query) {
-        $('#hspsearch').val(query)
-
-    }
-
-</script>
-<script src="{% static 'js/location.js' %}"></script>
+<script src="{% static 'js/locationsearch.js' %}"></script>
 

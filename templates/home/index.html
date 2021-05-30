@@ -622,7 +622,7 @@
             var LatLon = {csrfmiddlewaretoken: csrftoken, lat: coor.lat(), lng: coor.lng()}
             console.log(LatLon)
             $.ajax({
-                url: `/marker/?lat__gte=${lat-1}&lat__lte=${lat+1}&lng__gte=${lng-1}&lng__lte=${lng+1}',
+                url: `/marker/?lat__gte=${lat-1}&lat__lte=${lat+1}&lng__gte=${lng-1}&lng__lte=${lng+1}`,
                 success: function (data) {
                     var i;
                     ob = data;

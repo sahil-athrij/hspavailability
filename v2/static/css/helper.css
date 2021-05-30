@@ -117,3 +117,12 @@ body {
     transform: translateY(-3px);
     cursor: pointer;
 }
+#map {
+    height: 100vh;
+    /*position: absolute !important;*/
+    top: 0;
+    /* The height is 400 pixels */
+    width: 100%;
+    /*z-index: -1;*/
+    /* The width is the width of the web page */
+}

@@ -24,7 +24,7 @@ SECRET_KEY = 'django-insecure-tr#83t$_--71h1yzg^@w6n^w292lb#$1p2256)5k2-!^f^x9^d
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['hospitals.trebuchet.one','needmedi.com','127.0.0.1']
+ALLOWED_HOSTS = ['hospitals.trebuchet.one', 'needmedi.com', '127.0.0.1']
 
 # Application definition
 
@@ -35,6 +35,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'django_filters',
 
     # custom
     'home',
@@ -71,6 +73,12 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'maps.wsgi.application'
+
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 100
+}
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
@@ -120,7 +128,7 @@ STATIC_URL = '/static/'
 
 # Media
 
-MEDIA_ROOT = BASE_DIR/'media'
+MEDIA_ROOT = BASE_DIR / 'media'
 MEDIA_URL = '/media/'
 
 # Default primary key field type

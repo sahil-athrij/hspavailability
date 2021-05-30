@@ -130,7 +130,7 @@ def search(request):
             oxygen_availability__gte=oxya,
             icu_availability__gte=icu,
             name__icontains=query
-        )
+        )[:10]
         print(context)
         ipaddress = get_client_ip(request)
         context['ip'] = ipaddress

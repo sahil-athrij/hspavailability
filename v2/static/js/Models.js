@@ -59,7 +59,7 @@ Marker.filter(kwargs = {oxygen_availability__gte: 0}).then(function (markerList)
 /**
  * Similarly create exists as well as able to edit the data as well
  */
-Marker.get(id = 5 ).then(function (marker) {
+Marker.get(id = 5).then(function (marker) {
     console.log(marker)
     console.log(marker.id)
     console.log(marker.name)

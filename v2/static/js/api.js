@@ -7,6 +7,7 @@ async function get(url, kwargs = {}) {
 }
 
 async function post(url, kwargs = {}) {
+    kwargs['csrfmiddlewaretoken'] = getCookie('csrftoken');
     const response = await fetch(url, {
             method: 'POST', // *GET, POST, PUT, DELETE, etc.
             headers: {'Content-Type': 'application/json'},
@@ -17,6 +18,7 @@ async function post(url, kwargs = {}) {
 }
 
 async function patch(url, kwargs = {}) {
+    kwargs['csrfmiddlewaretoken'] = getCookie('csrftoken');
     const response = await fetch(url, {
             method: 'PATCH', // *GET, POST, PUT, DELETE, etc.
             headers: {'Content-Type': 'application/json'},
@@ -89,7 +91,7 @@ class Model {
         data.results.forEach(item => {
             lst.push(new this.modelClass(item, this.baseurl))
         })
-        return {results:lst,next:data.next}
+        return {results: lst, next: data.next}
     };
 
     /**

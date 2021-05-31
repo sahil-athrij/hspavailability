@@ -490,27 +490,28 @@
                 </div>
             </div>
         </div>
-         <div class="mt-5" id="suspicious">
-                    <div class="col-12 col-sm-3 col-lg-3"></div>
-                    <div class=" col-12 col-sm-6 col-lg-6 offset-lg-3">
-                        <div class="mt-5 col-12 p-2 text-center neumorphic_form">
-                            <div class="container">
-                                <button class="close-icon close" id="closesus"></button>
-                                <p align="center">Please tell us why you think this marker is suspicious. If our staff finds your reason legitimate, we shall delete this marker</p>
-                                <form method="post" action="suspicious/">
-                                    {% csrf_token %}
-                                    <div class="row">
-                                        <textarea name="comments"></textarea>
-                                    </div>
-                                    <input name="id" id="ids" hidden value="-1">
-                                    <div class="mt-5 col-5">
-                                        <input type="submit" class="btn btn-success">
-                                    </div>
-                                </form>
+        <div class="mt-5" id="suspicious">
+            <div class="col-12 col-sm-3 col-lg-3"></div>
+            <div class=" col-12 col-sm-6 col-lg-6 offset-lg-3">
+                <div class="mt-5 col-12 p-2 text-center neumorphic_form">
+                    <div class="container">
+                        <button class="close-icon close" id="closesus"></button>
+                        <p align="center">Please tell us why you think this marker is suspicious. If our staff finds
+                            your reason legitimate, we shall delete this marker</p>
+                        <form method="post" action="suspicious/">
+                            {% csrf_token %}
+                            <div class="row">
+                                <textarea name="comments"></textarea>
                             </div>
-                        </div>
+                            <input name="id" id="ids" hidden value="-1">
+                            <div class="mt-5 col-5">
+                                <input type="submit" class="btn btn-success">
+                            </div>
+                        </form>
                     </div>
-         </div>
+                </div>
+            </div>
+        </div>
     </div>
 {% endblock %}
 
@@ -581,11 +582,11 @@
             name: "OpenStreetMap",
             maxZoom: 18
         }));
-        google.maps.event.addListener(map,'dragend',function(){
+        google.maps.event.addListener(map, 'dragend', function () {
             var coor = map.getCenter();
-            console.log(cen.lat(),cen.lng());
-            console.log(coor.lat(),coor.lng());
-            if(coor.lat()>(cen.lat()+1) || coor.lat()<(cen.lat()-1) || coor.lng()>(cen.lng()+1) || coor.lng()<(cen.lng()-1)){
+            console.log(cen.lat(), cen.lng());
+            console.log(coor.lat(), coor.lng());
+            if (coor.lat() > (cen.lat() + 1) || coor.lat() < (cen.lat() - 1) || coor.lng() > (cen.lng() + 1) || coor.lng() < (cen.lng() - 1)) {
                 console.log(coor);
                 deleteMarkers();
                 getMarkers();
@@ -593,6 +594,7 @@
             }
         });
         var markers = [];
+
         function addMarker(feature) {
             const marker = new google.maps.Marker({
                 position: feature.position,
@@ -604,32 +606,42 @@
                 filldata(feature.id)
             });
         }
-        function setMapOnAll(map){
-            for(i=0;i<markers.length;i++){
+
+        function setMapOnAll(map) {
+            for (i = 0; i < markers.length; i++) {
                 markers[i].setMap(map);
             }
         }
-        function deleteMarkers(){
+
+        function deleteMarkers() {
             setMapOnAll(null);
-            markers=[];
+            markers = [];
         }
+
         var dict = {}//variable used for filter
         function getMarkers() {
             const csrftoken = getCookie('csrftoken');
             var coor = map.getCenter()
             let lat = coor.lat(), lng = coor.lng()
-            console.log(lat,lng)
-            let p=1;
-            function getData(){
+            {#console.log(lat, lng)#}
+            let p = 1;
+
+            function getData() {
                 $.ajax({
                     url: `/marker/`,
-                    data: {lat__gte: lat-1, lat__lte: lat+1, lng__gte: lng-1, lng__lte: lng+1, page: p, ...dict},
+                    data: {
+                        lat__gte: lat - 1,
+                        lat__lte: lat + 1,
+                        lng__gte: lng - 1,
+                        lng__lte: lng + 1,
+                        page: p, ...dict
+                    },
                     success: function (data) {
                         let i;
                         ob = data;
                         console.log(ob);
                         for (i = 0; i < ob.results.length; i++) {
-                            console.log((p-1)*100+i+1,ob.results[i].name)
+                            {#console.log((p - 1) * 100 + i + 1, ob.results[i].name)#}
                             addMarker({
                                 'position': {
                                     'lat': ob.results[i].lat,
@@ -640,59 +652,61 @@
                             })
                         }
                         p++;
-                        if(data.next){
+                        if (data.next) {
                             getData();
                         }
-                    }
-                })}
-                getData();
-            }
-
-
-            function filldata(id) {
-                $.ajax({
-                    url: `/marker/${id}/`,
-                    success: function (data) {
-                        $('#toper').show()
-                        console.log(data)
-                        $('#header').text(data.name)
-                        $('#phone').html(data.Phone)
-                        $('#phone').attr("href", 'tel:' + data.Phone)
-                        $('input:radio[name=ratingm]').val([parseInt(data.care_rating)])
-                        $('#ratingf').text(data.care_rating)
-                        $('input:radio[name=covidm]').val([parseInt(data.covid_rating)])
-                        $('#covidf').text(data.covid_rating)
-                        $('input:radio[name=oxym]').val([parseInt(data.oxygen_rating)])
-                        $('#oxyf').text(data.oxygen_rating)
-                        $('#vent').text(data.ventilator_availability)
-                        $('#oxya').text(data.oxygen_availability)
-                        $('#icu').text(data.icu_availability)
-                        $('input:radio[name=financialm]').val([parseInt(data.financial_rating)])
-                        $('#financialf').text(data.financial_rating)
-                        $('#beds').text(data.beds_available)
-                        $('#cost').text(data.avg_cost)
-                        $('#id').val(data.id)
-                        $('#ids').val(data.id)
-                        $('#imgs').val(data.images)
                     }
                 })
             }
 
-            function getCookie(name) {
-                let cookieValue = null;
-                if (document.cookie && document.cookie !== '') {
-                    const cookies = document.cookie.split(';');
-                    for (let i = 0; i < cookies.length; i++) {
-                        const cookie = cookies[i].trim();
-                        // Does this cookie string begin with the name we want?
-                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                            break;
-                        }
+            getData();
+        }
+
+
+        function filldata(id) {
+            $.ajax({
+                url: `/marker/${id}/`,
+                success: function (data) {
+                    $('#toper').show()
+                    console.log(data)
+                    $('#header').text(data.name)
+                    $('#phone').html(data.Phone)
+                    $('#phone').attr("href", 'tel:' + data.Phone)
+                    $('input:radio[name=ratingm]').val([parseInt(data.care_rating)])
+                    $('#ratingf').text(data.care_rating)
+                    $('input:radio[name=covidm]').val([parseInt(data.covid_rating)])
+                    $('#covidf').text(data.covid_rating)
+                    $('input:radio[name=oxym]').val([parseInt(data.oxygen_rating)])
+                    $('#oxyf').text(data.oxygen_rating)
+                    $('#vent').text(data.ventilator_availability)
+                    $('#oxya').text(data.oxygen_availability)
+                    $('#icu').text(data.icu_availability)
+                    $('input:radio[name=financialm]').val([parseInt(data.financial_rating)])
+                    $('#financialf').text(data.financial_rating)
+                    $('#beds').text(data.beds_available)
+                    $('#cost').text(data.avg_cost)
+                    $('#id').val(data.id)
+                    $('#ids').val(data.id)
+                    $('#imgs').val(data.images)
+                }
+            })
+        }
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
                     }
                 }
-                return cookieValue;
             }
+            return cookieValue;
+        }
 
         //Add your LocationIQ Maps Access Token here (not the API token!)
         locationiq.key = 'pk.959200a41370341f608a91b67be6e8eb';
@@ -712,38 +726,37 @@
 
 
         // Filter variables
-        var oxy = $('input[name="oxyfr"]:checked').val()
-        var fin = $('input[name="financialfr"]:checked').val()
-        var vent = $('input[name="ventfr"]').val()
-        var oxya = $('input[name="oxyafr"]').val()
-        var icu = $('input[name="icufr"]').val()
-        var costmin = $('input[name="price-min"]').val()
-        var costmax = $('input[name="price-max"]').val()
-        var care = $('input[name="carefr"]:checked').val()
-        var covid = $('input[name="covidfr"]:checked').val()
-        var bed = $('input[name="bedf"]').val()
 
-        $('#filtern').on('click', function() {
+
+        $('#filtern').on('click', function () {
             $('#filters').hide()
-            console.log(oxy,fin, icu)
-            dict = {financial_rating__gte: fin,
-                    oxygen_rating__gte: oxy,
-                    ventilator_availability__gte: vent,
-                    oxygen_availability__gte: oxya,
-                    icu_availability__gte: icu,
-                    avg_cost__gte: costmin,
-                    avg_cost__lte: costmax,
-                    care_rating__gte: care,
-                    covid_rating__gte: covid,
-                    beds_available__gte: bed}
+            var oxy = $('input[name="oxyfr"]:checked').val()
+            var fin = $('input[name="financialfr"]:checked').val()
+            var vent = $('input[name="ventfr"]').val()
+            var oxya = $('input[name="oxyafr"]').val()
+            var icu = $('input[name="icufr"]').val()
+            var costmin = $('input[name="price-min"]').val()
+            var costmax = $('input[name="price-max"]').val()
+            var care = $('input[name="carefr"]:checked').val()
+            var covid = $('input[name="covidfr"]:checked').val()
+            var bed = $('input[name="bedf"]').val()
+            console.log(oxy, fin, icu)
+            dict = {
+                financial_rating__gte: fin,
+                oxygen_rating__gte: oxy,
+                ventilator_availability__gte: vent,
+                oxygen_availability__gte: oxya,
+                icu_availability__gte: icu,
+                avg_cost__gte: costmin,
+                avg_cost__lte: costmax,
+                care_rating__gte: care,
+                covid_rating__gte: covid,
+                beds_available__gte: bed
+            }
             console.log(dict)
             deleteMarkers()
             getMarkers()
         })
-
-
-
-
 
 
         $('#closemarker').on('click', function () {
@@ -769,75 +782,7 @@
             $('#toper').hide(id)
             $('#addreview').show(id)
         })
-        {#<!--        function initMap() {-->#}
-        {#<!--            const map = new google.maps.Map(document.getElementById("map"), {-->#}
-        {#<!--                zoom: 12,-->#}
-        {#<!--            });-->#}
-        {#<!--            if (navigator.geolocation) {-->#}
-        {#<!--                navigator.geolocation.getCurrentPosition(function (position) {-->#}
-        {#<!--                    initialLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);-->#}
-        {#<!--                    map.setCenter(initialLocation);-->#}
-        {#<!--                    console.log(initialLocation.lat())-->#}
-        {#<!--                    latleft = Math.round((((initialLocation.lat()) + Number.EPSILON) * 10) - 1) / 100-->#}
-        {#<!--                    latright = Math.round((((initialLocation.lat()) + Number.EPSILON) * 10) + 1) / 100-->#}
-        {#<!--                    longtop = Math.round((((initialLocation.lng()) + Number.EPSILON) * 10) - 1) / 100-->#}
-        {#<!--                    longbottom = Math.round((((initialLocation.lng()) + Number.EPSILON) * 10) + 1) / 100-->#}
-        {#<!--                });-->#}
-        {#<!--            }-->#}
-        {#<!--            function addMarker(feature) {-->#}
-        {#<!--                var marker = new google.maps.Marker({-->#}
-        {#<!--                    position: feature.position,-->#}
-        {#<!--                    icon: icons[feature.size],-->#}
-        {#<!--                    map: map-->#}
-        {#<!--                });-->#}
-        {#<!--                marker.addListener('click', function () {-->#}
-        {#<!--                    filldata(feature.id)-->#}
-        {#<!--                });-->#}
-        {#<!--            }-->#}
-        {#<!--            {% for marker in markers %}-->#}
-        {#<!--                addMarker({-->#}
-        {#<!--                    'position': {-->#}
-        {#<!--                        'lat': {{ marker.lat }},-->#}
-        {#<!--                        'lng': {{ marker.lng }},-->#}
-        {#<!--                    },-->#}
-        {#<!--                    'size':{{ marker.size }},-->#}
-        {#<!--                    'id':{{ marker.id }}-->#}
-        {#<!--                })-->#}
-        {#<!--            {% endfor %}-->#}
-        {#<!--                        function searchData() {-->#}
-        {#<!--                var search = $('#searchTextField').val()-->#}
-        {#<!--                $.ajax({-->#}
-        {#<!--                    'url': `https://maps.googleapis.com/maps/api/geocode/json?address=${search}&bounds=${latleft},${longtop}|${latright},${longbottom}&key=AIzaSyCZrW79d1U3pgQDJlaErgxHQIq-8MRst-c`,-->#}
-        {#<!--                    'success': function (data) {-->#}
-        {#<!--                        console.log(data)-->#}
-        {#<!--                        map.setCenter(data.results[0].geometry.location);-->#}
-        {#<!--                        latleft = Math.round((((data.results[0].geometry.location.lat) + Number.EPSILON) * 10) - 1) / 100-->#}
-        {#<!--                        latright = Math.round((((data.results[0].geometry.location.lat) + Number.EPSILON) * 10) + 1) / 100-->#}
-        {#<!--                        longtop = Math.round((((data.results[0].geometry.location.lng) + Number.EPSILON) * 10) - 1) / 100-->#}
-        {#<!--                        longbottom = Math.round((((data.results[0].geometry.location.lng) + Number.EPSILON) * 10) + 1) / 100-->#}
-        {#<!--                    }-->#}
-        {#<!--                })-->#}
-        {#<!--            }-->#}
-        {#<!--            $("#searchTextField").on('keyup', function (e) {-->#}
-        {#<!--                if (e.key === 'Enter' || e.keyCode === 13) {-->#}
-        {#<!--                    // Do something-->#}
-        {#<!--                    searchData()-->#}
-        {#<!--                }-->#}
-        {#<!--            });-->#}
-        {#<!--            $('#search_button').on('click', searchData)-->#}
-        {#<!--        }-->#}
 
-        {#<!--                $.ajax({-->#}
-        {#<!--                    'url': `https://maps.googleapis.com/maps/api/geocode/json?address=${search}&bounds=${latleft},${longtop}|${latright},${longbottom}&key=AIzaSyCZrW79d1U3pgQDJlaErgxHQIq-8MRst-c`,-->#}
-        {#<!--                    'success': function (data) {-->#}
-        {#<!--                        console.log(data)-->#}
-        {#<!--                        map.setCenter(data.results[0].geometry.location);-->#}
-        {#<!--                        latleft = Math.round((((data.results[0].geometry.location.lat) + Number.EPSILON) * 10) - 1) / 100-->#}
-        {#<!--                        latright = Math.round((((data.results[0].geometry.location.lat) + Number.EPSILON) * 10) + 1) / 100-->#}
-        {#<!--                        longtop = Math.round((((data.results[0].geometry.location.lng) + Number.EPSILON) * 10) - 1) / 100-->#}
-        {#<!--                        longbottom = Math.round((((data.results[0].geometry.location.lng) + Number.EPSILON) * 10) + 1) / 100-->#}
-        {#<!--                    }-->#}
-        {#<!--                })-->#}
 
     </script>
 

@@ -23,7 +23,7 @@
                 {% include 'v2/components/tab_selector.html' with id='mapview' name='Map View' active='' %}
             </div>
             <div class="row my-1  align-self-center" id="filter" role="filterpanel" aria-labelledby="filter-tab">
-                  <div class="col-12 col-md-2 col-lg-2"></div>
+                <div class="col-12 col-md-2 col-lg-2"></div>
                 <div class="col12 col-md-8 col-lg-8 " id="toplevel"></div>
                 {% include 'v2/components/sidebar.html' %}
             </div>
@@ -38,13 +38,17 @@
             </div>
             <div class="row my-2  align-self-center " id="mapview" role="tabpanel" aria-labelledby="mapview-tab">
                 <div class="col-12 col-md-2 col-lg-2"></div>
+                 <div class="col-12 col-md-2 col-lg-2">
+                    {% include 'v2/components/search_result_card.html' with  col='col-6 col-md-12' id='value' %}
+
+                </div>
                 <div class="col12 col-md-8 col-lg-8  " id="toplevel1">
 
-                    {% include 'v2/components/search_result_card.html' with id='value' %}
 
                     <div id="map"></div>
 
                 </div>
+
             </div>
         </div>
     </div>
@@ -60,7 +64,7 @@
             $(target).show()
         })
 
-        $('[data-toggle="filter"]').click(function (){
+        $('[data-toggle="filter"]').click(function () {
             fil = $('#filter-tab')
 
             fil.html(fil.html() === 'Hide Filter' ? 'Show Filter' : 'Hide Filter');

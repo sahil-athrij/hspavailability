@@ -2,8 +2,10 @@
 
 
 <div class="card card-left neumorphic_input card-margin bg-grey">
+    {% if id != 'value' %}
     <img src="{% static 'images/hospital.svg' %}"
          class="card-img-top  p-5"/>
+    {% endif %}
     <div class="card-body card-body-left widget-49 bg-white">
         <h5 class="card-title card-title-left" id="{{ id }}title">{{ marker.name }}</h5>
         <div class="widget-49-meeting-points  row">

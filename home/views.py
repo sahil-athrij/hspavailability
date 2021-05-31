@@ -152,7 +152,7 @@ def suspicious(request):
 class MarkerApiViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
     queryset = Markers.objects.all()
     serializer_class = getMarkerSerializer
-    http_method_names = ["get", 'options']
+    # http_method_names = '__all__'
     filter_backends = [django_filters.rest_framework.DjangoFilterBackend]
     filterset_fields = {'lat':['gte','lte'],'lng':['gte','lte'], 'financial_rating':['gte','lte','exact'],
                         'oxygen_rating':['gte','lte','exact'],'ventilator_availability':['gte','lte','exact'],

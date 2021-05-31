@@ -11,7 +11,7 @@ class getImageSerializer(serializers.ModelSerializer):
 
 
 class getMarkerSerializer(serializers.ModelSerializer):
-    images = getImageSerializer(many=True, required=False)
+    images = getImageSerializer(many=True, required=False,read_only=True)
 
     class Meta:
         model = Markers

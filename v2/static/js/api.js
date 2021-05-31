@@ -89,7 +89,7 @@ class Model {
         data.results.forEach(item => {
             lst.push(new this.modelClass(item, this.baseurl))
         })
-        return lst
+        return {results:lst,next:data.next}
     };
 
     /**

@@ -45,6 +45,14 @@ $('#hspsearch').on('keydown', function (event) {
         return false;
     }
 })
+$($('.mapboxgl-ctrl-geocoder--input')[0]).on('keydown',function (event){
+     if (event.key === "Enter") {
+        event.preventDefault()
+        $('#bottomsearch button')[0].click()
+        return false;
+    }
+})
+
 $('.mapboxgl-ctrl-geocoder').addClass('input-small-rounder')
 $($('.mapboxgl-ctrl-geocoder')[0]).addClass('w-100 input-left')
 $($('.mapboxgl-ctrl-geocoder--input')[0]).attr('name', 'loc')

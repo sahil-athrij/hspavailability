@@ -114,7 +114,7 @@ body {
 }
 
 .move-up{
-    transform: translateY(-3px);
+    transform: translateX(5px) translateY(-2px);
     cursor: pointer;
 }
 #map {

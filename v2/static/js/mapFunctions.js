@@ -36,69 +36,102 @@ function deleteMarkers() {
     markers = [];
 }
 
+
 function getMarkers() {
-    const csrftoken = getCookie('csrftoken');
     var coor = map.getCenter()
-    var LatLon = {csrfmiddlewaretoken: csrftoken, lat: coor.lat(), lng: coor.lng()}
-    console.log(LatLon)
-    $.ajax({
-        type: 'POST',
-        url: `/markers/`,
-        dataType: 'json',
-        data: LatLon,
-        success: function (data) {
-            var i;
-            ob = data;
-            for (i = 0; i < ob.length; i++) {
+
+    let lat = coor.lat(), lng = coor.lng()
+    {
+        console.log(lat, lng)
+    }
+    let p = 1;
+
+    function getData() {
+        var oxy = $('input[name="oxyfr"]:checked').val() | 0
+        var qry = $('input[name="query"]').val()
+        var fin = $('input[name="financialfr"]:checked').val() | 0
+        var vent = $('input[name="ventfr"]').val()| 0
+        var oxya = $('input[name="oxyafr"]').val()| 0
+        var icu = $('input[name="icufr"]').val()| 0
+        var costmin = $('input[name="price-min"]').val()| 0
+        var costmax = $('input[name="price-max"]').val()| 0
+        var care = $('input[name="carefr"]:checked').val()| 0
+        var covid = $('input[name="covidfr"]:checked').val()| 0
+        var bed = $('input[name="bedf"]').val()| 0
+        dict = {
+            search:qry,
+            financial_rating__gte: parseInt(fin),
+            oxygen_rating__gte: parseInt(oxy),
+            ventilator_availability__gte: parseInt(vent),
+            oxygen_availability__gte: parseInt(oxya),
+            icu_availability__gte: parseInt(icu),
+            avg_cost__gte: parseInt(costmin),
+            avg_cost__lte: parseInt(costmax),
+            care_rating__gte: parseInt(care),
+            covid_rating__gte: parseInt(covid),
+            beds_available__gte: parseInt(bed)
+        }
+
+        Marker.filter(kwargs = {
+            lat__gte: lat - 1, lat__lte: lat + 1, lng__gte: lng - 1,
+            lng__lte: lng + 1, page: p, ...dict
+        }).then(function (markerList) {
+            let i;
+            ob = markerList;
+            console.log(ob);
+            for (i = 0; i < ob.results.length; i++) {
+                {
+                    console.log((p - 1) * 100 + i + 1, ob.results[i].name)
+                }
                 addMarker({
                     'position': {
-                        'lat': ob[i].lat,
-                        'lng': ob[i].lng,
+                        'lat': ob.results[i].lat,
+                        'lng': ob.results[i].lng,
                     },
-                    'size': ob[i].size,
-                    'id': ob[i].id
+                    'size': ob.results[i].size,
+                    'id': ob.results[i].id
                 })
             }
-        }
-    })
+            p++;
+            if (markerList.next) {
+                getData();
+            }
+        })
+    }
+
+    getData();
 }
+
 
 function filldata(id) {
-    $.ajax({
-        url: `/marker/${id}/`,
-        success: function (data) {
-            console.log(data)
-            $('#valuetitle').text(data.name)
+
+    Marker.get(id, kwargs).then(function (data) {
+        console.log(data)
+        $('#valuetitle').text(data.name)
+        $('input:radio[name=valuecon]').val([parseInt(data.care_rating)])
+        $('input:radio[name=valueaff]').val([parseInt(data.financial_rating)])
+        $('input:radio[name=valuecov]').val([parseInt(data.covid_rating)])
+        $('input:radio[name=valueoxy]').val([parseInt(data.oxygen_rating)])
+        $('#valueoxy_output').text(data.oxygen_rating)
+        $('#valuecov_output').text(data.covid_rating)
+        $('#valueaff_output').text(data.financial_rating)
+        $('#valuecon_output').text(data.care_rating)
+
+        $('#valuecost').text(data.avg_cost)
+        $('#valueventa').text(data.ventilator_availability)
+        $('#valueoxya').text(data.oxygen_availability)
+        $('#valueicu').text(data.icu_availability)
+
+        $('#valueredirect').attr('href', `/v2/details/${data.id}`)
+        $('#phone').html(data.Phone)
+        $('#phone').attr("href", 'tel:' + data.Phone)
 
 
-            $('input:radio[name=valuecon]').val([parseInt(data.care_rating)])
-            $('input:radio[name=valueaff]').val([parseInt(data.financial_rating)])
-            $('input:radio[name=valuecov]').val([parseInt(data.covid_rating)])
-            $('input:radio[name=valueoxy]').val([parseInt(data.oxygen_rating)])
-            $('#valueoxy_output').text(data.oxygen_rating)
-            $('#valuecov_output').text(data.covid_rating)
-            $('#valueaff_output').text(data.financial_rating)
-            $('#valuecon_output').text(data.care_rating)
-
-            $('#valuecost').text(data.avg_cost)
-            $('#valueventa').text(data.ventilator_availability)
-            $('#valueoxya').text(data.oxygen_availability)
-            $('#valueicu').text(data.icu_availability)
-
-            $('#valueredirect').attr('href', `/v2/details/${data.id}`)
-
-            $('#phone').html(data.Phone)
-            $('#phone').attr("href", 'tel:' + data.Phone)
-
-
-            $('#id').val(data.id)
-            $('#ids').val(data.id)
-        }
+        $('#id').val(data.id)
+        $('#ids').val(data.id)
     })
 }
 
-
-let map; //complex object of type OpenLayers.Map
 
 var element = document.getElementById("map");
 var cen;
@@ -106,7 +139,8 @@ map = new google.maps.Map(element, {
     zoom: 12,
     mapTypeId: "OSM",
     mapTypeControl: false,
-    streetViewControl: false
+    streetViewControl: false,
+
 });
 
 map.setCenter({lat: latitude, lng: longitude})
@@ -115,7 +149,6 @@ cen = initialLocation;
 
 getMarkers()
 setBoundBox(latitude, longitude)
-
 
 map.mapTypes.set("OSM", new google.maps.ImageMapType({
     getTileUrl: function (coord, zoom) {

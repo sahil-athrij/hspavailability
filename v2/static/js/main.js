@@ -4,6 +4,13 @@ let url = new URL(url_string);
 let ipsearchurl = `https://ipapi.co/${ip}/json/`
 let latitude = ''
 let longitude = ''
+let map = ''//complex object of type OpenLayers.Map
+let dict = {};
+
+let state = {}
+
+
+
 locationiq.key = 'pk.959200a41370341f608a91b67be6e8eb';
 
 function getCookie(name) {

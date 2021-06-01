@@ -96,10 +96,10 @@ def update_marker(id):
     ob.covid_rating = round(sum(covid) / dens, 1)
     ob.beds_available = sum(bed)
     ob.care_rating = round(sum(care) / dens, 1)
-    ob.oxygen_rating = round(sum(oxy) / sum(deno), 1)
-    ob.ventilator_availability = round(sum(vent) * 100 / sum(denv), 2)
-    ob.oxygen_availability = round(sum(oxya) * 100 / sum(denoa), 2)
-    ob.icu_availability = round(sum(icu) * 100 / sum(deni), 2)
+    ob.oxygen_rating = round(sum(oxy) / sum(deno), 1) if deno else 0
+    ob.ventilator_availability = round(sum(vent) * 100 / sum(denv), 2) if denv else 0
+    ob.oxygen_availability = round(sum(oxya) * 100 / sum(denoa), 2) if denoa else 0
+    ob.icu_availability = round(sum(icu) * 100 / sum(deni), 2) if deni else 0
     ob.save()
 
 
@@ -121,24 +121,25 @@ class MarkerApiViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
     queryset = Markers.objects.all().order_by('id')
     serializer_class = getMarkerSerializer
     # http_method_names = '__all__'
-    filter_backends = [filters.SearchFilter,django_filters.rest_framework.DjangoFilterBackend]
+    filter_backends = [filters.SearchFilter, django_filters.rest_framework.DjangoFilterBackend]
     search_fields = ['name']
-    filterset_fields = {'lat':['gte','lte'],'lng':['gte','lte'], 'financial_rating':['gte','lte','exact'],
-                        'oxygen_rating':['gte','lte','exact'],'ventilator_availability':['gte','lte','exact'],
-                        'oxygen_availability':['gte','lte','exact'], 'icu_availability':['gte','lte','exact'], 'avg_cost':['gte','lte','exact'],
-                        'care_rating':['gte','lte','exact'], 'covid_rating':['gte','lte','exact'], 'beds_available':['gte','lte','exact']}
+    filterset_fields = {'lat': ['gte', 'lte'], 'lng': ['gte', 'lte'], 'financial_rating': ['gte', 'lte', 'exact'],
+                        'oxygen_rating': ['gte', 'lte', 'exact'], 'ventilator_availability': ['gte', 'lte', 'exact'],
+                        'oxygen_availability': ['gte', 'lte', 'exact'], 'icu_availability': ['gte', 'lte', 'exact'],
+                        'avg_cost': ['gte', 'lte', 'exact'],
+                        'care_rating': ['gte', 'lte', 'exact'], 'covid_rating': ['gte', 'lte', 'exact'],
+                        'beds_available': ['gte', 'lte', 'exact']}
+
 
 class ReviewViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
     queryset = Reviews.objects.all()
     serializer_class = getReviewSerializer
 
     def create(self, request, *args, **kwargs):
-        print(self)
-        print(kwargs)
-        print(request.POST)
-        response = super().create(self, request, *args, **kwargs)
-        mob = Markers.objects.get(id = self.Marker_id)
-        self.day = self.datef - mob.datef
-        self.save()
-        update_marker(self.Marker_id)
+        response = viewsets.ModelViewSet.create(self, request, *args, **kwargs)
+        mob = Markers.objects.get(id=response.data['marker'])
+        rev = Reviews.objects.get(id=response.data['id'])
+        rev.day = (rev.datef - mob.datef).days
+        rev.save()
+        update_marker(response.data['marker'])
         return response

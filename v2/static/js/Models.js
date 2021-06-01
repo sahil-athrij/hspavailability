@@ -69,25 +69,25 @@ Marker.get(id = 5).then(function (marker) {
     marker.save()
 })
 
-class ReviewObject extends ModelObject{
-            id;
-            marker_id;
-            financial_rating;
-            avg_cost;
-            covid_rating;
-            care_rating;
-            oxygen_rating;
-            beds_available;
-            ventilator_availability;
-            oxygen_availability;
-            icu_availability;
-            comment;
-            written_by_id;
-            datef;
-            day;
-            images;
-            fields;
-            excluded_fields;
+class ReviewObject extends ModelObject {
+    id;
+    marker_id;
+    financial_rating;
+    avg_cost;
+    covid_rating;
+    care_rating;
+    oxygen_rating;
+    beds_available;
+    ventilator_availability;
+    oxygen_availability;
+    icu_availability;
+    comment;
+    written_by_id;
+    datef;
+    day;
+    images;
+    fields;
+    excluded_fields;
 
     constructor(data, baseUrl) {
 

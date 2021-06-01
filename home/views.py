@@ -17,38 +17,7 @@ def index(request):
 
 
 def modify(request):
-    if request.method == 'POST':
-
-        print(request.POST)
-
-        if int(request.POST['id']) != -1:
-            ob = Markers.objects.get(id=int(request.POST['id']))
-        else:
-            ob = Markers.objects.create()
-
-        ob.name = request.POST['name']
-        ob.Phone = request.POST['phone']
-        ob.size = int(request.POST['size'])
-        ob.financial_rating = int(request.POST['financial'])
-        ob.avg_cost = int(request.POST['cost'])
-        ob.covid_rating = int(request.POST['covid'])
-        ob.beds_available = int(request.POST['beds'])
-        ob.care_rating = int(request.POST['care'])
-        ob.oxygen_rating = int(request.POST['oxy'])
-        ob.ventilator_availability = int(request.POST['vent'])
-        ob.oxygen_availability = int(request.POST['oxya'])
-        ob.icu_availability = int(request.POST['icu'])
-        ob.lat = float(request.POST['lat'])
-        ob.lng = float(request.POST['lng'])
-        ob.datef = request.POST['datef']
-        ob.added_by = request.user
-        if 'hospital_pic' in request.FILES:
-            im = Images.get_or_create(image=request.FILES['hospital_pic'], hospital='id')
-        im.save()
-        ob.save()
-
-    markers = Markers.objects.all()
-    return render(request, template_name='home/forms.html', context={'markers': markers})
+    return render(request, template_name='home/forms.html')
 
 
 def add_review(request):
@@ -109,7 +78,7 @@ def update_marker(id):
         bed.append(d * x.beds_available)
         care.append(d * x.care_rating)
         if x.oxygen_rating != 0:
-            oxy.append(d * (x.oxygen_rating))
+            oxy.append(d * x.oxygen_rating)
             deno.append(d)
         if x.ventilator_availability != 0:
             vent.append(d * (x.ventilator_availability - 1))
@@ -156,3 +125,18 @@ class MarkerApiViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
                         'oxygen_rating':['gte','lte','exact'],'ventilator_availability':['gte','lte','exact'],
                         'oxygen_availability':['gte','lte','exact'], 'icu_availability':['gte','lte','exact'], 'avg_cost':['gte','lte','exact'],
                         'care_rating':['gte','lte','exact'], 'covid_rating':['gte','lte','exact'], 'beds_available':['gte','lte','exact']}
+
+class ReviewViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
+    queryset = Reviews.objects.all()
+    serializer_class = getReviewSerializer
+
+    def create(self, request, *args, **kwargs):
+        print(self)
+        print(kwargs)
+        print(request.POST)
+        response = super().create(self, request, *args, **kwargs)
+        mob = Markers.objects.get(id = self.Marker_id)
+        self.day = self.datef - mob.datef
+        self.save()
+        update_marker(self.Marker_id)
+        return response

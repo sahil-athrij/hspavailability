@@ -15,6 +15,7 @@ class MarkerObject extends ModelObject {
     lat;
     lng;
     datef;
+    added_by_id;
     images;
     name;
     fields;
@@ -25,7 +26,7 @@ class MarkerObject extends ModelObject {
         super(data, baseUrl);
         this.fields = ["id", "Phone", "size", "financial_rating", "avg_cost", "covid_rating", "beds_available", "care_rating",
             "oxygen_rating", "ventilator_availability", "oxygen_availability", "icu_availability", "lat", "lng", "images", "name", "datef"]
-        this.excluded_fields = ['image']
+        this.excluded_fields = ['image', 'added_by_id']
         this.getData()
 
     }
@@ -67,3 +68,34 @@ Marker.get(id = 5).then(function (marker) {
     marker.size = 1
     marker.save()
 })
+
+class ReviewObject extends ModelObject{
+            id;
+            marker_id;
+            financial_rating;
+            avg_cost;
+            covid_rating;
+            care_rating;
+            oxygen_rating;
+            beds_available;
+            ventilator_availability;
+            oxygen_availability;
+            icu_availability;
+            comment;
+            written_by_id;
+            datef;
+            day;
+            images;
+            fields;
+            excluded_fields;
+
+    constructor(data, baseUrl) {
+
+        super(data, baseUrl);
+        this.fields = ["id", "marker", "financial_rating", "avg_cost", "covid_rating", "beds_available", "care_rating",
+            "oxygen_rating", "ventilator_availability", "oxygen_availability", "icu_availability", "comment", "datef", "images", "day"]
+        this.excluded_fields = ['image', 'written_by_id']
+        this.getData()
+
+    }
+}

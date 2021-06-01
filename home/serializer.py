@@ -18,7 +18,7 @@ class getMarkerSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'name', 'Phone', 'size', 'financial_rating', 'avg_cost', 'covid_rating', 'beds_available',
             'care_rating', 'oxygen_rating', 'ventilator_availability', 'oxygen_availability', 'icu_availability',
-            'lat', 'lng', 'images'
+            'lat', 'lng', 'datef', 'added_by_id', 'images'
         ]
 
 
@@ -28,6 +28,6 @@ class getReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Reviews
         fields = [
-            'ids', 'M_id', 'fin', 'cost', 'covid', 'care', 'oxy', 'beds', 'vent', 'oxya', 'icu', 'comment', 'written',
-            'images'
+            'id', 'marker', 'financial_rating', 'avg_cost', 'covid_rating', 'care_rating', 'oxygen_rating', 'beds_available',
+            'ventilator_availability', 'oxygen_availability', 'icu_availability', 'comment', 'written_by_id', 'images'
         ]

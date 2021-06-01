@@ -700,28 +700,7 @@
 
         $('#filtern').on('click', function () {
             $('#filters').hide()
-            var oxy = $('input[name="oxyfr"]:checked').val()
-            var fin = $('input[name="financialfr"]:checked').val()
-            var vent = $('input[name="ventfr"]').val()
-            var oxya = $('input[name="oxyafr"]').val()
-            var icu = $('input[name="icufr"]').val()
-            var costmin = $('input[name="price-min"]').val()
-            var costmax = $('input[name="price-max"]').val()
-            var care = $('input[name="carefr"]:checked').val()
-            var covid = $('input[name="covidfr"]:checked').val()
-            var bed = $('input[name="bedf"]').val()
-            dict = {
-                financial_rating__gte: fin,
-                oxygen_rating__gte: oxy,
-                ventilator_availability__gte: vent,
-                oxygen_availability__gte: oxya,
-                icu_availability__gte: icu,
-                avg_cost__gte: costmin,
-                avg_cost__lte: costmax,
-                care_rating__gte: care,
-                covid_rating__gte: covid,
-                beds_available__gte: bed
-            }
+
             console.log(dict)
             deleteMarkers()
             getMarkers()

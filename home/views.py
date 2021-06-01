@@ -1,7 +1,8 @@
 import django_filters
+import rest_framework
 from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import render
-from rest_framework import viewsets, generics
+from rest_framework import viewsets, generics, filters
 
 from .models import Markers, Reviews, SuspiciousMarking, Images
 import datetime
@@ -43,7 +44,7 @@ def modify(request):
         ob.datef = request.POST['datef']
         ob.added_by = request.user
         if 'hospital_pic' in request.FILES:
-            im = Images.get_or_create(image=request.FILES['hospital_pic'], hospital='id')
+            im = Images.objects.get_or_create(image=request.FILES['hospital_pic'], hospital='id')
         im.save()
         ob.save()
 
@@ -148,11 +149,15 @@ def suspicious(request):
 
 
 class MarkerApiViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
-    queryset = Markers.objects.all()
+    queryset = Markers.objects.all().order_by('id')
     serializer_class = getMarkerSerializer
     # http_method_names = '__all__'
-    filter_backends = [django_filters.rest_framework.DjangoFilterBackend]
-    filterset_fields = {'lat':['gte','lte'],'lng':['gte','lte'], 'financial_rating':['gte','lte','exact'],
-                        'oxygen_rating':['gte','lte','exact'],'ventilator_availability':['gte','lte','exact'],
-                        'oxygen_availability':['gte','lte','exact'], 'icu_availability':['gte','lte','exact'], 'avg_cost':['gte','lte','exact'],
-                        'care_rating':['gte','lte','exact'], 'covid_rating':['gte','lte','exact'], 'beds_available':['gte','lte','exact']}
+    filter_backends = [filters.SearchFilter,django_filters.rest_framework.DjangoFilterBackend]
+    search_fields = ['name']
+    filterset_fields = {'lat': ['gte', 'lte'], 'lng': ['gte', 'lte'], 'financial_rating': ['gte', 'lte', 'exact'],
+                        'oxygen_rating': ['gte', 'lte', 'exact'], 'ventilator_availability': ['gte', 'lte', 'exact'],
+                        'oxygen_availability': ['gte', 'lte', 'exact'], 'icu_availability': ['gte', 'lte', 'exact'],
+                        'avg_cost': ['gte', 'lte', 'exact'],
+                        'care_rating': ['gte', 'lte', 'exact'], 'covid_rating': ['gte', 'lte', 'exact'],
+                        'beds_available': ['gte', 'lte', 'exact'],
+                        }

@@ -1,7 +1,7 @@
-
 let lat = url.searchParams.get("lat")
 let lng = url.searchParams.get("lng")
 let query = url.searchParams.get("query")
+let loc = url.searchParams.get("loc")
 
 if (lat) {
     $('#lat').val(parseFloat(lat))
@@ -15,6 +15,7 @@ if (query) {
     $('#hspsearch').val(query)
 }
 
+
 var geocoder = new MapboxGeocoder({
     accessToken: locationiq.key,
     limit: 5,
@@ -26,18 +27,29 @@ var geocoder = new MapboxGeocoder({
         longitude = parseFloat(item.lon)
         $('#lat').val(latitude)
         $('#lng').val(longitude)
-        if (map) {
+        if (typeof map === 'object') {
             map.setCenter({lat: item.center[1], lng: item.center[0]})
         }
-        if (getMarkers) {
+        if (typeof getMarkers === "function") {
             getMarkers()
         }
         return item.place_name
     }
 });
 geocoder.addTo('#search-box');
+
+$('#hspsearch').on('keydown', function (event) {
+    if (event.key === "Enter") {
+        // event.preventDefault()
+        $('#bottomsearch button')[0].click()
+        return false;
+    }
+})
 $('.mapboxgl-ctrl-geocoder').addClass('input-small-rounder')
 $($('.mapboxgl-ctrl-geocoder')[0]).addClass('w-100 input-left')
+$($('.mapboxgl-ctrl-geocoder--input')[0]).attr('name', 'loc')
+$($('.mapboxgl-ctrl-geocoder--input')[0]).attr('id', 'loc')
+$($('.mapboxgl-ctrl-geocoder--input')[0]).attr('autocomplete', "off")
 $($('.mapboxgl-ctrl-geocoder--icon')[0]).html(`
 <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
  viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve">
@@ -59,7 +71,10 @@ C316.1,212.683,289.784,240.2,256,240.2z"/>
 </g>
 </svg>
 `)
+if (loc) {
+    $($('.mapboxgl-ctrl-geocoder--input')[0]).val(loc)
 
+}
 
 if (!lat || !lng) {
     setupLatLng()

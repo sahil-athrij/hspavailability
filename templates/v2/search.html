@@ -15,7 +15,7 @@
     {% include 'nav.html' %}
     <div class="d-flex">
         <div class="container my-5 py-5 ">
-            <div class="text-center h3 p-3">Search Results</div>
+            <div class="text-center h3 p-3 pt-5 pt-sm-3">Search Results</div>
 
             <div class="text-center ">
                 {% include 'v2/components/tab_selector.html' with id='filter' name='Hide Filter' active='filterpanel' tab='filter' %}
@@ -32,7 +32,7 @@
                 <div class="col-12 col-md-2 col-lg-2"></div>
                 <div class="col12 col-md-8 col-lg-8 " id="toplevel">
                     {% for marker in search_results %}
-                        {% include 'v2/components/search_result_card.html' with id=marker.id %}
+                        {% include 'v2/components/search_result_card.html' with id=marker.id col='col-6' %}
                     {% endfor %}
                 </div>
             </div>

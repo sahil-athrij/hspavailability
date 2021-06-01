@@ -8,7 +8,7 @@ from .views import index, modify, add_review, suspicious, MarkerApiViewSet
 from django.conf import settings
 from django.conf.urls.static import static
 router = DefaultRouter()
-router.register(r'', MarkerApiViewSet)
+router.register(r'marker', MarkerApiViewSet)
 urlpatterns = [
     path('', index),
     path('modify/', modify),
@@ -16,4 +16,4 @@ urlpatterns = [
     path('suspicious/',suspicious),
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-urlpatterns+=[path(r'marker/', include(router.urls))]
+urlpatterns+=[path(r'', include(router.urls))]

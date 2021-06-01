@@ -71,8 +71,6 @@ def add_review(request):
         d = ob.datef - mob.datef
         ob.day = d.days
         ob.save()
-        if 'review_pic' in request.Files:
-            pass
         update_marker(id)
 
     return HttpResponseRedirect('/')

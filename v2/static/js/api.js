@@ -8,6 +8,7 @@ async function get(url, kwargs = {}) {
 
 async function post(url, kwargs = {}) {
     kwargs['csrfmiddlewaretoken'] = getCookie('csrftoken');
+    console.log(getCookie('csrftoken'))
     const response = await fetch(url, {
             method: 'POST', // *GET, POST, PUT, DELETE, etc.
             headers: {'Content-Type': 'application/json'},
@@ -19,6 +20,7 @@ async function post(url, kwargs = {}) {
 
 async function patch(url, kwargs = {}) {
     kwargs['csrfmiddlewaretoken'] = getCookie('csrftoken');
+    console.log(getCookie('csrftoken'));
     const response = await fetch(url, {
             method: 'PATCH', // *GET, POST, PUT, DELETE, etc.
             headers: {'Content-Type': 'application/json'},

@@ -14,6 +14,7 @@ class MarkerObject extends ModelObject {
     icu_availability;
     lat;
     lng;
+    datef;
     images;
     name;
     fields;
@@ -23,7 +24,7 @@ class MarkerObject extends ModelObject {
 
         super(data, baseUrl);
         this.fields = ["id", "Phone", "size", "financial_rating", "avg_cost", "covid_rating", "beds_available", "care_rating",
-            "oxygen_rating", "ventilator_availability", "oxygen_availability", "icu_availability", "lat", "lng", "images", "name"]
+            "oxygen_rating", "ventilator_availability", "oxygen_availability", "icu_availability", "lat", "lng", "images", "name", "datef"]
         this.excluded_fields = ['image']
         this.getData()
 

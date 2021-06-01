@@ -3,14 +3,32 @@
 
 {% block css %}
     <link href="{% static 'css/form.css' %}" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/gh/alphardex/aqua.css/dist/aqua.min.css" rel="stylesheet"/>
+    <script src="https://tiles.locationiq.com/v2/libs/gl-geocoder/4.5.1/locationiq-gl-geocoder.min.js?v=0.2.2"></script>
+    <link rel="stylesheet" href="https://tiles.locationiq.com/v2/libs/gl-geocoder/4.5.1/locationiq-gl-geocoder.css?v=0.2.2" type="text/css">
+    <script src="https://tiles.locationiq.com/v2/js/liq-styles-ctrl-gl.js?v=0.1.6"></script>
+    <link href="https://tiles.locationiq.com/v2/css/liq-styles-ctrl-gl.css?v=0.1.6" rel="stylesheet">
 {% endblock %}
 
 {% block body %}
 
-    <div id="map"></div>
-
+    <div id="map" class="mp"></div>
+    <div class="overlay">
+            <div class="pt-5  row">
+                {% csrf_token %}
+                <div class="col col-md-8 offset-md-2">
+                    <div class="row neumorphic_form">
+                        <div class="col-10">
+                            <div class="container">
+                                <div id="search-box"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
     <div class="container">
-        <form method="post" action="">
+        <div class="form">
             {% csrf_token %}
             <div class="row">
                 <div class="form-group col">
@@ -19,7 +37,7 @@
                 </div>
                 <div class="form-group col">
                     <label for="phone">Phone</label>
-                    <input type="text" class="form-control" id="phone" placeholder="Enter Phone" name="phone">
+                    <input type="text" class="form-control" id="phone" placeholder="Enter Phone" name="Phone">
                 </div>
             </div>
 
@@ -86,26 +104,25 @@
                 </div>
             </div>
             <div class="row">
-                <label for="datef" class="form-label">Date(input current date)</label>
+                <label for="datef" class="form-label">Date(input current date if it is a new marker)</label>
                 <input type="date" id="datef" name="datef">
             </div>
             <input id="id" name="id" hidden value="-1">
             <div class="row mt-5">
                 <div class="col">
 
-                    <input type="submit" class="btn btn-success">
+                    <input type="submit" id="mod" class="btn btn-success">
                 </div>
             </div>
 
 
-        </form>
+        </div>
 
     </div>
 {% endblock %}
 
 {% block script %}
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCZrW79d1U3pgQDJlaErgxHQIq-8MRst-c&callback=initMap&libraries=&v=weekly"
-            async></script>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
     <script>
 
 
@@ -117,79 +134,219 @@
 
         ]
 
-        function filldata(id) {
-            $.ajax({
-                url: `/more_info/${id}/`,
-                success: function (data) {
-                    console.log(data)
-                    $('#id').val(data.id)
-                    $('#name').val(data.name)
-                    $('#phone').val(data.Phone)
-                    $('#lat').val(data.lat)
-                    $('#lng').val(data.lng)
-                    $('#size').val(data.size)
-                    $('#financial').val(data.financial_rating)
-                    $('#oxy').val(data.oxygen_rating)
-                    $('#vent').val(data.ventilator_availability)
-                    $('#oxya').val(data.oxygen_availability)
-                    $('#icu').val(data.icu_availability)
-                    $('#cost').val(data.avg_cost)
-                    $('#care').val(data.care_rating)
-                    $('#beds').val(data.beds_available)
-                    $('#covid').val(data.covid_rating)
-                    $('#datef').val(data.datef)
+        // Start position for the map (hardcoded here for simplicity,
+        // but maybe you want to get from URL params)
+        var lat = 10.0
+        var lon = 50.0
+        var zoom = 12
+        var map; //complex object of type OpenLayers.Map
+
+        var element = document.getElementById("map");
+        var cen;
+
+        map = new google.maps.Map(element, {
+            zoom: 12,
+            mapTypeId: "OSM",
+            mapTypeControl: false,
+            streetViewControl: false
+        });
+        if (navigator.geolocation) {
+
+            navigator.geolocation.getCurrentPosition(function (position) {
+                initialLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+                map.setCenter(initialLocation)
+                console.log(initialLocation.lat())
+                cen = initialLocation;
+                getMarkers()
+                latleft = Math.round((((initialLocation.lat()) + Number.EPSILON) * 10) - 1) / 100
+                latright = Math.round((((initialLocation.lat()) + Number.EPSILON) * 10) + 1) / 100
+                longtop = Math.round((((initialLocation.lng()) + Number.EPSILON) * 10) - 1) / 100
+                longbottom = Math.round((((initialLocation.lng()) + Number.EPSILON) * 10) + 1) / 100
+
+            });
+        }
+
+        //Define OSM map type pointing at the OpenStreetMap tile server
+        map.mapTypes.set("OSM", new google.maps.ImageMapType({
+            getTileUrl: function (coord, zoom) {
+                // "Wrap" x (longitude) at 180th meridian properly
+                // NB: Don't touch coord.x: because coord param is by reference, and changing its x property breaks something in Google's lib
+                var tilesPerGlobe = 1 << zoom;
+                var x = coord.x % tilesPerGlobe;
+                if (x < 0) {
+                    x = tilesPerGlobe + x;
                 }
+                // Wrap y (latitude) in a like manner if you want to enable vertical infinite scrolling
+
+                return "https://tile.openstreetmap.org/" + zoom + "/" + x + "/" + coord.y + ".png";
+            },
+            tileSize: new google.maps.Size(256, 256),
+            name: "OpenStreetMap",
+            maxZoom: 18
+        }));
+        google.maps.event.addListener(map, 'dragend', function () {
+            var coor = map.getCenter();
+            console.log(cen.lat(), cen.lng());
+            console.log(coor.lat(), coor.lng());
+            if (coor.lat() > (cen.lat() + 1) || coor.lat() < (cen.lat() - 1) || coor.lng() > (cen.lng() + 1) || coor.lng() < (cen.lng() - 1)) {
+                console.log(coor);
+                deleteMarkers();
+                getMarkers();
+                cen = coor;
+            }
+        });
+        var markers = [];
+
+        function addMarker(feature) {
+            const marker = new google.maps.Marker({
+                position: feature.position,
+                icon: icons[feature.size],
+                map: map
+            });
+            markers.push(marker);
+            marker.addListener('click', function () {
+                filldata(feature.id)
+            });
+        }
+
+        function setMapOnAll(map) {
+            for (i = 0; i < markers.length; i++) {
+                markers[i].setMap(map);
+            }
+        }
+
+        function deleteMarkers() {
+            setMapOnAll(null);
+            markers = [];
+        }
+
+        var dict = {}//variable used for filter
+        Marker = new Model('/marker/', MarkerObject)
+        function getMarkers() {
+            var coor = map.getCenter()
+            let lat = coor.lat(), lng = coor.lng()
+            {console.log(lat, lng)}
+            let p = 1;
+
+            function getData() {
+                Marker.filter(kwargs = {lat__gte: lat - 1, lat__lte: lat + 1, lng__gte: lng - 1,
+                lng__lte: lng + 1, page: p, ...dict}).then(function (markerList){
+                        let i;
+                        ob = markerList;
+                        console.log(ob);
+                        for (i = 0; i < ob.results.length; i++) {
+                            {console.log((p - 1) * 100 + i + 1, ob.results[i].name)}
+                            addMarker({
+                                'position': {
+                                    'lat': ob.results[i].lat,
+                                    'lng': ob.results[i].lng,
+                                },
+                                'size': ob.results[i].size,
+                                'id': ob.results[i].id
+                            })
+                        }
+                        p++;
+                        if (markerList.next) {
+                            getData();
+                        }
+                })
+            }
+            getData();
+        }
+
+        Current_Marker = {}
+        function filldata(id) {
+            Marker.get(id = id, kwargs = {}).then(function(marker){
+                    console.log(marker)
+                    $('#id').val(marker.id)
+                    $('#name').val(marker.name)
+                    $('#phone').val(marker.Phone)
+                    $('#lat').val(marker.lat)
+                    $('#lng').val(marker.lng)
+                    $('#size').val(marker.size)
+                    $('#financial').val(marker.financial_rating)
+                    $('#oxy').val(marker.oxygen_rating)
+                    $('#vent').val(marker.ventilator_availability)
+                    $('#cost').val(marker.avg_cost)
+                    $('#care').val(marker.care_rating)
+                    $('#beds').val(marker.beds_available)
+                    $('#covid').val(marker.covid_rating)
+                    $('#oxya').text(marker.oxygen_availability)
+                    $('#icu').text(marker.icu_availability)
+                    Current_Marker = marker
             })
         }
 
-        function initMap() {
-
-            const map = new google.maps.Map(document.getElementById("map"), {
-                zoom: 12,
-            });
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function (position) {
-                    initialLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-                    map.setCenter(initialLocation);
-                });
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
             }
-            let infoWindow = new google.maps.InfoWindow({
-                content: "Click the map to get Lat/Lng!",
-            });
-            infoWindow.open(map);
+            return cookieValue;
+        }
 
-            function addMarker(feature) {
-                var marker = new google.maps.Marker({
-                    position: feature.position,
-                    icon: icons[feature.size],
-                    map: map
-                });
-                marker.addListener('click', function () {
-                    filldata(feature.id)
-                });
+        //Add your LocationIQ Maps Access Token here (not the API token!)
+        locationiq.key = 'pk.959200a41370341f608a91b67be6e8eb';
+
+        //Add Geocoder control to the map
+        var geocoder = new MapboxGeocoder({
+            accessToken: locationiq.key,
+            limit: 5,
+            dedupe: 1,
+            getItemValue: function (item) {
+                map.setCenter({lat: item.center[1], lng: item.center[0]})
+                getMarkers()
+                return item.place_name
             }
-            {% for marker in markers %}
-                addMarker({
-                    'position': {
-                        'lat': {{ marker.lat }},
-                        'lng': {{ marker.lng }},
-                    },
-                    'size':{{ marker.size }},
-                    'id':{{ marker.id }}
-                })
+        });
+        geocoder.addTo('#search-box');
+        $('#mod').on('click', function(){
+            let id = $('#id').val()
+            let name = $('input[name="name"]').val()
+            let Phone = $('input[name="Phone"]').val()
+            let lat = $('input[name="lat"]').val()
+            let lng = $('input[name="lng"]').val()
+            let size = $('input[name="size"]').val()
+            let oxy = $('input[name="oxy"]').val()
+            let fin = $('input[name="financial"]').val()
+            let vent = $('input[name="vent"]').val()
+            let oxya = $('input[name="oxya"]').val()
+            let icu = $('input[name="icu"]').val()
+            let cost = $('input[name="cost"]').val()
+            let care = $('input[name="care"]').val()
+            let covid = $('input[name="covid"]').val()
+            let beds = $('input[name="beds"]').val()
+            let date = $('input[name="datef"]').val()
+            let dictm ={id:id, name:name, Phone:Phone, size:size, financial_rating:fin, avg_cost:cost,
+                        covid_rating:covid, beds_available:beds, care_rating:care, oxygen_rating:oxy,
+                        ventilator_availability:vent, oxygen_availability:oxya, icu_availability:icu,
+                        lat:lat, lng:lng, datef:date}
+            console.log(id)
+            if(id!=-1){
+                Current_Marker.data = dictm
+                console.log(Current_Marker)
+                Current_Marker.getData()
+                Current_Marker.save()
+            }
+            else{
+                Marker.create(kwargs=dictm)
+            }
+        })
 
-            {% endfor %}
-            map.addListener("click", (mapsMouseEvent) => {
+        map.addListener("click", (mapsMouseEvent) => {
                 $('#id').val(-1)
                 console.log(mapsMouseEvent.latLng)
                 $('#lat').val(mapsMouseEvent.latLng.lat)
                 $('#lng').val(mapsMouseEvent.latLng.lng)
-                infoWindow.open(map);
-            });
-
-
-        }
-
+        });
     </script>
 
 

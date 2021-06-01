@@ -29,8 +29,6 @@
                         <div class="container">
                             <div id="search-box"></div>
                         </div>
-                        <!--                        <input type="search" class=" form-control wow" placeholder="Search" name="search"-->
-                        <!--                               aria-label="Search" id="searchTextField">-->
                     </div>
                     <div class="col-1">
                         <button id="filter" type="button" class="btn btn-outline-primary">Filter</button>
@@ -619,29 +617,21 @@
         }
 
         var dict = {}//variable used for filter
+        Marker = new Model('/marker/', MarkerObject)
         function getMarkers() {
-            const csrftoken = getCookie('csrftoken');
             var coor = map.getCenter()
             let lat = coor.lat(), lng = coor.lng()
-            {#console.log(lat, lng)#}
+            {console.log(lat, lng)}
             let p = 1;
 
             function getData() {
-                $.ajax({
-                    url: `/marker/`,
-                    data: {
-                        lat__gte: lat - 1,
-                        lat__lte: lat + 1,
-                        lng__gte: lng - 1,
-                        lng__lte: lng + 1,
-                        page: p, ...dict
-                    },
-                    success: function (data) {
+                Marker.filter(kwargs = {lat__gte: lat - 1, lat__lte: lat + 1, lng__gte: lng - 1,
+                lng__lte: lng + 1, page: p, ...dict}).then(function (markerList){
                         let i;
-                        ob = data;
+                        ob = markerList;
                         console.log(ob);
                         for (i = 0; i < ob.results.length; i++) {
-                            {#console.log((p - 1) * 100 + i + 1, ob.results[i].name)#}
+                            {console.log((p - 1) * 100 + i + 1, ob.results[i].name)}
                             addMarker({
                                 'position': {
                                     'lat': ob.results[i].lat,
@@ -652,10 +642,9 @@
                             })
                         }
                         p++;
-                        if (data.next) {
+                        if (markerList.next) {
                             getData();
                         }
-                    }
                 })
             }
 
@@ -664,48 +653,29 @@
 
 
         function filldata(id) {
-            $.ajax({
-                url: `/marker/${id}/`,
-                success: function (data) {
+            Marker.get(id = id, kwargs = {}).then(function(marker){
                     $('#toper').show()
-                    console.log(data)
-                    $('#header').text(data.name)
-                    $('#phone').html(data.Phone)
-                    $('#phone').attr("href", 'tel:' + data.Phone)
-                    $('input:radio[name=ratingm]').val([parseInt(data.care_rating)])
-                    $('#ratingf').text(data.care_rating)
-                    $('input:radio[name=covidm]').val([parseInt(data.covid_rating)])
-                    $('#covidf').text(data.covid_rating)
-                    $('input:radio[name=oxym]').val([parseInt(data.oxygen_rating)])
-                    $('#oxyf').text(data.oxygen_rating)
-                    $('#vent').text(data.ventilator_availability)
-                    $('#oxya').text(data.oxygen_availability)
-                    $('#icu').text(data.icu_availability)
-                    $('input:radio[name=financialm]').val([parseInt(data.financial_rating)])
-                    $('#financialf').text(data.financial_rating)
-                    $('#beds').text(data.beds_available)
-                    $('#cost').text(data.avg_cost)
-                    $('#id').val(data.id)
-                    $('#ids').val(data.id)
-                    $('#imgs').val(data.images)
-                }
+                    console.log(marker)
+                    $('#header').text(marker.name)
+                    $('#phone').html(marker.Phone)
+                    $('#phone').attr("href", 'tel:' + marker.Phone)
+                    $('input:radio[name=ratingm]').val([parseInt(marker.care_rating)])
+                    $('#ratingf').text(marker.care_rating)
+                    $('input:radio[name=covidm]').val([parseInt(marker.covid_rating)])
+                    $('#covidf').text(marker.covid_rating)
+                    $('input:radio[name=oxym]').val([parseInt(marker.oxygen_rating)])
+                    $('#oxyf').text(marker.oxygen_rating)
+                    $('#vent').text(marker.ventilator_availability)
+                    $('#oxya').text(marker.oxygen_availability)
+                    $('#icu').text(marker.icu_availability)
+                    $('input:radio[name=financialm]').val([parseInt(marker.financial_rating)])
+                    $('#financialf').text(marker.financial_rating)
+                    $('#beds').text(marker.beds_available)
+                    $('#cost').text(marker.avg_cost)
+                    $('#id').val(marker.id)
+                    $('#ids').val(marker.id)
+                    $('#imgs').val(marker.images)
             })
-        }
-
-        function getCookie(name) {
-            let cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                const cookies = document.cookie.split(';');
-                for (let i = 0; i < cookies.length; i++) {
-                    const cookie = cookies[i].trim();
-                    // Does this cookie string begin with the name we want?
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
-                }
-            }
-            return cookieValue;
         }
 
         //Add your LocationIQ Maps Access Token here (not the API token!)
@@ -740,7 +710,6 @@
             var care = $('input[name="carefr"]:checked').val()
             var covid = $('input[name="covidfr"]:checked').val()
             var bed = $('input[name="bedf"]').val()
-            console.log(oxy, fin, icu)
             dict = {
                 financial_rating__gte: fin,
                 oxygen_rating__gte: oxy,

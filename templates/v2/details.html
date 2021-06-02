@@ -24,4 +24,33 @@
 {% endblock %}
 
 {% block script %}
+    <script>
+        let affordability = $('#affordability').val()
+        let oxygenCare = $('#oxygen-care').val()
+        let conv = $('#conv-care').val()
+        let covidCare = $('#covid-care-quality').val()
+        let ventAvail = $('#ventavail').val()
+        let oxygenAvail = $('#oxyavail').val()
+        let icuAvail = $('#icuavail').val()
+        let avgCost = $('#avgcost').val()
+        let bedsAvail = $('#bedsavail').val()
+        let comment = $('#comment').val()
+        let today = new Date().toLocaleDateString()
+
+        function submitReview() {
+            Review.create({
+                financial_rating: affordability,
+                avg_cost: avgCost,
+                covid_rating: covidCare,
+                care_rating: conv,
+                oxygen_rating: oxygenCare,
+                beds_available : bedsAvail,
+                ventilator_availability : ventAvail,
+                oxygen_availability : oxygenAvail,
+                icu_availability : icuAvail,
+                comment : comment,
+                datef : today
+            })
+        }
+    </script>
 {% endblock %}

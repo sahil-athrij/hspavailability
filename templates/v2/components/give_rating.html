@@ -12,67 +12,77 @@
                 <div class="container">
 
                     <div class="wrapper">
-                        <form class="">
-                            <div class="row">
-                                <div class="col">
-                                    <div class="row">{% include 'v2/components/star_ratings.html' with name="affordability" extra_class="financial mx-3" label="Affordability" content="Affordability of the hospital .higher is expensive" %}</div>
-                                </div>
-                                <div class="col">
-                                    {% include 'v2/components/star_ratings.html' with name="oxygen-care" extra_class="mx-3" label="Oxygen Care" content="Quality Rating for Oxyen Care" %}
-                                </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="row">{% include 'v2/components/star_ratings.html' with name="affordability" extra_class="financial mx-3" label="Affordability" content="Affordability of the hospital .higher is expensive" %}</div>
                             </div>
-                            <div class="row">
-                                <div class="col">
-                                    {% include 'v2/components/star_ratings.html' with name="conv-care" extra_class="mx-3" label="Convenience" content="Convenience of Getting Care (higher is Better) the ease with dealing with Administrative" %}
-                                </div>
-                                <div class="col">{% include 'v2/components/star_ratings.html' with name="covid-care-quality" extra_class="mx-3" label="Covid Care" content="Quality of Covid Care (higher is better)" %}</div>
+                            <div class="col">
+                                {% include 'v2/components/star_ratings.html' with name="oxygen-care" extra_class="mx-3" label="Oxygen Care" content="Quality Rating for Oxyen Care" %}
                             </div>
-                            <div class="row">
-                                <span class="h6 my-1 mt-1">Ventilator Availability</span>
-                                <select class="form-select" aria-label="Default select example" name="ventavail">
-                                    <option selected disabled>Choose</option>
-                                    <option value="0">Didn't require ventilator</option>
-                                    <option value="1">Not available</option>
-                                    <option value="2">Available</option>
-                                </select>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                {% include 'v2/components/star_ratings.html' with name="conv-care" extra_class="mx-3" label="Convenience" content="Convenience of Getting Care (higher is Better) the ease with dealing with Administrative" %}
                             </div>
-                            <div class="row">
-                                <span class="h6 my-1 mt-1">Oxygen Availability</span>
-                                <select class="form-select" aria-label="Default select example" name="oxyavail">
-                                    <option selected disabled>Choose</option>
-                                    <option value="0">Didn't require oxygen</option>
-                                    <option value="1">Not available</option>
-                                    <option value="2">Available</option>
-                                </select>
-                            </div>
-                            <div class="row">
-                                <span class="h6 my-1 mt-1">ICU Availability</span>
-                                <select class="form-select" aria-label="Default select example" name="icuavail">
-                                    <option selected disabled>Choose</option>
-                                    <option value="0">Didn't require ICU</option>
-                                    <option value="1">Not available</option>
-                                    <option value="2">Available</option>
-                                </select>
-                            </div>
-                            <div class="row">
-                                <span class="h6 mt-1">Average Cost</span>
-                                <div class="mb-3 my-1">
+                            <div class="col">{% include 'v2/components/star_ratings.html' with name="covid-care-quality" extra_class="mx-3" label="Covid Care" content="Quality of Covid Care (higher is better)" %}</div>
+                        </div>
+                        <div class="row">
+                            <span class="h6 my-1 mt-1">Ventilator Availability</span>
+                            <select class="form-select" aria-label="Default select example" name="ventavail">
+                                <option selected disabled>Choose</option>
+                                <option value="0">Didn't require ventilator</option>
+                                <option value="1">Not available</option>
+                                <option value="2">Available</option>
+                            </select>
+                        </div>
+                        <div class="row">
+                            <span class="h6 my-1 mt-1">Oxygen Availability</span>
+                            <select class="form-select" aria-label="Default select example" name="oxyavail">
+                                <option selected disabled>Choose</option>
+                                <option value="0">Didn't require oxygen</option>
+                                <option value="1">Not available</option>
+                                <option value="2">Available</option>
+                            </select>
+                        </div>
+                        <div class="row">
+                            <span class="h6 my-1 mt-1">ICU Availability</span>
+                            <select class="form-select" aria-label="Default select example" name="icuavail">
+                                <option selected disabled>Choose</option>
+                                <option value="0">Didn't require ICU</option>
+                                <option value="1">Not available</option>
+                                <option value="2">Available</option>
+                            </select>
+                        </div>
+                        <div class="row">
+                            <span class="h6 mt-1">Average Cost</span>
+                            <div class="mb-3 my-1">
+                                <div class="input-group mb-3">
                                     <span class="input-group-text" id="basic-addon1">@</span>
-                                    <input type="number" class="form-control" placeholder="average cost"
-                                           aria-label="Average Cost"
-                                           aria-describedby="average_cost" name="avgcost" id="avgcost">
+                                    <input type="number" class="form-control" placeholder="Average Cost" aria-label="Average Cost"
+                                           aria-describedby="basic-addon1" name="avgcost">
                                 </div>
                             </div>
-                        </form>
+                            <div class="row">
+                                <span class="h6 mt-1">Beds Available</span>
+                                <div class="mb-3">
+                                    <div class="input-group mb-3">
+                                        <input type="number" class="form-control" placeholder="No of Beds"
+                                               aria-label="Beds Available" name="bedsavail">
+                                    </div>
+                                </div>
+                                <div class="row">
+                            <textarea class="form-control" placeholder="Leave a comment here"
+                                      id="textarea" name="textarea"></textarea>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary" onclick="submitReview()">Save changes</button>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-

@@ -1,5 +1,6 @@
 <div class="row">
     {% for review in reviews %}
+        {{ review.id }}
         <div class="col-lg-4">
             <div class="card card-margin">
                 <div class="card-header no-border">
@@ -18,7 +19,7 @@
                             </div>
                         </div>
                         <div class="widget-49-meeting-points  row">
-                            {% include 'v2/components/star_ratings.html' with name=review.id|add:"oxy"   label="Oxygen Care" content="Quality Rating for Oxygen Care" value=review.oxygen_rating %}
+                            {% include 'v2/components/star_ratings.html' with name=review.id|add:"oxy"   label="Oxygen Care" content="Quality Rating for Oxygen Care" value=review.oxygen_rating disabled='disabled' %}
                             {% include 'v2/components/star_ratings.html' with name=review.id|add:"aff"   extra_class="financial" label="Affordability" content="Affordability of the hospital(Higher rating means the price you pay is worth the service you get)" disabled="disabled" value=review.financial_rating %}
                         </div>
                         <div class="widget-49-meeting-points  row">
@@ -28,7 +29,7 @@
                         <div class="widget-49-meeting-points mt-2 row">
                             <div class="col">Average Cost : {{ review.avg_cost }} Rs</div>
                             <div class="col">Oxygen Availability :
-                                {% if review.oxygen_availability == 0  %}
+                                {% if review.oxygen_availability == 0 %}
                                     Not Applicable
                                 {% elif review.oxygen_availability == 1 %}
                                     Not Available
@@ -39,7 +40,7 @@
                         </div>
                         <div class="widget-49-meeting-points my-2 row">
                             <div class="col">Ventilator Availability :
-                                {% if review.ventilator_availability == 0  %}
+                                {% if review.ventilator_availability == 0 %}
                                     Not Applicable
                                 {% elif review.ventilator_availability == 1 %}
                                     Not Available
@@ -48,14 +49,14 @@
                                 {% endif %}
                             </div>
                             <div class="col">ICU Availability :
-                                {% if review.oxygen_availability == 0  %}
+                                {% if review.oxygen_availability == 0 %}
                                     Not Applicable
                                 {% elif review.oxygen_availability == 1 %}
                                     Not Available
                                 {% else %}
                                     Available
                                 {% endif %}
-                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

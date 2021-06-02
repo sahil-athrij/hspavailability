@@ -99,3 +99,4 @@ class ReviewObject extends ModelObject {
 
     }
 }
+Marker = new Model('/review/', ReviewObject)

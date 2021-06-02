@@ -23,7 +23,7 @@
     <link href="https://tiles.locationiq.com/v2/css/liq-styles-ctrl-gl.css?v=0.1.6" rel="stylesheet">
     <script src="https://tiles.locationiq.com/v2/js/liq-styles-ctrl-gl.js?v=0.1.6"></script>
     <script src="{% static 'js/api.js' %}"></script>
-    <script src="{% static 'js/Models.js' %}"></script>
+    <script src="{% static 'js/models.js' %}"></script>
     {% if ip %}
 
         <script>
@@ -46,8 +46,8 @@
 
 {% block body %}
 {% endblock %}
-
-
+{#{% include 'v2/components/component.html' %}#}
+{#<script src="{% static 'js/component.js' %}"></script>#}
 {% block script %}
 {% endblock %}
 </body>

@@ -1,7 +1,7 @@
-<div class="row">
+<div class="row mx-5 px-5">
     <div class="card card-body card-body-left widget-49 bg-white mx-5 px-5">
         <div class="card-header no-border">
-            <h5 class="card-title">{{ hospital.name }}</h5>
+            <h5 class="card-title h2">{{ hospital.name }}</h5>
         </div>
         <div class="card-body pt-0">
             <div class="widget-49">
@@ -11,25 +11,27 @@
                         <span class="widget-49-date-month">Beds</span>
                     </div>
                     <div class="widget-49-meeting-info">
-                        <span class="widget-49-pro-title">Phone : {{ hospital.Phone }}</span>
-                        <span class="widget-49-meeting-time">{{ hospital.datef }}</span>
+                        <span class="widget-49-pro-title" style="font-size: 2rem;">Phone : {{ hospital.Phone }}</span>
+                        <span class="widget-49-meeting-time h6">{{ hospital.datef }}</span>
                     </div>
                 </div>
                 <div class="widget-49-meeting-points  row">
-                    {% include 'v2/components/star_ratings.html' with name=hospital.id|add:"oxy"   label="Oxygen Care" content="Quality Rating for Oxygen Care" disabled="disabled" value=hospital.oxygen_rating %}
-                    {% include 'v2/components/star_ratings.html' with name=hospital.id|add:"aff"   extra_class="financial" label="Affordability" content="Affordability of the hospital(Higher rating means the price you pay is worth the service you get)" disabled="disabled" value=hospital.financial_rating %}
+{#                    {% include 'v2/components/star_ratings.html' with name=hospital.id|add:"oxy"   label="Oxygen Care" content="Quality Rating for Oxygen Care" disabled="disabled" value=hospital.oxygen_rating %}#}
+{#                    {% include 'v2/components/star_ratings.html' with name=hospital.id|add:"aff"   extra_class="financial" label="Affordability" content="Affordability of the hospital(Higher rating means the price you pay is worth the service you get)" disabled="disabled" value=hospital.financial_rating %}#}
+
+                    {% include 'v2/components/stars.html' with value=hospital.oxygen_rating label="Oxygen Care"  content="Quality Rating for Oxygen Care"%}
                 </div>
                 <div class="widget-49-meeting-points  row">
                     {% include 'v2/components/star_ratings.html' with name=hospital.id|add:"con"  label="Convenience" content="Convenience of Getting Care (higher is Better) the ease with dealing with Administrative" disabled="disabled" value=hospital.care_rating %}
                     {% include 'v2/components/star_ratings.html' with name=hospital.id|add:"cov"   label="Covid Care" content="Quality of Covid Care (higher is better)" disabled="disabled" value=hospital.covid_rating %}
                 </div>
                 <div class="widget-49-meeting-points mt-2 row">
-                    <div class="col">Average Cost : {{ hospital.avg_cost }} Rs</div>
-                    <div class="col">Oxygen Availability : {{ hospital.oxygen_availability }} %</div>
+                    <div class="col h4">Average Cost : {{ hospital.avg_cost }} Rs</div>
+                    <div class="col h4">Oxygen Availability : {{ hospital.oxygen_availability }} %</div>
                 </div>
                 <div class="widget-49-meeting-points my-2 row">
-                    <div class="col">Ventilator Availability : {{ hospital.ventilator_availability }} %</div>
-                    <div class="col">ICU Availability : {{ hospital.icu_availability }} %</div>
+                    <div class="col h4">Ventilator Availability : {{ hospital.ventilator_availability }} %</div>
+                    <div class="col h4">ICU Availability : {{ hospital.icu_availability }} %</div>
                 </div>
                 <div class="widget-49-meeting-action">
                     <button data-bs-toggle="modal" data-bs-target="#exampleModalLong"

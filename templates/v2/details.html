@@ -1,15 +1,21 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block css %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
     <link href="{% static 'css/main.css' %}" rel="stylesheet"/>
     <link href="{% static 'css/helper.css' %}" rel="stylesheet"/>
     <link href="{% static 'css/details.css' %}" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Lato:300&display=swap" rel="stylesheet">
 {% endblock %}
 
 {% block body %}
     {% include 'nav.html' %}
     <div class="container my-5 py-5">
         {% include 'v2/components/hospital_details_card.html' %}
+        {% include 'v2/components/give_rating.html' %}
     </div>
     <div class="text-center h2">Reviews</div>
     <div class="container mt-5">

@@ -535,7 +535,7 @@
         var lat = 10.0
         var lon = 50.0
         var zoom = 12
-        var map; //complex object of type OpenLayers.Map
+        map; //complex object of type OpenLayers.Map
 
         var element = document.getElementById("map");
         var cen;
@@ -616,7 +616,7 @@
             markers = [];
         }
 
-        var dict = {}//variable used for filter
+        dict = {}//variable used for filter
         Marker = new Model('/marker/', MarkerObject)
         function getMarkers() {
             var coor = map.getCenter()

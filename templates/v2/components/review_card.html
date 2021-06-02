@@ -18,21 +18,44 @@
                             </div>
                         </div>
                         <div class="widget-49-meeting-points  row">
-                            {% include 'v2/components/star_ratings.html' with name=review.id|add:"oxy"   label="Oxygen Care" content="Quality Rating for Oxyen Care" disabled="disabled" value=review.oxygen_rating %}
-                            {% include 'v2/components/star_ratings.html' with name=review.id|add:"aff"   extra_class="financial" label="Affordability" content="Affordability of the hospital .higher is expensive" disabled="disabled" value=review.financial_rating %}
+                            {% include 'v2/components/star_ratings.html' with name=review.id|add:"oxy"   label="Oxygen Care" content="Quality Rating for Oxygen Care" value=review.oxygen_rating %}
+                            {% include 'v2/components/star_ratings.html' with name=review.id|add:"aff"   extra_class="financial" label="Affordability" content="Affordability of the hospital(Higher rating means the price you pay is worth the service you get)" disabled="disabled" value=review.financial_rating %}
                         </div>
                         <div class="widget-49-meeting-points  row">
                             {% include 'v2/components/star_ratings.html' with name=review.id|add:"con"  label="Convenience" content="Convenience of Getting Care (higher is Better) the ease with dealing with Administrative" disabled="disabled" value=review.care_rating %}
                             {% include 'v2/components/star_ratings.html' with name=review.id|add:"cov"   label="Covid Care" content="Quality of Covid Care (higher is better)" disabled="disabled" value=review.covid_rating %}
-                            {#            {% include 'v2/components/star_ratings.html' with name=marker.id  disabled="disabled" label="Oxygen Care" content="Quality Rating for Oxyen Care" value=marker.oxygen_rating %}#}
                         </div>
                         <div class="widget-49-meeting-points mt-2 row">
                             <div class="col">Average Cost : {{ review.avg_cost }} Rs</div>
-                            <div class="col">Oxygen Availability : {{ review.oxygen_availability }} %</div>
+                            <div class="col">Oxygen Availability :
+                                {% if review.oxygen_availability == 0  %}
+                                    Not Applicable
+                                {% elif review.oxygen_availability == 1 %}
+                                    Not Available
+                                {% else %}
+                                    Available
+                                {% endif %}
+                            </div>
                         </div>
                         <div class="widget-49-meeting-points my-2 row">
-                            <div class="col">Ventilator Availability : {{ review.ventilator_availability }} %</div>
-                            <div class="col">ICU Availability : {{ review.icu_availability }} %</div>
+                            <div class="col">Ventilator Availability :
+                                {% if review.ventilator_availability == 0  %}
+                                    Not Applicable
+                                {% elif review.ventilator_availability == 1 %}
+                                    Not Available
+                                {% else %}
+                                    Available
+                                {% endif %}
+                            </div>
+                            <div class="col">ICU Availability :
+                                {% if review.oxygen_availability == 0  %}
+                                    Not Applicable
+                                {% elif review.oxygen_availability == 1 %}
+                                    Not Available
+                                {% else %}
+                                    Available
+                                {% endif %}
+                                </div>
                         </div>
                     </div>
                 </div>

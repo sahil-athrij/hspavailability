@@ -63,6 +63,7 @@ def update_marker(id):
     icu = []
     day = []
     den = []
+    denb = []
     deno = []
     denv = []
     deni = []
@@ -76,8 +77,10 @@ def update_marker(id):
         fin.append(d * x.financial_rating)
         avg.append(d * x.avg_cost)
         covid.append(d * x.covid_rating)
-        bed.append(d * x.beds_available)
         care.append(d * x.care_rating)
+        if x.beds_available !=0:
+            bed.append(d * (x.beds_available - 1))
+            denb.append(d)
         if x.oxygen_rating != 0:
             oxy.append(d * x.oxygen_rating)
             deno.append(d)
@@ -94,9 +97,9 @@ def update_marker(id):
     ob.financial_rating = round(sum(fin) / dens, 1)
     ob.avg_cost = sum(avg) / dens
     ob.covid_rating = round(sum(covid) / dens, 1)
-    ob.beds_available = sum(bed)
     ob.care_rating = round(sum(care) / dens, 1)
     ob.oxygen_rating = round(sum(oxy) / sum(deno), 1) if deno else 0
+    ob.beds_available = round(sum(bed) * 100 / sum(denb) , 2) if denb else 0
     ob.ventilator_availability = round(sum(vent) * 100 / sum(denv), 2) if denv else 0
     ob.oxygen_availability = round(sum(oxya) * 100 / sum(denoa), 2) if denoa else 0
     ob.icu_availability = round(sum(icu) * 100 / sum(deni), 2) if deni else 0

@@ -1,0 +1,75 @@
+<div class="modal fade modal-white-bg" id="exampleModalLong" tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalLongTitle"
+     aria-hidden="true">
+    <div class="modal-dialog modal-box-shadow" role="document">
+        <div class=" modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Review</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"></span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container">
+
+                    <div class="wrapper">
+                        <div class="row">
+                            {% include 'v2/components/star_ratings.html' with name="affordability" col="col-6" extra_class="financial" label="Affordability" content="Affordability of the hospital .higher is expensive" %}
+                            {% include 'v2/components/star_ratings.html' with name="oxygen-care" col="col-6" label="Oxygen Care" content="Quality Rating for Oxyen Care" %}
+                        </div>
+
+                        <div class="row">
+                            {% include 'v2/components/star_ratings.html' with name="conv-care" col="col-6" label="Convenience" content="Convenience of Getting Care (higher is Better) the ease with dealing with Administrative" %}
+                            {% include 'v2/components/star_ratings.html' with name="covid-care-quality" col="col-6" label="Covid Care" content="Quality of Covid Care (higher is better)" %}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-md-6 py-2">
+                            {% include 'v2/components/material_select.html' with label='Ventilator' qualifier='Availability' %}
+
+                        </div>
+                        <div class="col-12 col-md-6 py-2">
+                            {% include 'v2/components/material_select.html' with label='Oxygen' qualifier='Availability' %}
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-md-6 py-2">
+                            {% include 'v2/components/material_select.html' with label='ICU' qualifier='Availability' %}
+                        </div>
+                        <div class="col-12 col-md-6 py-2">
+                            {% include 'v2/components/material_select.html' with label='Bed' qualifier='Availability' %}
+                        </div>
+
+                    </div>
+                    <div class="row">
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-md-6 py-2">
+                            <div class="select">
+                                <input type="number" class="select-text text-input" id="avgcost" placeholder="Average Cost"
+                                       aria-label="Average Cost"
+                                       aria-describedby="basic-addon1" name="avgcost">
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-12  py-2">
+                            <div class="select">
+                            <textarea class="select-text text-area-grey text-input" placeholder="Leave a comment here"
+                                      id="textarea" name="textarea"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="submitReview()">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

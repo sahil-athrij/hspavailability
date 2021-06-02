@@ -23,7 +23,8 @@
     a {
         display: none;
     }
-    .card-left{
+
+    .card-left {
         flex-direction: column;
     }
 
@@ -83,3 +84,4 @@
     text-decoration-thickness: 4px;
     text-underline-offset: 2px;
 }
+

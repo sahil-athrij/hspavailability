@@ -50,7 +50,10 @@
 <script>
     $(document).ready(function () { $('[data-toggle="popover"]').popover();});
 </script>
+{#{% include 'v2/components/component.html' %}#}
+{#<script src="{% static 'js/component.js' %}"></script>#}
 {% block script %}
 {% endblock %}
+
 </body>
 </html>

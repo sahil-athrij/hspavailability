@@ -99,3 +99,4 @@ class ReviewObject extends ModelObject {
 
     }
 }
+Review = new Model('/review/', ReviewObject)

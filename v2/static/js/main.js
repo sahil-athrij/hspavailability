@@ -10,7 +10,6 @@ let dict = {};
 let state = {}
 
 
-
 locationiq.key = 'pk.959200a41370341f608a91b67be6e8eb';
 
 function getCookie(name) {
@@ -65,3 +64,7 @@ function setupLatLng() {
         GetIp()
     }
 }
+
+$(document).ready(function () {
+    $('[data-toggle="popover"]').popover();
+});

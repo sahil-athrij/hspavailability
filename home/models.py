@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.db import models
 import datetime
-
+from jsonfield import JSONField
 # Create your models here.
 
 rating = [
@@ -38,6 +38,8 @@ class Markers(models.Model):
     place_id = models.CharField(max_length=60, default="")
     added_by = models.ForeignKey(User, default=1, on_delete=models.CASCADE)
     Suspicious = models.IntegerField(default=0)
+    display_address = models.TextField(default="", blank=True)
+    address = models.JSONField(Null=True)
 
     def __str__(self):
         return self.name

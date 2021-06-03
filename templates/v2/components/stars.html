@@ -1,46 +1,17 @@
-<div id="full-stars-example-two">
-    <label for="{{ name }}" class="h4">{{ label }}
+<div class="col-12 col-sm-12 mt-4">
+    <h6 class="h6 ">{{ label }} {{ value }}
         {% if content %}
             {% include 'v2/components/popover.html' %}
-        {% endif %}
-    </label>
-    <div class="rating-group">
-        <input disabled checked class="rating__input rating__input--none" name="rating3" id="rating3-none" value="0"
-               type="radio">
-        <label aria-label="1 star" class="rating__label" for="rating3-1"><i
-                class="rating__icon rating__icon--star fa fa-star"></i></label>
-        <input disabled class="rating__input" name="rating3"
-                {% if value == 1 %}
-               checked
-                {% endif %}
-               id="rating3-1" value="1" type="radio">
-        <label aria-label="2 stars" class="rating__label" for="rating3-2"><i
-                class="rating__icon rating__icon--star fa fa-star"></i></label>
-        <input disabled class="rating__input" name="rating3"
-                {% if value == 2 %}
-               checked
-                {% endif %}
-               id="rating3-2" value="2" type="radio">
-        <label aria-label="3 stars" class="rating__label" for="rating3-3"><i
-                class="rating__icon rating__icon--star fa fa-star"></i></label>
-        <input disabled class="rating__input" name="rating3"
-                {% if value == 3 %}
-               checked
-                {% endif %}
-               id="rating3-3" value="3" type="radio">
-        <label aria-label="4 stars" class="rating__label" for="rating3-4"><i
-                class="rating__icon rating__icon--star fa fa-star"></i></label>
-        <input disabled class="rating__input" name="rating3"
-                {% if value == 4 %}
-               checked
-                {% endif %}
-               id="rating3-4" value="4" type="radio">
-        <label aria-label="5 stars" class="rating__label" for="rating3-5"><i
-                class="rating__icon rating__icon--star fa fa-star"></i></label>
-        <input disabled class="rating__input" name="rating3"
-                {% if value == 5 %}
-               checked
-                {% endif %}
-               id="rating3-5" value="5" type="radio">
+        {% endif %}</h6>
+    <div class=" rating {{ extra_class }} h4">
+        {% for i in "54321" %}
+            <input type="radio" class="star-{{ i }}" id="{{ name }}star{{ i }}" name="{{ name }}rating" value="{{ i }}"
+                    {% if value|add:"0" == i|add:"0" %}
+                   checked
+                    {% endif %}>
+            <label class="fas full star-l-{{ i }}" for="{{ name }}star{{ i }}" title="{{ i }} stars"></label>
+        {% endfor %}
+
+
     </div>
 </div>

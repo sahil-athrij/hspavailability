@@ -101,7 +101,13 @@ class Model {
      */
     async create(kwargs = {}) {
         let data = await post(`${this.baseurl}`, kwargs)
+        try {
+            await thisThrows();
+        } catch (e) {
+            throw(e);
+        }
         return new this.modelClass(data, this.baseurl)
     }
+
 }
 

@@ -21,6 +21,21 @@
     <div class="text-center h2">Reviews</div>
     <div class="container mt-5">
         {% include 'v2/components/review_card.html' %}
+        <div aria-live="polite" aria-atomic="true" class="position-relative polite">
+            <!-- Position it: -->
+            <!-- - `.toast-container` for spacing between toasts -->
+            <!-- - `.position-absolute`, `top-0` & `end-0` to position the toasts in the upper right corner -->
+            <!-- - `.p-3` to prevent the toasts from sticking to the edge of the container  -->
+            <div class="toast-container position-fixed bottom-0 end-0 p-3" id='toastContainer'>
+
+                <!-- Then put toasts within -->
+
+
+            </div>
+            <!-- Then put toasts within -->
+
+
+        </div>
     </div>
 {% endblock %}
 
@@ -40,6 +55,7 @@
             let comment = $('#textarea').val()
             let today = new Date().toLocaleDateString()
 
+
             Review.create({
                 financial_rating: affordability,
                 avg_cost: avgCost,
@@ -53,7 +69,48 @@
                 comment: comment,
                 datef: today,
                 marker:{{ hospital.id }}
-            })
+            }).then(
+                function (reviewobject) {
+                    addToast("Review Added", "Thank you for your valuable feedback!")
+                },
+                function (error) {
+                    addToast("Failed to Add Review", "Please Sign in to submit Reviews")
+                }
+            )
+        }
+
+        function htmlToElement(html) {
+            var template = document.createElement('template');
+            html = html.trim(); // Never return a text node of whitespace as the result
+            template.innerHTML = html;
+            return template.content.firstChild;
+        }
+
+        function addToast(title, text) {
+
+            toast_container = document.getElementById('toastContainer')
+
+            const no = Math.random().toString(36).substring(7);
+            {#toast_container.a = d#}
+            var toastChild = htmlToElement(
+                `<div id="${no}" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header text-center" >
+                <strong class="me-auto">${title}</strong>
+                <small class="text-muted"></small>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+            ${text}
+
+            </div>
+        </div>
+        `)
+
+
+            toast_container.append(toastChild)
+            console.log(no)
+
+            $(`#${no}`).toast('show')
         }
     </script>
 {% endblock %}

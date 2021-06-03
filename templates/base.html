@@ -35,7 +35,7 @@
         </script>
     {% endif %}
     <script>
-         csrf = "{{ csrf_token }}"
+        csrf = "{{ csrf_token }}"
     </script>
     <script src="{% static 'js/main.js' %}"></script>
     {% block css %}
@@ -48,7 +48,9 @@
 {% endblock %}
 
 <script>
-    $(document).ready(function () { $('[data-toggle="popover"]').popover();});
+    $(document).ready(function () {
+        $('[data-toggle="popover"]').popover();
+    });
 </script>
 {#{% include 'v2/components/component.html' %}#}
 {#<script src="{% static 'js/component.js' %}"></script>#}

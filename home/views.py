@@ -3,6 +3,7 @@ import rest_framework
 from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import render
 from rest_framework import viewsets, generics, filters
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from .models import Markers, Reviews, SuspiciousMarking, Images
 import datetime
@@ -121,6 +122,7 @@ def suspicious(request):
 
 
 class MarkerApiViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
+    permission_classes = [IsAuthenticatedOrReadOnly]
     queryset = Markers.objects.all().order_by('id')
     serializer_class = getMarkerSerializer
     # http_method_names = '__all__'
@@ -135,6 +137,7 @@ class MarkerApiViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
 
 
 class ReviewViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
+    permission_classes = [IsAuthenticatedOrReadOnly]
     queryset = Reviews.objects.all()
     serializer_class = getReviewSerializer
 

@@ -5,7 +5,7 @@
         {% endif %}</h6>
     <div class=" rating {{ extra_class }} h4">
         {% for i in "54321" %}
-            <input type="radio" class="star-{{ i }}" id="{{ name }}star{{ i }}" name="{{ name }}rating" value="{{ i }}"
+            <input type="radio" class="star-{{ i }}" id="{{ name }}star{{ i }}" {{ disabled }} name="{{ name }}rating" value="{{ i }}"
                     {% if value|add:"0" == i|add:"0" %}
                    checked
                     {% endif %}>

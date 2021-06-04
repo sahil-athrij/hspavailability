@@ -100,3 +100,19 @@ class ReviewObject extends ModelObject {
     }
 }
 Review = new Model('/review/', ReviewObject)
+
+class susObject extends ModelObject {
+    id;
+    marker;
+    comment;
+    created_by;
+    datef;
+
+    constructor(data, baseUrl) {
+        super(data, baseUrl);
+        this.fields = ["id","marker","comment","created_by","datef"]
+        this.getData()
+    }
+}
+
+Sus = new Model('/suspicious/', susObject)

@@ -3,7 +3,9 @@ import rest_framework
 from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import render
 from rest_framework import viewsets, generics, filters
+from rest_framework.pagination import PageNumberPagination, LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.response import Response
 
 from .models import Markers, Reviews, SuspiciousMarking, Images
 import datetime
@@ -79,7 +81,7 @@ def update_marker(id):
         avg.append(d * x.avg_cost)
         covid.append(d * x.covid_rating)
         care.append(d * x.care_rating)
-        if x.beds_available !=0:
+        if x.beds_available != 0:
             bed.append(d * (x.beds_available - 1))
             denb.append(d)
         if x.oxygen_rating != 0:
@@ -100,7 +102,7 @@ def update_marker(id):
     ob.covid_rating = round(sum(covid) / dens, 1)
     ob.care_rating = round(sum(care) / dens, 1)
     ob.oxygen_rating = round(sum(oxy) / sum(deno), 1) if deno else 0
-    ob.beds_available = round(sum(bed) * 100 / sum(denb) , 2) if denb else 0
+    ob.beds_available = round(sum(bed) * 100 / sum(denb), 2) if denb else 0
     ob.ventilator_availability = round(sum(vent) * 100 / sum(denv), 2) if denv else 0
     ob.oxygen_availability = round(sum(oxya) * 100 / sum(denoa), 2) if denoa else 0
     ob.icu_availability = round(sum(icu) * 100 / sum(deni), 2) if deni else 0
@@ -120,12 +122,17 @@ def suspicious(request):
 
     return HttpResponseRedirect('/')
 
+class LimitOffsetPaginationWithMaxLimit(LimitOffsetPagination):
+    max_limit = 100
 
 class MarkerApiViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
     queryset = Markers.objects.all().order_by('id')
     serializer_class = getMarkerSerializer
     # http_method_names = '__all__'
+    page_size = 100
+    max_page_size = 100
+    max_limit=100
     filter_backends = [filters.SearchFilter, django_filters.rest_framework.DjangoFilterBackend]
     search_fields = ['name']
     filterset_fields = {'lat': ['gte', 'lte'], 'lng': ['gte', 'lte'], 'financial_rating': ['gte', 'lte', 'exact'],
@@ -135,14 +142,24 @@ class MarkerApiViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
                         'care_rating': ['gte', 'lte', 'exact'], 'covid_rating': ['gte', 'lte', 'exact'],
                         'beds_available': ['gte', 'lte', 'exact']}
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.condition = False
+
+    def get_pagination_class(self):
+        if self.condition:
+            return LimitOffsetPaginationWithMaxLimit
+        return PageNumberPagination
+
+    pagination_class = property(fget=get_pagination_class)
+
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
+        self.condition = request._request.GET.get('limit', False)
         page = self.paginate_queryset(queryset)
         if page is not None:
-            # get_paginaion_serializer will read your DEFAULT_PAGINATION_SERIALIZER_CLASS
-            # or view.pagination_serializer_class
-            # we will talk the two variable later
-            serializer = self.get_pagination_serializer(page)
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
         else:
             serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)

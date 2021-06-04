@@ -8,13 +8,21 @@
     <div class="card card-margin mt-3 p-3 text-center ">
 
         <div class="row">
-            {% include 'v2/components/stars.html' with name='oxy' value=hospital.oxygen_rating label="Oxygen Care"  content="Quality Rating for Oxygen Care" disabled="disabled" %}
-            {% include 'v2/components/stars.html' with name='aff'  extra_class='financial-extra' value=hospital.financial_rating label="Affordability"  content="Affordability of the hospital(Higher rating means the price you pay is worth the service you get)" disabled="disabled" %}
+            <div class="col">
+                {% include 'v2/components/stars.html' with name='oxy' value=hospital.oxygen_rating label="Oxygen Care"  content="Quality Rating for Oxygen Care" disabled="disabled" %}
+            </div>
+            <div class="col">
+                {#                <i class="fas fa-money-bill-alt"></i>#}
+                {% include 'v2/components/stars.html' with name='aff'  extra_class='financial-extra' value=hospital.financial_rating label="Affordability"  content="Affordability of the hospital(Higher rating means the price you pay is worth the service you get)" disabled="disabled" %}
+            </div>
         </div>
-        <i class="fas fa-money-bill-alt"></i>
         <div class="widget-49-meeting-points  row">
-            {% include 'v2/components/stars.html' with name="con"  label="Convenience" content="Convenience of Getting Care (higher is Better) the ease with dealing with Administrative" disabled="disabled" value=hospital.care_rating %}
-            {% include 'v2/components/stars.html' with name="cov"   label="Covid Care" content="Quality of Covid Care (higher is better)" disabled="disabled" value=hospital.covid_rating %}
+            <div class="col">
+                {% include 'v2/components/stars.html' with name="con"  label="Convenience" content="Convenience of Getting Care (higher is Better) the ease with dealing with Administrative" disabled="disabled" value=hospital.care_rating %}
+            </div>
+            <div class="col">
+                {% include 'v2/components/stars.html' with name="cov"   label="Covid Care" content="Quality of Covid Care (higher is better)" disabled="disabled" value=hospital.covid_rating %}
+            </div>
         </div>
         <div class="widget-49-meeting-points mt-2 row">
             <div class="col h4">Average Cost : {{ hospital.avg_cost }} Rs</div>
@@ -24,11 +32,17 @@
             <div class="col h4">Ventilator Availability : {{ hospital.ventilator_availability }} %</div>
             <div class="col h4">ICU Availability : {{ hospital.icu_availability }} %</div>
         </div>
-        <div class="widget-49-meeting-action">
-            <button data-bs-toggle="modal" data-bs-target="#exampleModalLong"
-                    class="btn btn-sm btn-dark btn-flash-border-warning" id="add-review-btn">Add Review
-            </button>
+        <div class="widget-49-meeting-action my-2 row justify-content-evenly">
+            <div class="col-4">
+                <button data-bs-toggle="modal" data-bs-target="#exampleModalLong"
+                        class="col btn btn-sm btn-dark btn-flash-border-warning" id="add-review-btn">Add Review
+                </button>
+            </div>
+            <div class="col-4">
+                <button data-bs-toggle="modal" data-bs-target="#susmodal"
+                        class="col btn btn-sm btn-dark btn-flash-border-warning" id="add-sus-btn">Mark Suspicious
+                </button>
+            </div>
         </div>
     </div>
-
 </div>

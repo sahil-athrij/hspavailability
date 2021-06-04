@@ -30,7 +30,7 @@
 
             <div class="row my-2  align-self-center" id="listview" role="tabpanel" aria-labelledby="listview-tab">
                 <div class="col-12 col-md-2 col-lg-2"></div>
-                <div class="col12 col-md-8 col-lg-8 " id="toplevel">
+                <div class="col12 col-md-8 col-lg-8 " id="searchresults">
                     {% for marker in search_results %}
                         {% include 'v2/components/search_result_card.html' with id=marker.id col='col-6' %}
                     {% endfor %}

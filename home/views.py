@@ -135,6 +135,18 @@ class MarkerApiViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
                         'care_rating': ['gte', 'lte', 'exact'], 'covid_rating': ['gte', 'lte', 'exact'],
                         'beds_available': ['gte', 'lte', 'exact']}
 
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            # get_paginaion_serializer will read your DEFAULT_PAGINATION_SERIALIZER_CLASS
+            # or view.pagination_serializer_class
+            # we will talk the two variable later
+            serializer = self.get_pagination_serializer(page)
+        else:
+            serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
 
 class ReviewViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]

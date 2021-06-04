@@ -44,6 +44,8 @@ class Markers(models.Model):
         return self.name
 
 
+
+
 class Reviews(models.Model):
     marker = models.ForeignKey(Markers, related_name="comment", on_delete=models.CASCADE)
     financial_rating = models.IntegerField(choices=rating, default=1)

@@ -34,7 +34,9 @@
                     {% for marker in search_results %}
                         {% include 'v2/components/search_result_card.html' with id=marker.id col='col-6' %}
                     {% endfor %}
+                    <div id="moreresult"></div>
                 </div>
+                <button id="more" class="btn btn-primary">More results</button>
             </div>
             <div class="row my-2  align-self-center " id="mapview" role="tabpanel" aria-labelledby="mapview-tab">
                 <div class="col-12 col-md-2 col-lg-2"></div>
@@ -82,7 +84,40 @@
             '{% static 'images/medium.png' %}',
             '{% static 'images/large.png' %}',
         ]
-
+        let querys=$('#query').val()
+        if(typeof querys=="undefined"){
+            querys=""
+        }
+        var dicts={lat__gte:(parseFloat($('#lat').val())-0.5),
+            lat__lte:(parseFloat($('#lat').val())+0.5),
+            lng__gte:(parseFloat($('#lng').val())-0.5),
+            lng__lte:(parseFloat($('#lng').val())+0.5),
+            financial_rating__gte:$('#financialfr').val(),
+            avg_cost__gte:$('#price-min').val(),
+            avg_cost__lte:$('#price-max').val(),
+            covid_rating__gte:$('#covidfr').val(),
+            care_rating__gte:$('#carefr').val(),
+            oxygen_rating__gte:$('#oxyfr').val(),
+            ventilator_availability__gte:$('#ventfr').val(),
+            oxygen_availability__gte:$('#oxyafr').val(),
+            icu_availability__gte:$('#icufr').val(),
+            search:querys}
+        let page = 1
+        $('#more').on('click', function(){
+        Marker.filter(kwargs={offset:page*10,limit:10,...dicts}).then(function(markerlist){
+                console.log(markerlist)
+<!--            res = ``-->
+<!--            for(var i=0;i<markerlist.size(),i++){-->
+<!--                res+=``-->
+<!--            }-->
+<!--            document.getElementById("moreresult").innerHTML+=res-->
+        }).catch(function(){
+                console.log('empty')
+<!--            document.getElementById("moreresult").innerHTML+="<h5>No more results</h5>"-->
+            $('#more').hide()
+        })
+        page++
+        })
 
     </script>
     <script src="{% static '/js/mapFunctions.js' %}"></script>

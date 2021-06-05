@@ -35,6 +35,7 @@
                         {% include 'v2/components/search_result_card.html' with id=marker.id col='col-6' %}
                     {% endfor %}
                     <div id="moreresult"></div>
+                    <searchResultCard></searchResultCard>
                 </div>
                 <button id="more" class="btn btn-primary">More results</button>
             </div>
@@ -120,4 +121,5 @@
 
     </script>
     <script src="{% static '/js/mapFunctions.js' %}"></script>
+    <script type="module" src="{% static '/js/components/SearchCards.js' %}"></script>
 {% endblock %}

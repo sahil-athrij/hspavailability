@@ -41,25 +41,23 @@ function getMarkers() {
     var coor = map.getCenter()
 
     let lat = coor.lat(), lng = coor.lng()
-    {
-        console.log(lat, lng)
-    }
+
     let p = 1;
 
     function getData() {
         var oxy = $('input[name="oxyfr"]:checked').val() | 0
         var qry = $('input[name="query"]').val()
         var fin = $('input[name="financialfr"]:checked').val() | 0
-        var vent = $('input[name="ventfr"]').val()| 0
-        var oxya = $('input[name="oxyafr"]').val()| 0
-        var icu = $('input[name="icufr"]').val()| 0
-        var costmin = $('input[name="price-min"]').val()| 0
-        var costmax = $('input[name="price-max"]').val()| 0
-        var care = $('input[name="carefr"]:checked').val()| 0
-        var covid = $('input[name="covidfr"]:checked').val()| 0
-        var bed = $('input[name="bedf"]').val()| 0
+        var vent = $('input[name="ventfr"]').val() | 0
+        var oxya = $('input[name="oxyafr"]').val() | 0
+        var icu = $('input[name="icufr"]').val() | 0
+        var costmin = $('input[name="price-min"]').val() | 0
+        var costmax = $('input[name="price-max"]').val() | 0
+        var care = $('input[name="carefr"]:checked').val() | 0
+        var covid = $('input[name="covidfr"]:checked').val() | 0
+        var bed = $('input[name="bedf"]').val() | 0
         dict = {
-            search:qry,
+            search: qry,
             financial_rating__gte: parseInt(fin),
             oxygen_rating__gte: parseInt(oxy),
             ventilator_availability__gte: parseInt(vent),
@@ -78,11 +76,8 @@ function getMarkers() {
         }).then(function (markerList) {
             let i;
             ob = markerList;
-            console.log(ob);
             for (i = 0; i < ob.results.length; i++) {
-                {
-                    console.log((p - 1) * 100 + i + 1, ob.results[i].name)
-                }
+
                 addMarker({
                     'position': {
                         'lat': ob.results[i].lat,

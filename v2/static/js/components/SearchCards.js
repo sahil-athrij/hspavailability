@@ -1,0 +1,53 @@
+import {Component} from "../Component.js";
+import {StarInput} from "./StarInput.js";
+
+class SearchCards extends Component {
+    oxy;
+    aff;
+    con;
+    cov;
+    constructor(component, data = {}) {
+        super(component, data)
+        this.oxy = new StarInput(`#oxy${this.data.id}`)
+        this.aff = new StarInput(`#aff${this.data.id}`)
+        this.con = new StarInput(`#con${this.data.id}`)
+        this.cov = new StarInput(`#cov${this.data.id}`)
+
+    }
+
+    render() {
+        return `
+<div class="card card-left neumorphic_input card-margin bg-grey">
+    <img src="/static/images/hospital.svg" class="card-img-top  p-2 p-md-4"/>
+    <div class="card-body card-body-left widget-49 bg-white w-100">
+        <h5 class="card-title card-title-left" id="{{ id }}title">${this.data.name}</h5>
+        <div class="widget-49-meeting-points  row">
+            <starInput id="oxy${this.data.id}"  class="col-6" label="Oxygen Care" content="Quality Rating for Oxyen Care" disabled="false"  value="${this.data.oxygen_rating}"></starInput>
+            <starInput id="aff${this.data.id}"  class="col-6" extra_class="financial" label="Affordability" content="Affordability of the hospital .higher is expensive" disabled="disabled" value=${this.data.financial_rating}  ></starInput>
+        </div>
+        <div class="widget-49-meeting-points  row">
+         <starInput id="con${this.data.id}"  class="col-6"  label="Convenience" content="Convenience of Getting Care (higher is Better) the ease with dealing with Administrative" disabled="disabled" value=${this.data.care_rating}></starInput>
+         <starInput id="cov${this.data.id}"  class="col-6"  label="Covid Care" content="Quality of Covid Care (higher is better)" disabled="false"  value=${this.data.covid_rating}  ></starInput>
+        </div>
+        <div class="widget-49-meeting-points mt-2 row">
+            <div class="col">Average Cost : <span >${this.data.avg_cost}</span> Rs</div>
+            <div class="col">Oxygen Availability : <span >${this.data.oxygen_availability}</span> %
+            </div>
+        </div>
+        <div class="widget-49-meeting-points my-2 row">
+            <div class="col">Ventilator Availability : <span >${this.data.ventilator_availability}</span> %
+            </div>
+            <div class="col">ICU Availability : <span>${this.data.icu_availability}</span> %
+            </div>
+        </div>
+        <a href="/v2/details/${this.data.id}"  class="btn input-right input-left bg-dark btn-dark">More Info</a>
+    </div>
+</div>`;
+    }
+}
+
+let searchCards;
+Marker.get(id = 5).then(function (marker) {
+    console.log(marker)
+    searchCards = new SearchCards('searchResultCard', marker)
+})

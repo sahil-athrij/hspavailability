@@ -122,8 +122,10 @@ def suspicious(request):
 
     return HttpResponseRedirect('/')
 
+
 class LimitOffsetPaginationWithMaxLimit(LimitOffsetPagination):
     max_limit = 100
+
 
 class MarkerApiViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
@@ -132,7 +134,7 @@ class MarkerApiViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
     # http_method_names = '__all__'
     page_size = 100
     max_page_size = 100
-    max_limit=100
+    max_limit = 100
     filter_backends = [filters.SearchFilter, django_filters.rest_framework.DjangoFilterBackend]
     search_fields = ['name']
     filterset_fields = {'lat': ['gte', 'lte'], 'lng': ['gte', 'lte'], 'financial_rating': ['gte', 'lte', 'exact'],
@@ -178,6 +180,7 @@ class ReviewViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
         rev.save()
         update_marker(response.data['marker'])
         return response
+
 
 class SusViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
     queryset = SuspiciousMarking.objects.all()

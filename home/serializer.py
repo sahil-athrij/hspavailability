@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Images, Markers, Reviews
+from .models import Images, Markers, Reviews, SuspiciousMarking
 
 
 class getImageSerializer(serializers.ModelSerializer):

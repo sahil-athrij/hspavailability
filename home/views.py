@@ -161,3 +161,7 @@ class ReviewViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
         rev.save()
         update_marker(response.data['marker'])
         return response
+
+class SusViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
+    queryset = SuspiciousMarking.objects.all()
+    serializer_class = getSusSerializer

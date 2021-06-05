@@ -31,3 +31,11 @@ class getReviewSerializer(serializers.ModelSerializer):
             'id', 'marker', 'financial_rating', 'avg_cost', 'covid_rating', 'care_rating', 'oxygen_rating', 'beds_available',
             'ventilator_availability', 'oxygen_availability', 'icu_availability', 'comment', 'written_by_id', 'images'
         ]
+
+
+class getSusSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SuspiciousMarking
+        fields = [
+            'id', 'marker', 'comment', 'created_by', 'datef'
+        ]

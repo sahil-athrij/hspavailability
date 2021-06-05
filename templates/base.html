@@ -22,6 +22,9 @@
           type="text/css">
     <link href="https://tiles.locationiq.com/v2/css/liq-styles-ctrl-gl.css?v=0.1.6" rel="stylesheet">
     <script src="https://tiles.locationiq.com/v2/js/liq-styles-ctrl-gl.js?v=0.1.6"></script>
+    <script>
+        let csrf = "{{ csrf_token }}"
+    </script>
     <script src="{% static 'js/api.js' %}"></script>
     <script src="{% static 'js/Models.js' %}"></script>
     <script src="{% static 'js/ObservableSlim.js' %}"></script>
@@ -35,9 +38,6 @@
             let ip = "0.0.0.0"
         </script>
     {% endif %}
-    <script>
-        csrf = "{{ csrf_token }}"
-    </script>
     <script src="{% static 'js/main.js' %}"></script>
     {% block css %}
     {% endblock %}
@@ -58,7 +58,6 @@
 {% block script %}
 {% endblock %}
 {#<script src="{% static 'js/Component.js' %}"></script>#}
-
 
 
 </body>

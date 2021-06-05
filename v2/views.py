@@ -7,6 +7,7 @@ from django.forms import model_to_dict
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.shortcuts import render
 from home.models import *
+from django.views.decorators.csrf import ensure_csrf_cookie
 
 
 def get_client_ip(request):
@@ -21,6 +22,7 @@ def get_client_ip(request):
 
 
 # Create your views here.
+@ensure_csrf_cookie
 def index(request):
     context = {}
     ipaddress = get_client_ip(request)
@@ -29,7 +31,7 @@ def index(request):
 
     return render(request, template_name='v2/index.html', context=context)
 
-
+@ensure_csrf_cookie
 def signin(request):
     context1 = {}
     if request.method == "POST":
@@ -49,7 +51,7 @@ def signin(request):
     context1['sign_text'] = 'Sign In'
     return render(request, template_name="v2/login.html", context=context1)
 
-
+@ensure_csrf_cookie
 def signup(request):
     context1 = {}
     if request.method == "POST":
@@ -76,7 +78,7 @@ def signup(request):
 
     return render(request, template_name="v2/signup.html", context=context1)
 
-
+@ensure_csrf_cookie
 def search(request):
     if (request.method == "GET"):
         template_name = "v2/search.html"
@@ -139,7 +141,7 @@ def search(request):
 
     return render(request, template_name='v2/index.html')
 
-
+@ensure_csrf_cookie
 def get_loction_python(request):
     ip = get_client_ip(request)
     ipsearchurl = f'https://ipapi.co/{ip}/json/'
@@ -147,12 +149,12 @@ def get_loction_python(request):
         'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36'})
     return json.loads(loc_data.content)
 
-
+@ensure_csrf_cookie
 def get_location(request):
     loc_data = get_loction_python(request)
     return JsonResponse(loc_data)
 
-
+@ensure_csrf_cookie
 def details(request, hospital_id):
     context = {}
     query = Markers.objects.get(id=hospital_id)
@@ -162,5 +164,6 @@ def details(request, hospital_id):
     context["reviews"] = review
     return render(request, template_name='v2/details.html', context=context)
 
+@ensure_csrf_cookie
 def help(request):
     return render(request, template_name='v2/help.html')

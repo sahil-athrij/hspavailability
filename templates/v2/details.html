@@ -18,7 +18,9 @@
         {% include 'v2/components/hospital_details_card.html' %}
         {% include 'v2/components/give_rating.html' %}
         {% include 'v2/components/susmodal.html' %}
+        {{ csrf_token }}
     </div>
+
     <div class="text-center h2">Reviews</div>
     <div class="container mt-5">
         {% include 'v2/components/review_card.html' %}

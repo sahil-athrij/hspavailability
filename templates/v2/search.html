@@ -84,7 +84,7 @@
     </script>
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
     <script type="module">
-
+    console.log('hellooo')
 
         import {SearchResultList} from "/static/js/components/SearchCards.js";
 
@@ -92,17 +92,18 @@
         if (typeof querys == "undefined") {
             querys = ""
         }
+        querys.replaceAll(' ','+')
         var dicts = {
             lat__gte: (parseFloat($('#lat').val()) - 0.5),
             lat__lte: (parseFloat($('#lat').val()) + 0.5),
             lng__gte: (parseFloat($('#lng').val()) - 0.5),
             lng__lte: (parseFloat($('#lng').val()) + 0.5),
-            financial_rating__gte: $('input:radio[name=financialfr]').val(),
+            financial_rating__gte: $('input:radio[name=financialfr]:checked').val() | 0,
             avg_cost__gte: $('#price-min').val(),
             avg_cost__lte: $('#price-max').val(),
-            covid_rating__gte: $('input:radio[name=covidfr]').val(),
-            care_rating__gte: $('input:radio[name=carefr]').val(),
-            oxygen_rating__gte: $('input:radio[name=oxyfr]').val(),
+            covid_rating__gte: $('input:radio[name=covidfr]:checked').val() | 0,
+            care_rating__gte: $('input:radio[name=carefr]:checked').val() | 0,
+            oxygen_rating__gte: $('input:radio[name=oxyfr]:checked').val() | 0,
             ventilator_availability__gte: $('#ventfr').val(),
             oxygen_availability__gte: $('#oxyafr').val(),
             icu_availability__gte: $('#icufr').val(),

@@ -4,9 +4,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
             integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
             crossorigin="anonymous"></script>
+    <link href="{% static 'css/details.css' %}" rel="stylesheet"/>
+    <link href="{% static 'css/cards.css' %}" rel="stylesheet"/>
     <link href="{% static 'css/main.css' %}" rel="stylesheet"/>
     <link href="{% static 'css/helper.css' %}" rel="stylesheet"/>
-    <link href="{% static 'css/details.css' %}" rel="stylesheet"/>
     <link href="{% static 'css/stars.css' %}" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Lato:300&display=swap" rel="stylesheet">
@@ -15,30 +16,14 @@
 {% block body %}
     {% include 'nav.html' %}
     <div class="container my-5 py-5">
-        {% include 'v2/components/hospital_details_card.html' %}
+        {% include 'v2/components/hospital_details_card.html' with marker=hospital id=hospital.id %}
         {% include 'v2/components/give_rating.html' %}
         {% include 'v2/components/susmodal.html' %}
-        {{ csrf_token }}
     </div>
 
     <div class="text-center h2">Reviews</div>
     <div class="container mt-5">
         {% include 'v2/components/review_card.html' %}
-        <div aria-live="polite" aria-atomic="true" class="position-relative polite">
-            <!-- Position it: -->
-            <!-- - `.toast-container` for spacing between toasts -->
-            <!-- - `.position-absolute`, `top-0` & `end-0` to position the toasts in the upper right corner -->
-            <!-- - `.p-3` to prevent the toasts from sticking to the edge of the container  -->
-            <div class="toast-container position-fixed bottom-0 end-0 p-3" id='toastContainer'>
-
-                <!-- Then put toasts within -->
-
-
-            </div>
-            <!-- Then put toasts within -->
-
-
-        </div>
     </div>
 {% endblock %}
 
@@ -84,48 +69,16 @@
 
         function submitSus() {
             let comment = $('#textarea').val()
-                Sus.create({comment: comment}).then(
-                    function (reviewobject) {
-                        addToast("Submitted", "Thank you for your valuable feedback")
-                    },
-                    function (error) {
-                        addToast("Failed to Sumbit", "Feedback wasnt submitted :(")
-                    }
-                )
+            Sus.create({comment: comment}).then(
+                function (reviewobject) {
+                    addToast("Submitted", "Thank you for your valuable feedback")
+                },
+                function (error) {
+                    addToast("Failed to Sumbit", "Feedback wasnt submitted :(")
+                }
+            )
         }
 
-        function htmlToElement(html) {
-            var template = document.createElement('template');
-            html = html.trim(); // Never return a text node of whitespace as the result
-            template.innerHTML = html;
-            return template.content.firstChild;
-        }
 
-        function addToast(title, text) {
-
-            toast_container = document.getElementById('toastContainer')
-
-            const no = Math.random().toString(36).substring(7);
-            {#toast_container.a = d#}
-            var toastChild = htmlToElement(
-                `<div id="${no}" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="toast-header text-center" >
-                <strong class="me-auto">${title}</strong>
-                <small class="text-muted"></small>
-                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-            </div>
-            <div class="toast-body">
-            ${text}
-
-            </div>
-        </div>
-        `)
-
-
-            toast_container.append(toastChild)
-            console.log(no)
-
-            $(`#${no}`).toast('show')
-        }
     </script>
 {% endblock %}

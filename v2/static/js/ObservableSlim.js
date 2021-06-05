@@ -11,24 +11,24 @@
  *	reflecting changes in the model to the view. Observable Slim aspires to be as lightweight and easily
  *	understood as possible. Minifies down to roughly 3000 characters.
  */
-let ObservableSlim = (function () {
-    let paths = [];
+var ObservableSlim = (function () {
+    var paths = [];
     // An array that stores all of the observables created through the public create() method below.
-    let observables = [];
+    var observables = [];
     // An array of all the objects that we have assigned Proxies to
-    let targets = [];
+    var targets = [];
 
     // An array of arrays containing the Proxies created for each target object. targetsProxy is index-matched with
     // 'targets' -- together, the pair offer a Hash table where the key is not a string nor number, but the actual target object
-    let targetsProxy = [];
+    var targetsProxy = [];
 
     // this variable tracks duplicate proxies assigned to the same target.
     // the 'set' handler below will trigger the same change on all other Proxies tracking the same target.
     // however, in order to avoid an infinite loop of Proxies triggering and re-triggering one another, we use dupProxy
     // to track that a given Proxy was modified from the 'set' handler
-    let dupProxy = null;
+    var dupProxy = null;
 
-    let _getProperty = function (obj, path) {
+    var _getProperty = function (obj, path) {
         return path.split('.').reduce(function (prev, curr) {
             return prev ? prev[curr] : undefined
         }, obj || self)
@@ -48,12 +48,12 @@ let ObservableSlim = (function () {
             Returns:
                 An ES6 Proxy object.
     */
-    let _create = function (target, domDelay, originalObservable, originalPath) {
+    var _create = function (target, domDelay, originalObservable, originalPath) {
 
-        let observable = originalObservable || null;
+        var observable = originalObservable || null;
 
         // record the nested path taken to access this object -- if there was no path then we provide the first empty entry
-        let path = originalPath || [{"target": target, "property": ""}];
+        var path = originalPath || [{"target": target, "property": ""}];
         paths.push(path);
 
         // in order to accurately report the "previous value" of the "length" property on an Array
@@ -61,7 +61,7 @@ let ObservableSlim = (function () {
         // Chrome -- the new `length` value is already set by the time the `set` handler is invoked
         if (target instanceof Array) target.__length = target.length;
 
-        let changes = [];
+        var changes = [];
 
         /*	Function: _getPath
                 Returns a string of the nested path (in relation to the top-level observed object)
@@ -73,13 +73,13 @@ let ObservableSlim = (function () {
             Returns:
                 String of the nested path (e.g., hello.testing.1.bar or, if JSON pointer, /hello/testing/1/bar
         */
-        let _getPath = function (target, property, jsonPointer) {
+        var _getPath = function (target, property, jsonPointer) {
 
-            let fullPath = "";
-            let lastTarget = null;
+            var fullPath = "";
+            var lastTarget = null;
 
             // loop over each item in the path and append it to full path
-            for (let i = 0; i < path.length; i++) {
+            for (var i = 0; i < path.length; i++) {
 
                 // if the current object was a member of an array, it's possible that the array was at one point
                 // mutated and would cause the position of the current object in that array to change. we perform an indexOf
@@ -103,7 +103,7 @@ let ObservableSlim = (function () {
             return fullPath;
         };
 
-        let _notifyObservers = function (numChanges) {
+        var _notifyObservers = function (numChanges) {
 
             // if the observable is paused, then we don't want to execute any of the observer functions
             if (observable.paused === true) return;
@@ -116,11 +116,11 @@ let ObservableSlim = (function () {
 
                         // we create a copy of changes before passing it to the observer functions because even if the observer function
                         // throws an error, we still need to ensure that changes is reset to an empty array so that old changes don't persist
-                        let changesCopy = changes.slice(0);
+                        var changesCopy = changes.slice(0);
                         changes = [];
 
                         // invoke any functions that are observing changes
-                        for (let i = 0; i < observable.observers.length; i++) observable.observers[i](changesCopy);
+                        for (var i = 0; i < observable.observers.length; i++) observable.observers[i](changesCopy);
 
                     }
                 }, 10);
@@ -128,16 +128,16 @@ let ObservableSlim = (function () {
 
                 // we create a copy of changes before passing it to the observer functions because even if the observer function
                 // throws an error, we still need to ensure that changes is reset to an empty array so that old changes don't persist
-                let changesCopy = changes.slice(0);
+                var changesCopy = changes.slice(0);
                 changes = [];
 
                 // invoke any functions that are observing changes
-                for (let i = 0; i < observable.observers.length; i++) observable.observers[i](changesCopy);
+                for (var i = 0; i < observable.observers.length; i++) observable.observers[i](changesCopy);
 
             }
         };
 
-        let handler = {
+        var handler = {
             get: function (target, property) {
 
                 // implement a simple check for whether or not the object is a proxy, this helps the .create() method avoid
@@ -150,27 +150,27 @@ let ObservableSlim = (function () {
                 } else if (property === "__getParent") {
                     return function (i) {
                         if (typeof i === "undefined") var i = 1;
-                        let parentPath = _getPath(target, "__getParent").split(".");
+                        var parentPath = _getPath(target, "__getParent").split(".");
                         parentPath.splice(-(i + 1), (i + 1));
                         return _getProperty(observable.parentProxy, parentPath.join("."));
                     }
                     // return the full path of the current object relative to the parent observable
                 } else if (property === "__getPath") {
                     // strip off the 12 characters for ".__getParent"
-                    let parentPath = _getPath(target, "__getParent");
+                    var parentPath = _getPath(target, "__getParent");
                     return parentPath.slice(0, -12);
                 }
 
                 // for performance improvements, we assign this to a variable so we do not have to lookup the property value again
-                let targetProp = target[property];
-                if (target instanceof Date && targetProp instanceof Function) {
+                var targetProp = target[property];
+                if (target instanceof Date && targetProp instanceof Function && targetProp !== null) {
                     return targetProp.bind(target);
                 }
 
                 // if we are traversing into a new object, then we want to record path to that object and return a new observable.
                 // recursively returning a new observable allows us a single Observable.observe() to monitor all changes on
                 // the target object and any objects nested within.
-                if (targetProp instanceof Object && target.hasOwnProperty(property)) {
+                if (targetProp instanceof Object && targetProp !== null && target.hasOwnProperty(property)) {
 
                     // if we've found a proxy nested on the object, then we want to retrieve the original object behind that proxy
                     if (targetProp.__isProxy === true) targetProp = targetProp.__getTarget;
@@ -181,8 +181,8 @@ let ObservableSlim = (function () {
                     if (targetProp.__targetPosition > -1 && targets[targetProp.__targetPosition] !== null) {
 
                         // loop over the proxies that we've created for this object
-                        let ttp = targetsProxy[targetProp.__targetPosition];
-                        for (let i = 0, l = ttp.length; i < l; i++) {
+                        var ttp = targetsProxy[targetProp.__targetPosition];
+                        for (var i = 0, l = ttp.length; i < l; i++) {
 
                             // if we find a proxy that was setup for this particular observable, then return that proxy
                             if (observable === ttp[i].observable) {
@@ -195,7 +195,7 @@ let ObservableSlim = (function () {
                     // have to create a new proxy for it
 
                     // create a shallow copy of the path array -- if we didn't create a shallow copy then all nested objects would share the same path array and the path wouldn't be accurate
-                    let newPath = path.slice(0);
+                    var newPath = path.slice(0);
                     newPath.push({"target": targetProp, "property": property});
                     return _create(targetProp, domDelay, observable, newPath);
                 } else {
@@ -205,14 +205,14 @@ let ObservableSlim = (function () {
             deleteProperty: function (target, property) {
 
                 // was this change an original change or was it a change that was re-triggered below
-                let originalChange = true;
+                var originalChange = true;
                 if (dupProxy === proxy) {
                     originalChange = false;
                     dupProxy = null;
                 }
 
                 // in order to report what the previous value was, we must make a copy of it before it is deleted
-                let previousValue = Object.assign({}, target);
+                var previousValue = Object.assign({}, target);
 
                 // record the deletion that just took place
                 changes.push({
@@ -231,12 +231,12 @@ let ObservableSlim = (function () {
                     // perform the delete that we've trapped if changes are not paused for this observable
                     if (!observable.changesPaused) delete target[property];
 
-                    for (let a = 0, l = targets.length; a < l; a++) if (target === targets[a]) break;
+                    for (var a = 0, l = targets.length; a < l; a++) if (target === targets[a]) break;
 
                     // loop over each proxy and see if the target for this change has any other proxies
-                    let currentTargetProxy = targetsProxy[a] || [];
+                    var currentTargetProxy = targetsProxy[a] || [];
 
-                    let b = currentTargetProxy.length;
+                    var b = currentTargetProxy.length;
                     while (b--) {
                         // if the same target has a different proxy
                         if (currentTargetProxy[b].proxy !== proxy) {
@@ -265,14 +265,14 @@ let ObservableSlim = (function () {
                 if (value && value.__isProxy) value = value.__getTarget;
 
                 // was this change an original change or was it a change that was re-triggered below
-                let originalChange = true;
+                var originalChange = true;
                 if (dupProxy === proxy) {
                     originalChange = false;
                     dupProxy = null;
                 }
 
                 // improve performance by saving direct references to the property
-                let targetProp = target[property];
+                var targetProp = target[property];
 
                 // Only record this change if:
                 // 	1. the new value differs from the old one
@@ -283,12 +283,12 @@ let ObservableSlim = (function () {
                 // so in order to accurately report the correct previousValue for the .length, we have to use a helper property.
                 if (targetProp !== value || originalChange === false || (property === "length" && target instanceof Array && target.__length !== value)) {
 
-                    let foundObservable = true;
+                    var foundObservable = true;
 
-                    let typeOfTargetProp = (typeof targetProp);
+                    var typeOfTargetProp = (typeof targetProp);
 
                     // determine if we're adding something new or modifying somethat that already existed
-                    let type = "update";
+                    var type = "update";
                     if (typeOfTargetProp === "undefined") type = "add";
 
                     // store the change that just occurred. it is important that we store the change before invoking the other proxies so that the previousValue is correct
@@ -323,8 +323,8 @@ let ObservableSlim = (function () {
 
                         foundObservable = false;
 
-                        let targetPosition = target.__targetPosition;
-                        let z = targetsProxy[targetPosition].length;
+                        var targetPosition = target.__targetPosition;
+                        var z = targetsProxy[targetPosition].length;
 
                         // find the parent target for this observable -- if the target for that observable has not been removed
                         // from the targets array, then that means the observable is still active and we should notify the observers of this change
@@ -343,8 +343,8 @@ let ObservableSlim = (function () {
                         if (foundObservable) {
 
                             // loop over each proxy and see if the target for this change has any other proxies
-                            let currentTargetProxy = targetsProxy[targetPosition];
-                            for (let b = 0, l = currentTargetProxy.length; b < l; b++) {
+                            var currentTargetProxy = targetsProxy[targetPosition];
+                            for (var b = 0, l = currentTargetProxy.length; b < l; b++) {
                                 // if the same target has a different proxy
                                 if (currentTargetProxy[b].proxy !== proxy) {
 
@@ -371,22 +371,22 @@ let ObservableSlim = (function () {
                                     // if it does still exist on the object, then we don't want to stop observing it. this resolves
                                     // an issue where array .sort() triggers objects to be overwritten, but instead of being overwritten
                                     // and discarded, they are shuffled to a new position in the array
-                                    let keys = Object.keys(target);
-                                    for (let i = 0, l = keys.length; i < l; i++) {
+                                    var keys = Object.keys(target);
+                                    for (var i = 0, l = keys.length; i < l; i++) {
                                         if (target[keys[i]] === targetProp) return;
                                     }
 
-                                    let stillExists = false;
+                                    var stillExists = false;
 
                                     // now we perform the more expensive search recursively through the target object.
                                     // if we find the targetProp (that was just overwritten) still exists somewhere else
                                     // further down in the object, then we still need to observe the targetProp on this observable.
                                     (function iterate(target) {
-                                        let keys = Object.keys(target);
-                                        for (let i = 0, l = keys.length; i < l; i++) {
+                                        var keys = Object.keys(target);
+                                        for (var i = 0, l = keys.length; i < l; i++) {
 
-                                            let property = keys[i];
-                                            let nestedTarget = target[property];
+                                            var property = keys[i];
+                                            var nestedTarget = target[property];
 
                                             if (nestedTarget instanceof Object && nestedTarget !== null) iterate(nestedTarget);
                                             if (nestedTarget === targetProp) {
@@ -405,15 +405,15 @@ let ObservableSlim = (function () {
                                     // objects nested on targetProp
                                     (function iterate(obj) {
 
-                                        let keys = Object.keys(obj);
-                                        for (let i = 0, l = keys.length; i < l; i++) {
-                                            let objProp = obj[keys[i]];
+                                        var keys = Object.keys(obj);
+                                        for (var i = 0, l = keys.length; i < l; i++) {
+                                            var objProp = obj[keys[i]];
                                             if (objProp instanceof Object && objProp !== null) iterate(objProp);
                                         }
 
                                         // if there are any existing target objects (objects that we're already observing)...
-                                        let c = -1;
-                                        for (let i = 0, l = targets.length; i < l; i++) {
+                                        var c = -1;
+                                        for (var i = 0, l = targets.length; i < l; i++) {
                                             if (obj === targets[i]) {
                                                 c = i;
                                                 break;
@@ -422,8 +422,8 @@ let ObservableSlim = (function () {
                                         if (c > -1) {
 
                                             // ...then we want to determine if the observables for that object match our current observable
-                                            let currentTargetProxy = targetsProxy[c];
-                                            let d = currentTargetProxy.length;
+                                            var currentTargetProxy = targetsProxy[c];
+                                            var d = currentTargetProxy.length;
 
                                             while (d--) {
                                                 // if we do have an observable monitoring the object thats about to be overwritten
@@ -454,10 +454,10 @@ let ObservableSlim = (function () {
                         // observers/proxies on all nested children of the object
                         /* if (value instanceof Object && value !== null) {
                             (function iterate(proxy) {
-                                let target = proxy.__getTarget;
-                                let keys = Object.keys(target);
-                                for (let i = 0, l = keys.length; i < l; i++) {
-                                    let property = keys[i];
+                                var target = proxy.__getTarget;
+                                var keys = Object.keys(target);
+                                for (var i = 0, l = keys.length; i < l; i++) {
+                                    var property = keys[i];
                                     if (target[property] instanceof Object && target[property] !== null) iterate(proxy[property]);
                                 };
                             })(proxy[property]);
@@ -476,7 +476,7 @@ let ObservableSlim = (function () {
             }
         }
 
-        let __targetPosition = target.__targetPosition;
+        var __targetPosition = target.__targetPosition;
         if (!(__targetPosition > -1)) {
             Object.defineProperty(target, "__targetPosition", {
                 value: targets.length
@@ -487,7 +487,7 @@ let ObservableSlim = (function () {
         }
 
         // create the proxy that we'll use to observe any changes
-        let proxy = new Proxy(target, handler);
+        var proxy = new Proxy(target, handler);
 
         // we don't want to create a new observable if this function was invoked recursively
         if (observable === null) {
@@ -504,7 +504,7 @@ let ObservableSlim = (function () {
         }
 
         // store the proxy we've created so it isn't re-created unnecessairly via get handler
-        let proxyItem = {"target": target, "proxy": proxy, "observable": observable};
+        var proxyItem = {"target": target, "proxy": proxy, "observable": observable};
 
         // if we have already created a Proxy for this target object then we add it to the corresponding array
         // on targetsProxy (targets and targetsProxy work together as a Hash table indexed by the actual target object).
@@ -544,14 +544,14 @@ let ObservableSlim = (function () {
             // test if the target is a Proxy, if it is then we need to retrieve the original object behind the Proxy.
             // we do not allow creating proxies of proxies because -- given the recursive design of ObservableSlim -- it would lead to sharp increases in memory usage
             if (target.__isProxy === true) {
-                let target = target.__getTarget;
+                var target = target.__getTarget;
                 //if it is, then we should throw an error. we do not allow creating proxies of proxies
                 // because -- given the recursive design of ObservableSlim -- it would lead to sharp increases in memory usage
                 //throw new Error("ObservableSlim.create() cannot create a Proxy for a target object that is also a Proxy.");
             }
 
             // fire off the _create() method -- it will create a new observable and proxy and return the proxy
-            let proxy = _create(target, domDelay);
+            var proxy = _create(target, domDelay);
 
             // assign the observer function
             if (typeof observer === "function") this.observe(proxy, observer);
@@ -559,10 +559,10 @@ let ObservableSlim = (function () {
             // recursively loop over all nested objects on the proxy we've just created
             // this will allow the top observable to observe any changes that occur on a nested object
             (function iterate(proxy) {
-                let target = proxy.__getTarget;
-                let keys = Object.keys(target);
-                for (let i = 0, l = keys.length; i < l; i++) {
-                    let property = keys[i];
+                var target = proxy.__getTarget;
+                var keys = Object.keys(target);
+                for (var i = 0, l = keys.length; i < l; i++) {
+                    var property = keys[i];
                     if (target[property] instanceof Object && target[property] !== null) iterate(proxy[property]);
                 }
             })(proxy);
@@ -582,7 +582,7 @@ let ObservableSlim = (function () {
         */
         observe: function (proxy, observer) {
             // loop over all the observables created by the _create() function
-            let i = observables.length;
+            var i = observables.length;
             while (i--) {
                 if (observables[i].parentProxy === proxy) {
                     observables[i].observers.push(observer);
@@ -598,8 +598,8 @@ let ObservableSlim = (function () {
                 proxy 	- the ES6 Proxy returned by the create() method.
         */
         pause: function (proxy) {
-            let i = observables.length;
-            let foundMatch = false;
+            var i = observables.length;
+            var foundMatch = false;
             while (i--) {
                 if (observables[i].parentProxy === proxy) {
                     observables[i].paused = true;
@@ -618,8 +618,8 @@ let ObservableSlim = (function () {
                 proxy 	- the ES6 Proxy returned by the create() method.
         */
         resume: function (proxy) {
-            let i = observables.length;
-            let foundMatch = false;
+            var i = observables.length;
+            var foundMatch = false;
             while (i--) {
                 if (observables[i].parentProxy === proxy) {
                     observables[i].paused = false;
@@ -629,7 +629,7 @@ let ObservableSlim = (function () {
             }
 
 
-            if (foundMatch === false) throw new Error("ObseravableSlim could not resume observable -- matching proxy not found.");
+            if (foundMatch == false) throw new Error("ObseravableSlim could not resume observable -- matching proxy not found.");
         },
 
         /*	Method: pauseChanges
@@ -641,8 +641,8 @@ let ObservableSlim = (function () {
                 proxy	- the ES6 Proxy returned by the create() method.
          */
         pauseChanges: function (proxy) {
-            let i = observables.length;
-            let foundMatch = false;
+            var i = observables.length;
+            var foundMatch = false;
             while (i--) {
                 if (observables[i].parentProxy === proxy) {
                     observables[i].changesPaused = true;
@@ -652,7 +652,7 @@ let ObservableSlim = (function () {
             }
 
 
-            if (foundMatch === false) throw new Error("ObservableSlim could not pause changes on observable -- matching proxy not found.");
+            if (foundMatch == false) throw new Error("ObseravableSlim could not pause changes on observable -- matching proxy not found.");
         },
 
         /*	Method: resumeChanges
@@ -661,8 +661,8 @@ let ObservableSlim = (function () {
                 proxy	- the ES6 Proxy returned by the create() method.
          */
         resumeChanges: function (proxy) {
-            let i = observables.length;
-            let foundMatch = false;
+            var i = observables.length;
+            var foundMatch = false;
             while (i--) {
                 if (observables[i].parentProxy === proxy) {
                     observables[i].changesPaused = false;
@@ -672,21 +672,21 @@ let ObservableSlim = (function () {
             }
 
 
-            if (foundMatch === false) throw new Error("ObservableSlim could not resume changes on observable -- matching proxy not found.");
+            if (foundMatch == false) throw new Error("ObseravableSlim could not resume changes on observable -- matching proxy not found.");
         },
 
         /*	Method: remove
                 This method will remove the observable and proxy thereby preventing any further callback observers for
-                changes occurring to the target object.
+                changes occuring to the target object.
             Parameters:
                 proxy 	- the ES6 Proxy returned by the create() method.
         */
         remove: function (proxy) {
 
-            let matchedObservable = null;
-            let foundMatch = false;
+            var matchedObservable = null;
+            var foundMatch = false;
 
-            let c = observables.length;
+            var c = observables.length;
             while (c--) {
                 if (observables[c].parentProxy === proxy) {
                     matchedObservable = observables[c];
@@ -696,9 +696,9 @@ let ObservableSlim = (function () {
             }
 
 
-            let a = targetsProxy.length;
+            var a = targetsProxy.length;
             while (a--) {
-                let b = targetsProxy[a].length;
+                var b = targetsProxy[a].length;
                 while (b--) {
                     if (targetsProxy[a][b].observable === matchedObservable) {
                         targetsProxy[a].splice(b, 1);

@@ -6,6 +6,7 @@ class SearchCards extends Component {
     aff;
     con;
     cov;
+
     constructor(component, data = {}) {
         super(component, data)
         this.oxy = new StarInput(`#oxy${this.data.id}`)
@@ -46,8 +47,33 @@ class SearchCards extends Component {
     }
 }
 
-let searchCards;
-Marker.get(id = 5).then(function (marker) {
-    console.log(marker)
-    searchCards = new SearchCards('searchResultCard', marker)
-})
+export class SearchResultList extends Component {
+    superList = [];
+
+    constructor(component, data = {}) {
+        super(component, data)
+
+
+    }
+
+    update() {
+        return `${this.data.list.slice(-10).map((marker) => {
+            return `<SearchCards class='seachCard${marker.id}'></SearchCards>`
+        }).join('')}`
+
+    }
+
+    render() {
+        return `${this.data.list.map((marker) => {
+            return `<SearchCards class='seachCard${marker.id}'></SearchCards>`
+        }).join('')}`
+    }
+
+    final() {
+        this.superList.push(...this.data.list.slice(-10).map(marker => {
+                return new SearchCards(`.seachCard${marker.id}`, {...marker})
+            }
+        ))
+    }
+}
+

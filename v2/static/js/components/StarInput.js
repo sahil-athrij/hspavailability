@@ -7,12 +7,13 @@ export class StarInput extends Component {
     constructor(component, data = {}) {
         super(component, data)
     }
+
     setValue(value) {
         this.data.value = value
-
     }
+
+
     render() {
-        console.log(this.data.value)
         return `
         <div class="col my-2  ${this.data.col}">
             <label for="{{ name }}" class="">${this.data.label}
@@ -47,6 +48,10 @@ export class StarInput extends Component {
             </div>
         </div>
         `
+    }
+
+    final() {
+        $('[data-toggle="popover"]').popover();
     }
 }
 

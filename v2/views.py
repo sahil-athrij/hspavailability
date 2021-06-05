@@ -161,3 +161,6 @@ def details(request, hospital_id):
     stuff = review.values()
     context["reviews"] = review
     return render(request, template_name='v2/details.html', context=context)
+
+def help(request):
+    return render(request, template_name='v2/help.html')

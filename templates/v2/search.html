@@ -111,10 +111,9 @@
 <!--                res+=``-->
 <!--            }-->
 <!--            document.getElementById("moreresult").innerHTML+=res-->
-        }).catch(function(){
-                console.log('empty')
-<!--            document.getElementById("moreresult").innerHTML+="<h5>No more results</h5>"-->
-            $('#more').hide()
+                if(markerlist.next==null){
+                    $('#more').hide()
+                }
         })
         page++
         })

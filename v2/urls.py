@@ -9,5 +9,6 @@ urlpatterns = [
     path('signup/', signup),
     path('search/', search, name='search'),
     path('getlocation/', get_location),
-    path('details/<int:hospital_id>', details)
+    path('details/<int:hospital_id>', details),
+    path('help/',help)
 ]

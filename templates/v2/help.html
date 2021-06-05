@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css %}
+
+    <link href="{% static 'css/main.css' %}" rel="stylesheet"/>
+    <link href="{% static 'css/details.css' %}" rel="stylesheet"/>
+    <link href="{% static 'css/helper.css' %}" rel="stylesheet"/>
+    <link href="{% static 'css/cards.css' %}" rel="stylesheet"/>
+
+
+{% endblock %}
+
+{% block body %}
+    {% include 'nav.html' %}
+    <div class="jumbotron">
+        <div class="container my-5 py-5">
+            <h2>Rating Terminology</h2>
+            <table class="col-10 mt-10">
+                <tr>
+                    <td>
+                        Oxygen Care
+                    </td>
+                    <td>
+                        Quality Rating for Oxygen Care
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Affordability
+                    </td>
+                    <td>
+                        Affordability of the hospital(Higher rating means the price you pay is worth the service you get)
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Convenience
+                    </td>
+                    <td>
+                        Convenience of Getting Care (higher is Better) the ease with dealing with Administrative
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Covid Care
+                    </td>
+                    <td>
+                        Quality of Covid Care (higher is better)
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Oxygen Availability
+                    </td>
+                    <td>
+                        Availability of Oxygen supply
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Ventilator Availability
+                    </td>
+                    <td>
+                        Availability of Ventilator Facility
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        ICU Availability
+                    </td>
+                    <td>
+                        Availability of ICU Facility
+                    </td>
+                </tr>
+            </table>
+            <h2 class="mt-5">Search</h2>
+            <ol>
+                <li>Location(Auto): This input would give a filtered results which takes this location as it's center</li>
+                <li>Hospital Name: This input would give Hospitals with name which contains the input</li>
+                <li>Rating Filter: This filter would give hospitals with ratings higher than the inputted rating</li>
+                <li>Availability Filter: This filter would give hospitals with availability of the specified facility that is higher than the inputted percentage</li>
+                <li>Cost Filter: This filter would give hospitals with their average cost being in between the costs you input</li>
+            </ol>
+            <h2 class="mt-5">Review</h2>
+            <p>The review you provide will help us rate the hospital.</p>
+            <p>The total Review of a particular hospitals is taken after giving more consideration for the latest reviews to keep it upto data.</p>
+            <h2 class="mt-5">Mark Suspicious</h2>
+            <p>We do not claim that our database of hospitals to be accurate, as most of the data was automatically added, while the users also have the ability to add hospitals.<strong>Mark Suspicious</strong> will allow you to mark any Hospitals in our database, that you think either cannot provide COVID Care, or are not hospitals at all.</p>
+            <h2 class="mt-5">Disclaimer</h2>
+            <p>We do not claim that the ratings for any of the Hospitals to accurately depict the actual performance of said hospital, as it is provided by the users.</p>
+            <p>We do not claim that all the Hospitals recorded in our database to be relevant as new Hospitals can be added by the user.</p>
+        </div>
+    </div>
+{% endblock %}
+{% block script %}
+{% endblock %}

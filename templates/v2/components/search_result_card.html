@@ -11,7 +11,7 @@
         <h5 class="card-title card-title-left" id="{{ id }}title">{{ marker.name }}</h5>
         <h6 class="card-title card-title-left" id="{{ id }}title">{{ marker.display_address }}</h6>
         <h6 class="card-title card-title-left" id="{{ id }}title"><a
-                href="tel:{{ marker.Phone }}">{{ marker.Phone }}</a></h6>
+                href="tel:{{ marker.Phone }}" id="{{ id }}phone">{{ marker.Phone }}</a></h6>
         <div class="widget-49-meeting-points  row">
             {% include 'v2/components/star_ratings.html' with name=id|add:"oxy"  label="Oxygen Care" content="Quality Rating for Oxyen Care" disabled="disabled" value=marker.oxygen_rating %}
             {% include 'v2/components/star_ratings.html' with name=id|add:"aff"   extra_class="financial" label="Affordability" content="Affordability of the hospital .higher is expensive" disabled="disabled" value=marker.financial_rating %}
@@ -37,7 +37,7 @@
             <a href="/v2/details/{{ marker.id }}" id="{{ id }}redirect"
                class="btn input-right input-left bg-dark btn-dark">More
                 Info</a>
-            <a target="_blank" href="https://www.google.com/maps/search/{{ marker.name }}/@{{ marker.lat }},{{ marker.lng }},19.88z">
+            <a target="_blank" id="{{ id }}maps" href="https://www.google.com/maps/search/{{ marker.name }}/@{{ marker.lat }},{{ marker.lng }},19.88z">
                 <i class="fa fa-map-marker"></i> Route Map
             </a>
         </div>

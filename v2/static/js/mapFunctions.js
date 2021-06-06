@@ -118,8 +118,9 @@ function filldata(id) {
         $('#valueicu').text(data.icu_availability)
 
         $('#valueredirect').attr('href', `/v2/details/${data.id}`)
-        $('#phone').html(data.Phone)
-        $('#phone').attr("href", 'tel:' + data.Phone)
+        $('#valuephone').html(data.Phone)
+        $('#valuephone').attr("href", 'tel:' + data.Phone)
+        $('#maps').attr("href", `https://www.google.com/maps/search/${data.name}/@${data.lat},${data.lng},19.88z`)
 
 
         $('#id').val(data.id)

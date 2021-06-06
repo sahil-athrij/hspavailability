@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+    Add Hospitals
+{% endblock %}
+{% block css %}
+
+    <link href="{% static 'css/main.css' %}" rel="stylesheet"/>
+    <link href="{% static 'css/details.css' %}" rel="stylesheet"/>
+    <link href="{% static 'css/helper.css' %}" rel="stylesheet"/>
+    <link href="{% static 'css/cards.css' %}" rel="stylesheet"/>
+    <link href="{% static 'css/addhospital.css' %}" rel="stylesheet"/>
+
+
+{% endblock %}
+
+{% block body %}
+    {% include 'nav.html' %}
+    <div class="d-flex">
+        <div class="container my-5 ">
+            <div class="text-center h3 p-3 pt-5 pt-sm-3">Add Missing Hospital</div>
+
+
+            <div class="row my-2  align-self-center " id="mapview" role="tabpanel" aria-labelledby="mapview-tab">
+
+                <div class="col12 col-md-6 col-lg-6" id="toplevel1">
+
+                    <div id="map"></div>
+
+                </div>
+
+                <div class="col-12 col-md-6 col-lg-6">
+                    {% include 'v2/components/add_hospital_card.html' with  col='col-6 col-md-12' id='value' %}
+                </div>
+            </div>
+        </div>
+        <div hidden>
+            {% include 'v2/components/sidebar.html' %}
+
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script>
+        var icons = [
+            '{% static 'images/small.png' %}',
+            '{% static 'images/medium.png' %}',
+            '{% static 'images/large.png' %}',
+        ]
+    </script>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
+
+    <script src="{% static '/js/mapFunctions.js' %}"></script>
+{% endblock %}

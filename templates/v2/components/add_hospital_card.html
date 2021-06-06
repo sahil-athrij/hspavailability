@@ -1,0 +1,49 @@
+{% load static %}
+<div class="card card-left neumorphic_input card-margin bg-grey">
+    {% if id != 'value' %}
+        <img src="{% static 'images/hospital.svg' %}"
+             class="card-img-top  p-2 p-md-4"/>
+    {% endif %}
+
+    <div class="card-body card-body-left widget-49 bg-white w-100">
+        <h5 class="card-title card-title-left" id="{{ id }}title">{{ marker.name }}</h5>
+        <h5 class="card-title card-title-left">
+            <div class="select">
+                <div class="select">
+                    <input type="text" class="select-text text-input" id="{{ id }}titleinput" required
+                           placeholder=" "
+                           aria-label="Enter Name"
+                           aria-describedby="basic-addon1" name="title">
+                    <label for="{{ id }}titleinput" class="select-label text-label">Name of Hospital</label>
+                    <div id="{{ id }}titleinputfeedback" class="invalid-feedback">
+                        Please Enter The Name.
+                    </div>
+                </div>
+            </div>
+        </h5>
+
+        <h6 class="card-title card-title-left" id="{{ id }}title">{{ marker.display_address }}</h6>
+        <h6 class="card-title card-title-left" id="{{ id }}title"><a
+                href="tel:{{ marker.Phone }}" id="{{ id }}phone">{{ marker.Phone }}</a></h6>
+
+        <h6 class="card-title card-title-left">
+            <div class="select">
+                <div class="select">
+                    <input type="tel" class="select-text text-input" id="{{ id }}phoneinput" required
+                           placeholder=" "
+                           aria-label="Enter Phone Number"
+                           aria-describedby="basic-addon1" name="phone">
+                    <label for="{{ id }}titleinput" class="select-label text-label">Phone Number of Hospital</label>
+                    <div id="{{ id }}titleinputfeedback" class="invalid-feedback">
+                        Please Enter The Phone Number.
+                    </div>
+                </div>
+            </div>
+        </h6>
+        <div class="d-flex d-flex justify-content-between">
+            <a
+                    class="btn input-right input-left bg-dark btn-dark">Submit</a>
+
+        </div>
+    </div>
+</div>

@@ -182,3 +182,7 @@ def details(request, hospital_id):
 @ensure_csrf_cookie
 def help(request):
     return render(request, template_name='v2/help.html')
+
+@ensure_csrf_cookie
+def addHospital(request):
+    return render(request, template_name='v2/addhospital.html')

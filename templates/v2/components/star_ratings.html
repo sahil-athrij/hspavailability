@@ -23,6 +23,11 @@
                             {% endif %}>
                     <label for="{{ name }}{{ i }}"></label>
                 {% endfor %}
+                {% if feedback %}
+                    <div id="{{ name }}feedback" class="invalid-feedback">
+                        Please rate {{ label }}.
+                    </div>
+                {% endif %}
             </div>
         </div>
     </div>

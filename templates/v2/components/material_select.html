@@ -2,14 +2,19 @@
 
     <!--Select with pure css-->
     <div class="select">
-        <select class="select-text" id="{{ label }}" required name="{{ label }}">
-            <option selected disabled></option>
-            <option value="0">Didn't require {{ label }}</option>
-            <option value="1">Not available</option>
+        <select class="select-text" id="{{ label }}" required name="{{ label }}"
+                aria-describedby="{{ label }}feedback">
+            <option hidden selected disabled></option>
             <option value="2">Available</option>
+            <option value="1">Not available</option>
+            <option value="0">Didn't require {{ label }}</option>
         </select>
+
         <span class="select-highlight"></span>
         <span class="select-bar"></span>
         <label for="{{ label }}" class="select-label">{{ label }} {{ qualifier }}</label>
+        <div id="{{ label }}feedback" class="invalid-feedback">
+            Please select {{ label }} {{ qualifier }}.
+        </div>
     </div>
 </div>

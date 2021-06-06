@@ -322,8 +322,6 @@ body {
 }
 
 
-
-
 /* select starting stylings ------------------------------*/
 .select {
     position: relative;
@@ -361,13 +359,20 @@ body {
 }
 
 /* active state */
-.select-text:focus ~ .select-label, select.select-text:valid ~ .select-label {
+.select-text:focus ~ .select-label, select.select-text:valid ~ .select-label, .select-text:not(:placeholder-shown) ~ .text-label {
     color: #2F80ED;
     top: -7px;
     transition: 0.2s ease all;
-    font-size: 11px;
+    font-size: 15px;
 }
 
+
+select.select-text:invalid ~ .invalid-feedback, .select-text:placeholder-shown ~ .invalid-feedback {
+    display: inline;
+}
+select.select-text:valid ~ .invalid-feedback, .select-text:not(:placeholder-shown) ~ .invalid-feedback {
+    display: none;
+}
 /* BOTTOM BARS ================================= */
 .select-bar {
     position: relative;
@@ -409,10 +414,13 @@ body {
     opacity: 0.5;
 }
 
-.text-area-grey{
+.text-area-grey {
     background-color: #f6f6f7;
 }
+
 .text-input:focus {
     outline: none;
-    border-bottom: 2px solid  #2F80ED;;
+    border-bottom: 2px solid #2F80ED;;
 }
+
+

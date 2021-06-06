@@ -14,9 +14,10 @@
                autocomplete="off">
         <input class="pass" type="password" align="center" placeholder="Password" name="password"
                autocomplete="off">
+        <input name="next" value="{{ request.GET.next }}" hidden>
         <button class="submit" align="left">Sign in</button>
-        <p class="forgot" align="center"><a href="#">Forgot Password?</a></p><a href="#">
-    </a>
-        <p class="forgot" align="center"><a href="#"></a><a href="/v2/signup?{{ request.GET }}">New User?</a></p>
+        <p class="forgot" align="center"><a href="#">Forgot Password?</a></p>
+        <p class="forgot" align="center"><a href="/v2/signup?next={{ request.GET.next }}">New User?</a>
+        </p>
     </form>
 {% endblock %}

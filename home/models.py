@@ -57,7 +57,7 @@ class Reviews(models.Model):
     ventilator_availability = models.IntegerField(default=0)
     oxygen_availability = models.IntegerField(default=0)
     icu_availability = models.IntegerField(default=0)
-    comment = models.TextField()
+    comment = models.TextField(blank=True)
     datef = models.DateField(default=datetime.date.today)
     day = models.IntegerField(default=0)
     written_by = models.ForeignKey(User, default=1, on_delete=models.CASCADE)

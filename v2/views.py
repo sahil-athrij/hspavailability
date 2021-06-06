@@ -1,14 +1,13 @@
 import json
 
+import requests
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
-import requests
-from django.forms import model_to_dict
-from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
-from home.models import *
 from django.views.decorators.csrf import ensure_csrf_cookie
+
+from home.models import *
 
 
 def get_client_ip(request):
@@ -32,6 +31,7 @@ def index(request):
 
     return render(request, template_name='v2/index.html', context=context)
 
+
 @ensure_csrf_cookie
 def signin(request):
     context1 = {}
@@ -45,12 +45,14 @@ def signin(request):
         if user is not None:
             login(request, user)
             # Redirect to a success page.
-            return HttpResponseRedirect('/v2/')
+            redirect_location = request.POST.get('next', '/v2/')
+            return HttpResponseRedirect(redirect_location)
         else:
             # Return an 'invalid login' error message.
             context1['pswderr'] = "Invalid Credentials"
     context1['sign_text'] = 'Sign In'
     return render(request, template_name="v2/login.html", context=context1)
+
 
 @ensure_csrf_cookie
 def signup(request):
@@ -68,7 +70,8 @@ def signup(request):
                 try:
                     user = User.objects.create_user(email=email, password=password, username=email)
                     login(request, user)
-                    return HttpResponseRedirect('/v2/')
+                    redirect_location = request.POST.get('next', '/v2/')
+                    return HttpResponseRedirect(redirect_location)
 
                 except Exception as e:
                     print(e)
@@ -84,6 +87,7 @@ def signup(request):
 def log_out(request):
     logout(request)
     return HttpResponseRedirect('/v2/')
+
 
 @ensure_csrf_cookie
 def search(request):
@@ -123,7 +127,7 @@ def search(request):
                 lng = float(data['longitude'])
             except Exception as e:
                 print(e)
-        print(lat,lng)
+        print(lat, lng)
         context["search_results"] = Markers.objects.filter(
             lat__gte=lat - 0.5,
             lat__lte=lat + 0.5,
@@ -148,6 +152,7 @@ def search(request):
 
     return render(request, template_name='v2/index.html')
 
+
 @ensure_csrf_cookie
 def get_loction_python(request):
     ip = get_client_ip(request)
@@ -156,10 +161,12 @@ def get_loction_python(request):
         'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36'})
     return json.loads(loc_data.content)
 
+
 @ensure_csrf_cookie
 def get_location(request):
     loc_data = get_loction_python(request)
     return JsonResponse(loc_data)
+
 
 @ensure_csrf_cookie
 def details(request, hospital_id):
@@ -170,6 +177,7 @@ def details(request, hospital_id):
     stuff = review.values()
     context["reviews"] = review
     return render(request, template_name='v2/details.html', context=context)
+
 
 @ensure_csrf_cookie
 def help(request):

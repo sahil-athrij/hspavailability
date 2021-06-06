@@ -21,7 +21,10 @@ class SearchCards extends Component {
 <div class="card card-left neumorphic_input card-margin bg-grey">
     <img src="/static/images/hospital.svg" class="card-img-top  p-2 p-md-4"/>
     <div class="card-body card-body-left widget-49 bg-white w-100">
-        <h5 class="card-title card-title-left" id="{{ id }}title">${this.data.name}</h5>
+        <h5 class="card-title card-title-left" >${this.data.name}</h5>
+        <h6 class="card-title card-title-left" >${this.data.display_address}</h6>
+        <h6 class="card-title card-title-left" ><a
+                href="tel:${this.data.Phone}">${this.data.Phone}</a></h6>
         <div class="widget-49-meeting-points  row">
             <starInput id="oxy${this.data.id}"  class="col-6" label="Oxygen Care" content="Quality Rating for Oxyen Care" disabled="false"  value="${this.data.oxygen_rating}"></starInput>
             <starInput id="aff${this.data.id}"  class="col-6" extra_class="financial" label="Affordability" content="Affordability of the hospital .higher is expensive" disabled="disabled" value=${this.data.financial_rating}  ></starInput>
@@ -41,7 +44,14 @@ class SearchCards extends Component {
             <div class="col">ICU Availability : <span>${this.data.icu_availability}</span> %
             </div>
         </div>
-        <a href="/v2/details/${this.data.id}"  class="btn input-right input-left bg-dark btn-dark">More Info</a>
+         <div class="d-flex d-flex justify-content-between">
+           
+            <a href="/v2/details/${this.data.id}"  class="btn input-right input-left bg-dark btn-dark">More Info</a>
+            <a target="_blank" href="https://www.google.com/maps/search/${this.data.name}/@${this.data.lat},${this.data.lng},19.88z">
+                <i class="fa fa-map-marker"></i> Directions
+            </a>
+        </div>
+       
     </div>
 </div>`;
     }

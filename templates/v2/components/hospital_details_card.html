@@ -1,7 +1,8 @@
 {% load static %}
 <h5 class="text-center h2">{{ hospital.name }}</h5>
 <div class="widget-49-meeting-info">
-    <h5 class="widget-49-pro-title text-center h5">Phone : {{ hospital.Phone }}</h5>
+    <h5 class="widget-49-pro-title text-center h5">Phone : <a href="tel:{{ hospital.Phone }}">{{ hospital.Phone }}</a>
+    </h5>
 </div>
 <div class="card card-left neumorphic_input card-margin bg-grey">
     {% if id != 'value' %}
@@ -12,7 +13,8 @@
         <div class="d-flex d-flex justify-content-between">
             <h5 class="card-title card-title-left inline-block" id="{{ id }}title h4">{{ marker.name }}</h5>
             <a data-bs-toggle="modal" data-bs-target="#susmodal"
-                    class="link input-right input-left ml-auto Align-self-end  link-danger move-up" id="add-sus-btn">Report issue
+               class="link input-right input-left ml-auto Align-self-end  link-danger move-up" id="add-sus-btn">Report
+                issue
             </a>
         </div>
         <h6 class="card-title card-title-left" id="{{ id }}title h6">{{ marker.display_address }}</h6>
@@ -38,11 +40,14 @@
             <div class="col">ICU Availability : <span id="{{ id|add:"icu" }}"> {{ marker.icu_availability }}</span> %
             </div>
         </div>
-
-        <button data-bs-toggle="modal" data-bs-target="#exampleModalLong"
-                class="btn input-right input-left bg-dark btn-dark" id="add-review-btn">Add Review
-        </button>
-
+        <div class="d-flex d-flex justify-content-between">
+            <button data-bs-toggle="modal" data-bs-target="#exampleModalLong"
+                    class="btn input-right input-left bg-dark btn-dark" id="add-review-btn">Add Review
+            </button>
+            <a target="_blank" href="https://www.google.com/maps/search/{{ marker.name }}/@{{ marker.lat }},{{ marker.lng }},19.88z">
+                <i class="fa fa-map-marker"></i> Directions
+            </a>
+        </div>
     </div>
 </div>
 

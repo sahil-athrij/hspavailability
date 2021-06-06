@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 {% load static %}
-
+{% block title %}
+    Search Results
+{% endblock %}
 {% block css %}
 
     <link href="{% static 'css/main.css' %}" rel="stylesheet"/>
@@ -84,7 +86,7 @@
     </script>
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
     <script type="module">
-    console.log('hellooo')
+        console.log('hellooo')
 
         import {SearchResultList} from "/static/js/components/SearchCards.js";
 
@@ -92,7 +94,7 @@
         if (typeof querys == "undefined") {
             querys = ""
         }
-        querys.replaceAll(' ','+')
+        querys.replaceAll(' ', '+')
         var dicts = {
             lat__gte: (parseFloat($('#lat').val()) - 0.5),
             lat__lte: (parseFloat($('#lat').val()) + 0.5),

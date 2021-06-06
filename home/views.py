@@ -1,17 +1,11 @@
 import django_filters
-import rest_framework
-from django.http import JsonResponse, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from rest_framework import viewsets, generics, filters
 from rest_framework.pagination import PageNumberPagination, LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 
-from .models import Markers, Reviews, SuspiciousMarking, Images
-import datetime
-from django.forms.models import model_to_dict
-from django.core import serializers
-from rest_framework.generics import ListAPIView
 from .serializer import *
 
 
@@ -172,12 +166,20 @@ class ReviewViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
     queryset = Reviews.objects.all()
     serializer_class = getReviewSerializer
 
+    def perform_create(self, serializer):
+        user = self.request.user
+        print(self.request.data)
+        rev = Reviews.objects.filter(marker=self.request.data['marker'], written_by=self.request.user).exists()
+        print(rev)
+        if rev:
+            raise serializers.ValidationError({"detail": "Only One Review Allowed Per Hospital"})
+        serializer.save(written_by=user)
+
     def create(self, request, *args, **kwargs):
         response = viewsets.ModelViewSet.create(self, request, *args, **kwargs)
         mob = Markers.objects.get(id=response.data['marker'])
         rev = Reviews.objects.get(id=response.data['id'])
         rev.day = (rev.datef - mob.datef).days
-        rev.save()
         update_marker(response.data['marker'])
         return response
 
@@ -185,3 +187,7 @@ class ReviewViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
 class SusViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
     queryset = SuspiciousMarking.objects.all()
     serializer_class = getSusSerializer
+
+    def perform_create(self, serializer):
+        user = self.request.user
+        serializer.save(created_by=user)

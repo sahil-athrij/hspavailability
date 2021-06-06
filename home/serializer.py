@@ -31,7 +31,7 @@ class getReviewSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'marker', 'financial_rating', 'avg_cost', 'covid_rating', 'care_rating', 'oxygen_rating',
             'beds_available',
-            'ventilator_availability', 'oxygen_availability', 'icu_availability', 'comment', 'written_by_id', 'images'
+            'ventilator_availability', 'oxygen_availability', 'icu_availability', 'comment', 'written_by', 'images'
         ]
 
 
@@ -39,5 +39,5 @@ class getSusSerializer(serializers.ModelSerializer):
     class Meta:
         model = SuspiciousMarking
         fields = [
-            'id', 'marker', 'comment', 'created_by', 'datef'
+            'id', 'marker', 'comment', 'created_by_id', 'datef'
         ]

@@ -18,7 +18,9 @@
             </a>
         </div>
         <h6 class="card-title card-title-left" id="{{ id }}title h6">{{ marker.display_address }}</h6>
-
+        <h6 class="inline-block" id="{{ id }}revies h6">
+            <a href="#reviews" class="link ">{{ reviews.count }} Reviews </a>
+        </h6>
         <div class="widget-49-meeting-points  row">
             {% include 'v2/components/star_ratings.html' with name=id|add:"oxy"  label="Oxygen Care" content="Quality Rating for Oxyen Care" disabled="disabled" value=marker.oxygen_rating %}
             {% include 'v2/components/star_ratings.html' with name=id|add:"aff"   extra_class="financial" label="Affordability" content="Affordability of the hospital .higher is expensive" disabled="disabled" value=marker.financial_rating %}
@@ -44,7 +46,8 @@
             <button data-bs-toggle="modal" data-bs-target="#exampleModalLong"
                     class="btn input-right input-left bg-dark btn-dark" id="add-review-btn">Add Review
             </button>
-            <a target="_blank" href="https://www.google.com/maps/search/{{ marker.name }}/@{{ marker.lat }},{{ marker.lng }},19.88z">
+            <a target="_blank"
+               href="https://www.google.com/maps/search/{{ marker.name }}/@{{ marker.lat }},{{ marker.lng }},19.88z">
                 <i class="fa fa-map-marker"></i> Route Map
             </a>
         </div>

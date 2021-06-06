@@ -13,13 +13,13 @@
                 <div class="container">
                     <div class="wrapper">
                         <div class="row">
-                            {% include 'v2/components/star_ratings.html' with name="affordability" col="col-6" extra_class="financial" label="Affordability" content="Affordability of the hospital .higher is expensive" %}
-                            {% include 'v2/components/star_ratings.html' with name="oxygen-care" col="col-6" label="Oxygen Care" content="Quality Rating for Oxyen Care" %}
+                            {% include 'v2/components/star_ratings.html' with name="affordability" col="col-6" extra_class="financial" label="Affordability" content="Affordability of the hospital .higher is expensive" feedback=1 %}
+                            {% include 'v2/components/star_ratings.html' with name="oxygen-care" col="col-6" label="Oxygen Care" content="Quality Rating for Oxyen Care" feedback=1 %}
                         </div>
 
                         <div class="row">
-                            {% include 'v2/components/star_ratings.html' with name="conv-care" col="col-6" label="Convenience" content="Convenience of Getting Care (higher is Better) the ease with dealing with Administrative" %}
-                            {% include 'v2/components/star_ratings.html' with name="covid-care-quality" col="col-6" label="Covid Care" content="Quality of Covid Care (higher is better)" %}</div>
+                            {% include 'v2/components/star_ratings.html' with name="conv-care" col="col-6" label="Convenience" content="Convenience of Getting Care (higher is Better) the ease with dealing with Administrative" feedback=1 %}
+                            {% include 'v2/components/star_ratings.html' with name="covid-care-quality" col="col-6" label="Covid Care" content="Quality of Covid Care (higher is better)" feedback=1 %}</div>
                     </div>
                     <div class="row">
                         <div class="col-12 col-md-6 py-2">

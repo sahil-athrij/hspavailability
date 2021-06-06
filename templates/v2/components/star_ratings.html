@@ -8,10 +8,10 @@
 
         <div id="{{ name }}" class="form-check-inline">
             <div class="rate {{ extra_class }}">
-
                 {% if disabled != "disabled" %}
                     <span>
-                    <i class="fa fa-times-circle move-up" onclick="$('input:radio[name={{ name }}]').val([0])"></i>
+                    <i class="fa fa-times-circle move-up"
+                       onclick="$('input:radio[name={{ name }}]').val([0]);$('#{{ name }}feedback').show();"></i>
                     </span>
                 {% else %}
                     <output class="ot mx-2" id="{{ name }}_output">{{ value }}</output>
@@ -23,12 +23,12 @@
                             {% endif %}>
                     <label for="{{ name }}{{ i }}"></label>
                 {% endfor %}
-                {% if feedback %}
-                    <div id="{{ name }}feedback" class="invalid-feedback">
-                        Please rate {{ label }}.
-                    </div>
-                {% endif %}
             </div>
+            {% if feedback %}
+                <div id="{{ name }}feedback" class="invalid-feedback">
+                    Please rate {{ label }}.
+                </div>
+            {% endif %}
         </div>
     </div>
 </div>
@@ -37,5 +37,14 @@
         if (url) {
             $('input:radio[name={{name}}]').val([parseInt(url.searchParams.get("{{name}}"))])
         }
+    </script>
+{% endif %}
+{% if feedback %}
+    <script>
+        $('#{{ name }}feedback').show()
+        $('input:radio[name={{name}}]').click(function () {
+                $('#{{ name }}feedback').hide()
+            }
+        )
     </script>
 {% endif %}

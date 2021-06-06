@@ -21,13 +21,16 @@
                             <div class="select">
                             <textarea class="select-text text-area-grey text-input" placeholder="Leave a comment here"
                                       id="sustextarea" name="sustextarea"></textarea>
+                                <div id="commentfeedback" class="invalid-feedback">
+                                    Please Enter A Reason.
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" onclick="submitSus()" data-bs-dismiss="modal">Save
+                    <button type="button" class="btn btn-primary" onclick="submitSus()" >Save
                         changes
                     </button>
                 </div>

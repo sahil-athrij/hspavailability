@@ -370,9 +370,11 @@ body {
 select.select-text:invalid ~ .invalid-feedback, .select-text:placeholder-shown ~ .invalid-feedback {
     display: inline;
 }
+
 select.select-text:valid ~ .invalid-feedback, .select-text:not(:placeholder-shown) ~ .invalid-feedback {
     display: none;
 }
+
 /* BOTTOM BARS ================================= */
 .select-bar {
     position: relative;
@@ -422,5 +424,3 @@ select.select-text:valid ~ .invalid-feedback, .select-text:not(:placeholder-show
     outline: none;
     border-bottom: 2px solid #2F80ED;;
 }
-
-

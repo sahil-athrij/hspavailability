@@ -1,5 +1,5 @@
 <div class="row">
-    {% for review in reviews %}
+    {% for review in reviews reversed %}
         <div class="col-lg-4">
             <div class="card card-margin">
                 <div class="card-header no-border">
@@ -13,7 +13,9 @@
                             {#                            <span class="widget-49-date-month">Beds</span>#}
                             {#                        </div>#}
                             <div class="widget-49-meeting-info">
-                                <span class="widget-49-pro-title">"{{ review.comment }}"</span>
+                                {% if review.comment %}
+                                    <span class="widget-49-pro-title">"{{ review.comment }}"</span>
+                                {% endif %}
                                 <span class="widget-49-meeting-time">{{ review.datef }}</span>
                             </div>
                         </div>

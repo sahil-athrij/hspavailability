@@ -1,5 +1,9 @@
 {% extends 'base.html' %}
 {% load static %}
+{% block title %}
+    {{ hospital.name }}
+{% endblock %}
+
 {% block css %}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
             integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
@@ -21,9 +25,12 @@
         {% include 'v2/components/susmodal.html' %}
     </div>
 
-    <div class="text-center h2">Reviews</div>
+    <div class="text-center h2" id="reviews">Reviews</div>
     <div class="container mt-5">
         {% include 'v2/components/review_card.html' %}
+    </div>
+    <div hidden>
+      {% include 'v2/components/sidebar.html' %}
     </div>
 {% endblock %}
 
@@ -31,10 +38,10 @@
     <script>
 
         function submitReview() {
-            let affordability = $('input[name="affordability"]:checked').val()
-            let oxygenCare = $('input[name="oxygen-care"]:checked').val()
-            let conv = $('input[name="conv-care"]:checked').val()
-            let covidCare = $('input[name="covid-care-qualit"]:checked').val()
+            let affordability = $('input[name="affordability"]:checked').val() | 0
+            let oxygenCare = $('input[name="oxygen-care"]:checked').val() | 0
+            let conv = $('input[name="conv-care"]:checked').val() | 0
+            let covidCare = $('input[name="covid-care-quality"]:checked').val() | 0
             let ventAvail = $('#Ventilator').val()
             let oxygenAvail = $('#Oxygen').val()
             let icuAvail = $('#ICU').val()
@@ -42,7 +49,7 @@
             let bedsAvail = $('#Bed').val()
             let comment = $('#textarea').val()
             let today = new Date().toLocaleDateString()
-
+            console.log(conv)
             Review.create({
                 financial_rating: affordability,
                 avg_cost: avgCost,
@@ -56,12 +63,11 @@
                 comment: comment,
                 datef: today,
                 marker:{{ hospital.id }}
-            }).then(
-                function (reviewobject) {
-                    console.log(reviewobject)
-                    addToast("Review Added", "Thank you for your valuable feedback!")
-                }
-            ).catch(function (error) {
+            }).then(function (reviewobject) {
+                console.log(reviewobject)
+                $('#exampleModalLong').modal('toggle');
+                addToast("Review Added", "Thank you for your valuable feedback!")
+            }).catch(function (error) {
                 const detail = error.detail
                 console.log(detail)
                 var current_path;
@@ -70,8 +76,12 @@
                     window.location.href = '/v2/login?next=' + current_path
                     addToast("Failed to Add Review", "Please Sign in to submit Reviews")
 
-                }
-                else {
+
+                } else if (detail) {
+                    $('#exampleModalLong').modal('toggle');
+                    addToast("Failed to Add Review", detail)
+                } else {
+                    addToast("Failed to Add Review", "Please Enter the Highlighted Values")
 
                 }
 
@@ -79,15 +89,24 @@
         }
 
         function submitSus() {
-            let comment = $('#textarea').val()
-            Sus.create({comment: comment}).then(
-                function (reviewobject) {
-                    addToast("Submitted", "Thank you for your valuable feedback")
-                },
-                function (error) {
-                    addToast("Failed to Sumbit", "Feedback wasnt submitted :(")
+            let comment = $('#sustextarea').val()
+            Sus.create({comment: comment, marker:{{ hospital.id }}}).then(function (reviewobject) {
+                $('#susmodal').modal('toggle');
+                addToast("Submitted", "Thank you for your valuable feedback")
+            }).catch(function (error) {
+                const detail = error.detail
+                console.log(detail)
+                var current_path;
+                if ('Authentication credentials were not provided.' === detail) {
+                    current_path = window.location.pathname
+                    window.location.href = '/v2/login?next=' + current_path
+                    addToast("Failed to Submit", "Feedback wasnt submitted :(")
+
+                } else {
+                    addToast("Failed to Submit", "Feedback wasnt submitted :(")
+
                 }
-            )
+            })
         }
 
 

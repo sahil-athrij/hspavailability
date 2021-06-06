@@ -45,15 +45,12 @@
                             {{ user.username }}
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="/logout">Logout</a></li>
+                            <li><a class="dropdown-item" href="/v2/logout">Logout</a></li>
                         </ul>
                     </li>
-                    {% comment %} <li class="nav-item ms-auto">
-              <a class="nav-link ms-auto"> {{user.username}}
-            </li> {% endcomment %}
                 {% else %}
                     <li class="nav-item ms-auto">
-                        <a class="nav-link ms-auto" href="/v2/login/">login</a>
+                        <a class="nav-link " href="/v2/login/">login</a>
                     </li>
                 {% endif %}
             </ul>

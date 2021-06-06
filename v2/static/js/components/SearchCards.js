@@ -48,7 +48,7 @@ class SearchCards extends Component {
            
             <a href="/v2/details/${this.data.id}"  class="btn input-right input-left bg-dark btn-dark">More Info</a>
             <a target="_blank" href="https://www.google.com/maps/search/${this.data.name}/@${this.data.lat},${this.data.lng},19.88z">
-                <i class="fa fa-map-marker"></i> Directions
+                <i class="fa fa-map-marker"></i> Route Map
             </a>
         </div>
        

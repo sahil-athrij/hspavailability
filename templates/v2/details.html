@@ -43,7 +43,6 @@
             let comment = $('#textarea').val()
             let today = new Date().toLocaleDateString()
 
-
             Review.create({
                 financial_rating: affordability,
                 avg_cost: avgCost,
@@ -59,12 +58,21 @@
                 marker:{{ hospital.id }}
             }).then(
                 function (reviewobject) {
+                    console.log(reviewobject)
                     addToast("Review Added", "Thank you for your valuable feedback!")
-                },
-                function (error) {
-                    addToast("Failed to Add Review", "Please Sign in to submit Reviews")
                 }
-            )
+            ).catch(function (error) {
+                const detail = error.detail
+                console.log(detail)
+                var current_path;
+                if ('Authentication credentials were not provided.' === detail) {
+                    current_path = window.location.pathname
+                    window.location.href = '/v2/login?next=' + current_path
+                    addToast("Failed to Add Review", "Please Sign in to submit Reviews")
+
+                }
+
+            })
         }
 
         function submitSus() {

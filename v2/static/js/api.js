@@ -17,7 +17,13 @@ async function post(url, kwargs = {}) {
             body: JSON.stringify(kwargs)
         }
     );
-    return response.json()
+    if (response.status > 300) {
+        throw (response)
+    } else {
+
+        console.log(response)
+        return response.json()
+    }
 }
 
 async function patch(url, kwargs = {}) {
@@ -31,7 +37,13 @@ async function patch(url, kwargs = {}) {
             body: JSON.stringify(kwargs)
         }
     );
-    return response.json()
+    if (response.status > 300) {
+        throw (response)
+    } else {
+
+        console.log(response)
+        return response.json()
+    }
 }
 
 class ModelObject {
@@ -107,9 +119,12 @@ class Model {
         try {
             let data = await post(`${this.baseurl}`, kwargs)
             return new this.modelClass(data, this.baseurl)
-
         } catch (e) {
-            throw(e);
+            let errors;
+            errors = await e.json()
+            console.log(errors)
+            throw errors
+
         }
     }
 

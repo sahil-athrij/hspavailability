@@ -1,6 +1,7 @@
 import json
 
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 import requests
 from django.forms import model_to_dict
@@ -77,6 +78,12 @@ def signup(request):
     context1['sign_text'] = "Register"
 
     return render(request, template_name="v2/signup.html", context=context1)
+
+
+@login_required
+def log_out(request):
+    logout(request)
+    return HttpResponseRedirect('/v2/')
 
 @ensure_csrf_cookie
 def search(request):

@@ -20,6 +20,7 @@ var geocoder = new MapboxGeocoder({
     accessToken: locationiq.key,
     limit: 5,
     dedupe: 1,
+    countrycodes: 'in',
     className: 'input-right',
     placeholder: 'Location (Auto)',
     getItemValue: function (item) {
@@ -33,7 +34,9 @@ var geocoder = new MapboxGeocoder({
         if (typeof getMarkers === "function") {
             getMarkers()
         }
+        $('#bottomsearch button')[0].click()
         return item.place_name
+
     }
 });
 geocoder.addTo('#search-box');
@@ -45,8 +48,8 @@ $('#hspsearch').on('keydown', function (event) {
         return false;
     }
 })
-$($('.mapboxgl-ctrl-geocoder--input')[0]).on('keydown',function (event){
-     if (event.key === "Enter") {
+$($('.mapboxgl-ctrl-geocoder--input')[0]).on('keydown', function (event) {
+    if (event.key === "Enter") {
         event.preventDefault()
         $('#bottomsearch button')[0].click()
         return false;

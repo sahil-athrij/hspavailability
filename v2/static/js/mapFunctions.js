@@ -71,8 +71,8 @@ function getMarkers() {
         }
 
         Marker.filter(kwargs = {
-            lat__gte: lat - 1, lat__lte: lat + 1, lng__gte: lng - 1,
-            lng__lte: lng + 1, page: p, ...dict
+            lat: lat, lng: lng, distance: 10000,
+            page: p, ...dict
         }).then(function (markerList) {
             let i;
             ob = markerList;

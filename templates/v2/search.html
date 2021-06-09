@@ -96,10 +96,8 @@
         }
         querys.replaceAll(' ', '+')
         var dicts = {
-            lat__gte: (parseFloat($('#lat').val()) - 0.5),
-            lat__lte: (parseFloat($('#lat').val()) + 0.5),
-            lng__gte: (parseFloat($('#lng').val()) - 0.5),
-            lng__lte: (parseFloat($('#lng').val()) + 0.5),
+            lat: parseFloat($('#lat').val()),
+            lng: parseFloat($('#lng').val()),
             financial_rating__gte: $('input:radio[name=financialfr]:checked').val() | 0,
             avg_cost__gte: $('#price-min').val(),
             avg_cost__lte: $('#price-max').val(),

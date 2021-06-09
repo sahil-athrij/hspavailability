@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.db import models
 import datetime
+from django.contrib.gis.db import models
 # Create your models here.
 
 rating = [
@@ -39,6 +40,7 @@ class Markers(models.Model):
     Suspicious = models.IntegerField(default=0)
     display_address = models.TextField(default="", blank=True)
     address = models.JSONField(blank=True)
+    location = models.PointField(srid=4326, verbose_name='Location')
 
     def __str__(self):
         return self.name

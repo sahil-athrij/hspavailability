@@ -5,7 +5,9 @@ from rest_framework import viewsets, generics, filters
 from rest_framework.pagination import PageNumberPagination, LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
-
+from django.contrib.gis.db.models.functions import Distance
+from django.contrib.gis.measure import D
+from django.contrib.gis.geos import Point
 from .serializer import *
 
 
@@ -131,7 +133,7 @@ class MarkerApiViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
     max_limit = 100
     filter_backends = [filters.SearchFilter, django_filters.rest_framework.DjangoFilterBackend]
     search_fields = ['name']
-    filterset_fields = {'lat': ['gte', 'lte'], 'lng': ['gte', 'lte'], 'financial_rating': ['gte', 'lte', 'exact'],
+    filterset_fields = {'financial_rating': ['gte', 'lte', 'exact'],
                         'oxygen_rating': ['gte', 'lte', 'exact'], 'ventilator_availability': ['gte', 'lte', 'exact'],
                         'oxygen_availability': ['gte', 'lte', 'exact'], 'icu_availability': ['gte', 'lte', 'exact'],
                         'avg_cost': ['gte', 'lte', 'exact'],
@@ -159,6 +161,13 @@ class MarkerApiViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
         else:
             serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+
+    def filter_queryset(self, queryset):
+        distance = float(self.request.GET.get('distance',10000000))
+        loc = Point(float(self.request.GET.get('lat',0)),float(self.request.GET.get('lng',0)), srid=4326)
+        queryset = super(MarkerApiViewSet, self).filter_queryset(queryset)
+        print(len(queryset.filter(location__distance_lte=(loc, D(m=distance)))))
+        return queryset.filter(location__distance_lte=(loc, D(m=distance))).annotate(distance=Distance('location', loc)).order_by('distance')
 
 
 class ReviewViewSet(viewsets.ModelViewSet, generics.GenericAPIView):

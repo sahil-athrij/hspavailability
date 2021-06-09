@@ -166,7 +166,7 @@ class MarkerApiViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
         distance = float(self.request.GET.get('distance',10000000))
         loc = Point(float(self.request.GET.get('lat',0)),float(self.request.GET.get('lng',0)), srid=4326)
         queryset = super(MarkerApiViewSet, self).filter_queryset(queryset)
-        print(len(queryset.filter(location__distance_lte=(loc, D(m=distance)))))
+        # print(len(queryset.filter(location__distance_lte=(loc, D(m=distance)))))
         return queryset.filter(location__distance_lte=(loc, D(m=distance))).annotate(distance=Distance('location', loc)).order_by('distance')
 
 

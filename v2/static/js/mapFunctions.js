@@ -126,6 +126,12 @@ function filldata(id) {
         $('#id').val(data.id)
         $('#ids').val(data.id)
         Current_Marker = data
+        $('#valuetitleinput').val(data.name)
+        $("#valuephoneinput").val(data.Phone)
+        if(text(data.Phone)=="0000000000"){
+            $('#phonenum').hide()
+        }
+
     })
 }
 

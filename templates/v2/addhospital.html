@@ -32,6 +32,7 @@
                 <div class="col-12 col-md-6 col-lg-6">
                     {% include 'v2/components/add_hospital_card.html' with  col='col-6 col-md-12' id='value' %}
                 </div>
+                <input id="id" name="id" hidden value="-1">
             </div>
         </div>
         <div hidden>
@@ -43,13 +44,15 @@
 
 {% block script %}
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
-    <script src="{% static '/js/mapFunctions.js' %}"></script>
     <script>
         var icons = [
             '{% static 'images/small.png' %}',
             '{% static 'images/medium.png' %}',
             '{% static 'images/large.png' %}',
         ]
+    </script>
+    <script src="{% static '/js/mapFunctions.js' %}"></script>
+    <script>
         let marker = new google.maps.Marker()
         map.addListener("click", (mapsMouseEvent) => {
                 if(marker)
@@ -67,8 +70,9 @@
         });
 
         $('#submit').on('click', function(){
-            let name =  $(#'valuetitleinput').val()
-            let Phone = $(#'valuephoneinput').val()
+            let id = $('#id').val()
+            let name =  $('#valuetitleinput').val()
+            let Phone = $('#valuephoneinput').val()
             let lat =   $('#lat').val()
             let lng =   $('#lng').val()
             let dictm ={id:id, name:name, Phone:Phone,

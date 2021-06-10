@@ -12,7 +12,7 @@ function setBoundBox(latitude, longitude) {
 }
 
 let markers = [];
-
+var Current_Marker = new google.maps.Marker()
 function addMarker(feature) {
     const marker = new google.maps.Marker({
         position: feature.position,
@@ -38,7 +38,7 @@ function deleteMarkers() {
 
 
 function getMarkers() {
-    var coor = map.getCenter()
+    let coor = map.getCenter()
 
     let lat = coor.lat(), lng = coor.lng()
 
@@ -125,6 +125,7 @@ function filldata(id) {
 
         $('#id').val(data.id)
         $('#ids').val(data.id)
+        Current_Marker = data
     })
 }
 
@@ -165,7 +166,7 @@ map.mapTypes.set("OSM", new google.maps.ImageMapType({
 
 
 google.maps.event.addListener(map, 'dragend', function () {
-    var coor = map.getCenter();
+    let coor = map.getCenter();
 
     if (coor.lat() > (cen.lat() + 1) || coor.lat() < (cen.lat() - 1) || coor.lng() > (cen.lng() + 1) || coor.lng() < (cen.lng() - 1)) {
         deleteMarkers();

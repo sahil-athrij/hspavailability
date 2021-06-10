@@ -9,6 +9,7 @@ from django.contrib.gis.db.models.functions import Distance
 from django.contrib.gis.measure import D
 from django.contrib.gis.geos import Point
 from .serializer import *
+import requests, json
 
 
 # Create your views here.
@@ -143,6 +144,19 @@ class MarkerApiViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.condition = False
+
+    def perform_create(self, serializer):
+        print(self.request.data)
+        user = self.request.user
+        loc = Point(float(self.request.data['lat']),float(self.request.data['lng']), srid=4326)
+        url = 'https://eu1.locationiq.com/v1/reverse.php?key=pk.959200a41370341f608a91b67be6e8eb&lat='+self.request.data['lat']+'&lon='+self.request.data['lng']+'&format=json'
+        det = requests.get(url)
+        if det.status_code == 200:
+            data = json.loads(det.content.decode())
+            serializer.save(address=data["address"], display_address=data["display_name"], added_by=user, location=loc)
+        else:
+            raise serializers.ValidationError({"detail": "Address not obtainable from Latitude and Longitude"})
+
 
     def get_pagination_class(self):
         if self.condition:

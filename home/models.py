@@ -21,7 +21,7 @@ sizes = [
 
 class Markers(models.Model):
     name = models.CharField(max_length=500)
-    Phone = models.CharField(max_length=20)
+    Phone = models.CharField(max_length=100)
     size = models.IntegerField(choices=sizes, default=0)
     financial_rating = models.FloatField(default=1)
     avg_cost = models.IntegerField(default=0)
@@ -38,7 +38,7 @@ class Markers(models.Model):
     place_id = models.CharField(max_length=60, default="")
     added_by = models.ForeignKey(User, default=1, on_delete=models.CASCADE)
     Suspicious = models.IntegerField(default=0)
-    display_address = models.TextField(default="", blank=True)
+    display_address = models.TextField(default="",max_length=3000, blank=True)
     address = models.JSONField(blank=True)
     location = models.PointField(srid=4326, verbose_name='Location')
 
@@ -59,7 +59,7 @@ class Reviews(models.Model):
     ventilator_availability = models.IntegerField(default=0)
     oxygen_availability = models.IntegerField(default=0)
     icu_availability = models.IntegerField(default=0)
-    comment = models.TextField(blank=True)
+    comment = models.TextField(blank=True,max_length=3000)
     datef = models.DateField(default=datetime.date.today)
     day = models.IntegerField(default=0)
     written_by = models.ForeignKey(User, default=1, on_delete=models.CASCADE)
@@ -67,7 +67,7 @@ class Reviews(models.Model):
 
 class SuspiciousMarking(models.Model):
     marker = models.ForeignKey(Markers, on_delete=models.CASCADE)
-    comment = models.TextField()
+    comment = models.TextField(max_length=30000)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
     datef = models.DateField(default=datetime.date.today)
 

@@ -48,7 +48,7 @@ def signin(request):
         if user is not None:
             login(request, user)
             # Redirect to a success page.
-            redirect_location = request.POST.get('next', '/v2/') or '/v2/'
+            redirect_location = request.POST.get('next', '/') or '/'
             return HttpResponseRedirect(redirect_location)
         else:
             # Return an 'invalid login' error message.
@@ -73,7 +73,7 @@ def signup(request):
                 try:
                     user = User.objects.create_user(email=email, password=password, username=email)
                     login(request, user)
-                    redirect_location = request.POST.get('next', '/v2/') or '/v2/'
+                    redirect_location = request.POST.get('next', '/') or '/'
                     return HttpResponseRedirect(redirect_location)
 
                 except Exception as e:
@@ -89,7 +89,7 @@ def signup(request):
 @login_required
 def log_out(request):
     logout(request)
-    return HttpResponseRedirect('/v2/')
+    return HttpResponseRedirect('/')
 
 
 @ensure_csrf_cookie

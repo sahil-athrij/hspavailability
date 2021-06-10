@@ -6,47 +6,12 @@ from django.contrib.gis.db.models.functions import Distance
 from django.contrib.gis.geos import Point
 from django.contrib.gis.measure import D
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
 from rest_framework import viewsets, generics, filters
 from rest_framework.pagination import PageNumberPagination, LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 
 from .serializer import *
-
-
-# Create your views here.
-def index(request):
-    return render(request, template_name='home/index.html')
-
-
-def modify(request):
-    return render(request, template_name='home/forms.html')
-
-
-def add_review(request):
-    if request.method == 'POST':
-        print(request.POST)
-        id = int(request.POST['id'])
-        mob = Markers.objects.get(id=id)
-        user = request.user
-        ob = Reviews.objects.create(marker_id=id, written_by=user)
-        ob.financial_rating = int(request.POST['financial'])
-        ob.avg_cost = int(request.POST['cost'])
-        ob.covid_rating = int(request.POST['covid'])
-        ob.beds_available = int(request.POST['beds'])
-        ob.care_rating = int(request.POST['care'])
-        ob.oxygen_rating = int(request.POST['oxy'])
-        ob.ventilator_availability = int(request.POST['vent'])
-        ob.oxygen_availability = int(request.POST['oxya'])
-        ob.icu_availability = int(request.POST['icu'])
-        ob.comment = request.POST['comment']
-        d = ob.datef - mob.datef
-        ob.day = d.days
-        ob.save()
-        update_marker(id)
-
-    return HttpResponseRedirect('/')
 
 
 def update_marker(id):
@@ -187,11 +152,11 @@ class MarkerApiViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
         if lat and lng:
             loc = Point(lat, lng, srid=4326)
             queryset = queryset.filter(
-                                       lat__gte=lat - 2.5,
-                                       lat__lte=lat + 2.5,
-                                       lng__gte=lng - 2.5,
-                                       lng__lte=lng + 2.5,
-                                       )
+                lat__gte=lat - 2.5,
+                lat__lte=lat + 2.5,
+                lng__gte=lng - 2.5,
+                lng__lte=lng + 2.5,
+            )
             queryset = queryset.filter(location__distance_lte=(loc, D(m=distance))).annotate(
                 distance=Distance('location', loc)).order_by('distance')
         #   print(len(queryset.filter(location__distance_lte=(loc, D(m=distance)))))

@@ -4,7 +4,7 @@
 {% endblock %}
 {% block form %}
     <p class="sign" align="center">Register</p>
-    <form class="form1" action="/v2/signup/" method="POST">
+    <form class="form1" action="/signup/" method="POST">
         {% csrf_token %}
         {% if pswderr %}
             <div class=" text-danger " align='center' role="alert">
@@ -16,6 +16,6 @@
         <input class="pass" type="password" align="center" placeholder="Retype Password" name="password retype">
         <input name="next" value="{{ request.GET.next }}" hidden>
         <button class="submit" align="center">Sign Up</button>
-        <p class="forgot" align="center"><a href="/v2/login?next={{ request.GET.next }}">New User?</a>
+        <p class="forgot" align="center"><a href="/login?next={{ request.GET.next }}">New User?</a>
     </form>
 {% endblock %}  

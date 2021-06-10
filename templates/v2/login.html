@@ -5,7 +5,7 @@
 {% block form %}
     <p class="sign" align="center">Sign In</p>
 
-    <form class="form1" action="/v2/login/" method="POST">
+    <form class="form1" action="/login/" method="POST">
         {% csrf_token %}
         {% if pswderr %}
             <div class=" text-danger " align='center' role="alert">
@@ -20,7 +20,7 @@
         <input name="next" value="{{ request.GET.next }}" hidden>
         <button class="submit" align="left">Sign in</button>
         <p class="forgot" align="center"><a href="#">Forgot Password?</a></p>
-        <p class="forgot" align="center"><a href="/v2/signup?next={{ request.GET.next }}">New User?</a>
+        <p class="forgot" align="center"><a href="/signup?next={{ request.GET.next }}">New User?</a>
         </p>
     </form>
 {% endblock %}

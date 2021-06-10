@@ -13,6 +13,7 @@ function setBoundBox(latitude, longitude) {
 
 let markers = [];
 var Current_Marker = new google.maps.Marker()
+
 function addMarker(feature) {
     const marker = new google.maps.Marker({
         position: feature.position,
@@ -71,7 +72,7 @@ function getMarkers() {
         }
 
         Marker.filter(kwargs = {
-            lat: lat, lng: lng, distance: 10000,
+            lat: lat, lng: lng, distance: 50000,
             page: p, ...dict
         }).then(function (markerList) {
             let i;
@@ -117,7 +118,7 @@ function filldata(id) {
         $('#valueoxya').text(data.oxygen_availability)
         $('#valueicu').text(data.icu_availability)
 
-        $('#valueredirect').attr('href', `/v2/details/${data.id}`)
+        $('#valueredirect').attr('href', `/details/${data.id}`)
         $('#valuephone').html(data.Phone)
         $('#valuephone').attr("href", 'tel:' + data.Phone)
         $('#maps').attr("href", `https://www.google.com/maps/search/${data.name}/@${data.lat},${data.lng},19.88z`)

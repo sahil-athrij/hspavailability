@@ -41,7 +41,7 @@ class MarkerObject extends ModelObject {
  * give the Model Class the Base location of the API view of the model , then give the Object Class
  */
 
-Marker = new Model('/marker/', MarkerObject)
+Marker = new Model('/api/marker/', MarkerObject)
 
 /**
  * usage of get , gets the model , this case the marker and you can use the data like this
@@ -104,7 +104,7 @@ class ReviewObject extends ModelObject {
     }
 }
 
-Review = new Model('/review/', ReviewObject)
+Review = new Model('/api/review/', ReviewObject)
 
 class susObject extends ModelObject {
     id;
@@ -120,4 +120,4 @@ class susObject extends ModelObject {
     }
 }
 
-Sus = new Model('/suspicious/', susObject)
+Sus = new Model('/api/suspicious/', susObject)

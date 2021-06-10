@@ -21,7 +21,7 @@ function GetIp() {
             longitude = data.longitude
         },
         error: function (data) {
-            $.ajax('/v2/getlocation', {
+            $.ajax('/getlocation', {
                 success: function (data) {
                     latitude = data.latitude
                     longitude = data.longitude

@@ -3,6 +3,9 @@ import json
 import requests
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.gis.db.models.functions import Distance
+from django.contrib.gis.geos import Point
+from django.contrib.gis.measure import D
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import ensure_csrf_cookie
@@ -128,7 +131,7 @@ def search(request):
             except Exception as e:
                 print(e)
         print(lat, lng)
-        context["search_results"] = Markers.objects.filter(
+        queryset = Markers.objects.filter(
             lat__gte=lat - 0.5,
             lat__lte=lat + 0.5,
             lng__gte=lng - 0.5,
@@ -143,7 +146,13 @@ def search(request):
             oxygen_availability__gte=oxya,
             icu_availability__gte=icu,
             name__icontains=query
-        )[:10]
+        )
+        loc = Point(lat, lng, srid=4326)
+        queryset = queryset.filter(location__distance_lte=(loc, D(m=100000))).annotate(
+            distance=Distance('location', loc)).order_by('distance')[:10]
+
+
+        context["search_results"] = queryset
         print(context)
         ipaddress = get_client_ip(request)
         context['ip'] = ipaddress
@@ -182,6 +191,7 @@ def details(request, hospital_id):
 @ensure_csrf_cookie
 def help(request):
     return render(request, template_name='v2/help.html')
+
 
 @ensure_csrf_cookie
 def addHospital(request):

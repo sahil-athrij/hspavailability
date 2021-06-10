@@ -23,8 +23,11 @@ class SearchCards extends Component {
     <div class="card-body card-body-left widget-49 bg-white w-100">
         <h5 class="card-title card-title-left" >${this.data.name}</h5>
         <h6 class="card-title card-title-left" >${this.data.display_address}</h6>
-        <h6 class="card-title card-title-left" ><a
-                href="tel:${this.data.Phone}">${this.data.Phone}</a></h6>
+        ${
+            this.data.Phone === '0000000000' ? '' : `<h6 class="card-title card-title-left" ><a
+                href="tel:${this.data.Phone}">${this.data.Phone}</a></h6>`
+        }
+        
         <div class="widget-49-meeting-points  row">
             <starInput id="oxy${this.data.id}"  class="col-6" label="Oxygen Care" content="Quality Rating for Oxyen Care" disabled="false"  value="${this.data.oxygen_rating}"></starInput>
             <starInput id="aff${this.data.id}"  class="col-6" extra_class="financial" label="Affordability" content="Affordability of the hospital .higher is expensive" disabled="disabled" value=${this.data.financial_rating}  ></starInput>

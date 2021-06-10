@@ -10,8 +10,10 @@
     <div class="card-body card-body-left widget-49 bg-white w-100">
         <h5 class="card-title card-title-left" id="{{ id }}title">{{ marker.name }}</h5>
         <h6 class="card-title card-title-left" id="{{ id }}title">{{ marker.display_address }}</h6>
+        {% if marker.Phone != '0000000000' %}
         <h6 class="card-title card-title-left" id="{{ id }}title"><a
                 href="tel:{{ marker.Phone }}" id="{{ id }}phone">{{ marker.Phone }}</a></h6>
+        {% endif %}
         <div class="widget-49-meeting-points  row">
             {% include 'v2/components/star_ratings.html' with name=id|add:"oxy"  label="Oxygen Care" content="Quality Rating for Oxyen Care" disabled="disabled" value=marker.oxygen_rating %}
             {% include 'v2/components/star_ratings.html' with name=id|add:"aff"   extra_class="financial" label="Affordability" content="Affordability of the hospital .higher is expensive" disabled="disabled" value=marker.financial_rating %}

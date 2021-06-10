@@ -1,15 +1,18 @@
+import json
+
 import django_filters
+import requests
+from django.contrib.gis.db.models.functions import Distance
+from django.contrib.gis.geos import Point
+from django.contrib.gis.measure import D
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from rest_framework import viewsets, generics, filters
 from rest_framework.pagination import PageNumberPagination, LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
-from django.contrib.gis.db.models.functions import Distance
-from django.contrib.gis.measure import D
-from django.contrib.gis.geos import Point
+
 from .serializer import *
-import requests, json
 
 
 # Create your views here.
@@ -148,15 +151,15 @@ class MarkerApiViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
     def perform_create(self, serializer):
         print(self.request.data)
         user = self.request.user
-        loc = Point(float(self.request.data['lat']),float(self.request.data['lng']), srid=4326)
-        url = 'https://eu1.locationiq.com/v1/reverse.php?key=pk.959200a41370341f608a91b67be6e8eb&lat='+self.request.data['lat']+'&lon='+self.request.data['lng']+'&format=json'
+        loc = Point(float(self.request.data['lat']), float(self.request.data['lng']), srid=4326)
+        url = 'https://eu1.locationiq.com/v1/reverse.php?key=pk.959200a41370341f608a91b67be6e8eb&lat=' + \
+              self.request.data['lat'] + '&lon=' + self.request.data['lng'] + '&format=json'
         det = requests.get(url)
         if det.status_code == 200:
             data = json.loads(det.content.decode())
             serializer.save(address=data["address"], display_address=data["display_name"], added_by=user, location=loc)
         else:
             raise serializers.ValidationError({"detail": "Address not obtainable from Latitude and Longitude"})
-
 
     def get_pagination_class(self):
         if self.condition:
@@ -177,11 +180,22 @@ class MarkerApiViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
         return Response(serializer.data)
 
     def filter_queryset(self, queryset):
-        distance = float(self.request.GET.get('distance',10000000))
-        loc = Point(float(self.request.GET.get('lat',0)),float(self.request.GET.get('lng',0)), srid=4326)
+        distance = float(self.request.GET.get('distance', 10000000))
         queryset = super(MarkerApiViewSet, self).filter_queryset(queryset)
-        # print(len(queryset.filter(location__distance_lte=(loc, D(m=distance)))))
-        return queryset.filter(location__distance_lte=(loc, D(m=distance))).annotate(distance=Distance('location', loc)).order_by('distance')
+        lat = float(self.request.GET.get('lat', 0))
+        lng = float(self.request.GET.get('lng', 0))
+        if lat and lng:
+            loc = Point(lat, lng, srid=4326)
+            queryset = queryset.filter(
+                                       lat__gte=lat - 2.5,
+                                       lat__lte=lat + 2.5,
+                                       lng__gte=lng - 2.5,
+                                       lng__lte=lng + 2.5,
+                                       )
+            queryset = queryset.filter(location__distance_lte=(loc, D(m=distance))).annotate(
+                distance=Distance('location', loc)).order_by('distance')
+        #   print(len(queryset.filter(location__distance_lte=(loc, D(m=distance)))))
+        return queryset
 
 
 class ReviewViewSet(viewsets.ModelViewSet, generics.GenericAPIView):

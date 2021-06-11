@@ -19,7 +19,8 @@ function checkSearchResults() {
     let error = $('.mapbox-gl-geocoder--no-results').html()
     let cnt = $(".suggestions")[0].childElementCount
     let value = $('#loc').val()
-    if (error || cnt === 0) {
+
+    if ((error || cnt === 0) && value) {
         fetch(`https://us1.locationiq.com/v1/search.php?key=${locationiq.key}&q=${value}&countrycodes=in&format=json`).then(r => {
             console.log(r)
             if (r.status < 300) {
@@ -37,7 +38,10 @@ function checkSearchResults() {
             }
         })
     } else {
-
+        latitude = parseFloat($('.latholder')[0].value)
+        longitude = parseFloat($('.lngholder')[0].value)
+        $('#lat').val(latitude)
+        $('#lng').val(longitude)
         $('#bottomsearch button')[0].click()
     }
 }
@@ -66,6 +70,19 @@ var geocoder = new MapboxGeocoder({
     }
 });
 geocoder.addTo('#search-box');
+count = 0
+
+function locationrenderrender(t) {
+    console.log(t)
+    return `<div class="mapboxgl-ctrl-geocoder--suggestion">
+                 <input class="latholder" hidden value="${t.lat}">
+                 <input class="lngholder" hidden  value="${t.lon}">
+                <div class="mapboxgl-ctrl-geocoder--suggestion-title">${t.place_name}</div>
+                <div class="mapboxgl-ctrl-geocoder--suggestion-address">${t.display_address}</div>
+            </div>`
+}
+
+geocoder.setRenderFunction(locationrenderrender)
 
 $('#hspsearch').on('keydown', function (event) {
     if (event.key === "Enter") {
@@ -76,6 +93,7 @@ $('#hspsearch').on('keydown', function (event) {
     }
 })
 $($('.mapboxgl-ctrl-geocoder--input')[0]).on('keydown', function (event) {
+    count = 0
     if (event.key === "Enter") {
         event.preventDefault()
         checkSearchResults()

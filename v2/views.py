@@ -162,7 +162,6 @@ def search(request):
     return render(request, template_name='v2/index.html')
 
 
-@ensure_csrf_cookie
 def get_loction_python(request):
     ip = get_client_ip(request)
     ipsearchurl = f'https://ipapi.co/{ip}/json/'
@@ -171,7 +170,6 @@ def get_loction_python(request):
     return json.loads(loc_data.content)
 
 
-@ensure_csrf_cookie
 def get_location(request):
     loc_data = get_loction_python(request)
     return JsonResponse(loc_data)

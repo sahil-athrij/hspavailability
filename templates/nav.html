@@ -4,8 +4,7 @@
         <a class="navbar-brand" href="#">
             <img src="{% static 'images/icon.svg' %}" width="30" height="30" alt="">
         </a>
-        <div class="col-1 col-md-2"></div>
-        <form class="d-flex ml-auto align-self-center text-center w-50 " method="GET" action="/search/">
+        <form class="d-flex ml-auto align-self-center text-center w-60 w-md-50 offset-md-2" method="GET" action="/search/">
             <div class="input-group">
                 {% if not searchbar %}
                     {% include 'v2/components/locationsearch.html' %}

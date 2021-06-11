@@ -38,10 +38,13 @@ function checkSearchResults() {
             }
         })
     } else {
-        latitude = parseFloat($('.latholder')[0].value)
-        longitude = parseFloat($('.lngholder')[0].value)
-        $('#lat').val(latitude)
-        $('#lng').val(longitude)
+        if(value){
+
+            latitude = parseFloat($('.latholder')[0].value)
+            longitude = parseFloat($('.lngholder')[0].value)
+            $('#lat').val(latitude)
+            $('#lng').val(longitude)
+        }
         $('#bottomsearch button')[0].click()
     }
 }

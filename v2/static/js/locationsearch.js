@@ -43,8 +43,30 @@ geocoder.addTo('#search-box');
 
 $('#hspsearch').on('keydown', function (event) {
     if (event.key === "Enter") {
-        // event.preventDefault()
-        $('#bottomsearch button')[0].click()
+        event.preventDefault()
+
+        let error = $('.mapbox-gl-geocoder--no-results').html()
+        if (error) {
+            fetch(`https://us1.locationiq.com/v1/search.php?key=${locationiq.key}&q=${value}&countrycodes=in&format=json`).then(r => {
+                console.log(r)
+                if (r.status < 300) {
+                    r.json().then(r => {
+                        console.log(r)
+                        let item = r[0]
+                        latitude = parseFloat(item.lat)
+                        longitude = parseFloat(item.lon)
+                        $('#lat').val(latitude)
+                        $('#lng').val(longitude)
+                        $('#bottomsearch button')[0].click()
+                    })
+                } else {
+                    addToast('Failed Location Search', 'Unable to Find the location, Please Try Again')
+                }
+            })
+        } else {
+
+            $('#bottomsearch button')[0].click()
+        }
         return false;
     }
 })

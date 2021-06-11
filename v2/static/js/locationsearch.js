@@ -17,7 +17,9 @@ if (query) {
 
 function checkSearchResults() {
     let error = $('.mapbox-gl-geocoder--no-results').html()
-    if (error) {
+    let cnt = $(".suggestions")[0].childElementCount
+    let value = $('#loc').val()
+    if (error || cnt === 0) {
         fetch(`https://us1.locationiq.com/v1/search.php?key=${locationiq.key}&q=${value}&countrycodes=in&format=json`).then(r => {
             console.log(r)
             if (r.status < 300) {

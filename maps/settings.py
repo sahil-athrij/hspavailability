@@ -126,7 +126,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-from .settings_prod import *
+# from .settings_prod import *
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/

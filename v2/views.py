@@ -147,7 +147,7 @@ def search(request):
             icu_availability__gte=icu,
             name__icontains=query
         )
-        loc = Point(lat, lng, srid=4326)
+        loc = Point(lng, lat, srid=4326)
         queryset = queryset.filter(location__distance_lte=(loc, D(m=100000))).annotate(
             distance=Distance('location', loc)).order_by('distance')[:10]
 

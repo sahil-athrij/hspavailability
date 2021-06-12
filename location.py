@@ -10,6 +10,6 @@ from home.models import Markers
 oblist = Markers.objects.all()
 
 for ob in oblist:
-    ob.position = Point(x=ob.longitude, y=ob.latitude, srid=4326)
+    ob.position = Point(x=ob.lng, y=ob.lat, srid=4326)
     print(ob.id, ob.position)
     ob.save()

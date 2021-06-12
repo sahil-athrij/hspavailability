@@ -116,7 +116,7 @@ class MarkerApiViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
     def perform_create(self, serializer):
         print(self.request.data)
         user = self.request.user
-        loc = Point(float(self.request.data['lat']), float(self.request.data['lng']), srid=4326)
+        loc = Point(float(self.request.data['lng']), float(self.request.data['lat']), srid=4326)     # Point(x,y). x=lng and y=lat
         url = 'https://eu1.locationiq.com/v1/reverse.php?key=pk.959200a41370341f608a91b67be6e8eb&lat=' + \
               self.request.data['lat'] + '&lon=' + self.request.data['lng'] + '&format=json'
         det = requests.get(url)
@@ -150,7 +150,7 @@ class MarkerApiViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
         lat = float(self.request.GET.get('lat', 0))
         lng = float(self.request.GET.get('lng', 0))
         if lat and lng:
-            loc = Point(lat, lng, srid=4326)
+            loc = Point(lng, lat, srid=4326)
             queryset = queryset.filter(
                 lat__gte=lat - 2.5,
                 lat__lte=lat + 2.5,

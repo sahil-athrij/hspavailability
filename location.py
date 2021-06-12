@@ -12,4 +12,4 @@ oblist = Markers.objects.all()
 for ob in oblist:
     ob.location = Point(x=ob.lng, y=ob.lat, srid=4326)
     print(ob.id, ob.location)
-    ob.save(commit=True)
+    ob.save()

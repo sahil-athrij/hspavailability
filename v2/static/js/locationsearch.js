@@ -61,6 +61,7 @@ var geocoder = new MapboxGeocoder({
         longitude = parseFloat(item.lon)
         $('#lat').val(latitude)
         $('#lng').val(longitude)
+        $('#loc').val(item.place_name)
         if (typeof map === 'object') {
             map.setCenter({lat: item.center[1], lng: item.center[0]})
         }

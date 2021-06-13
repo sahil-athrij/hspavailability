@@ -7,7 +7,7 @@
     <div class="star-rating col">
 
         <div id="{{ name }}" class="form-check-inline">
-            <div class="rate {{ extra_class }}">
+            <div class="rate {{ extra_class }} {{ disabled }}">
                 {% if disabled != "disabled" %}
                     <span>
                     <i class="fa fa-times-circle move-up"

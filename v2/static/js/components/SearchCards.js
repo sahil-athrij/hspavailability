@@ -28,13 +28,19 @@ class SearchCards extends Component {
                 href="tel:${this.data.Phone}">${this.data.Phone}</a></h6>`
         }
         
+        
+        
+        <h6 class="card-title card-title-left" >
+            <a href="/details/${this.data.id}"
+               class=""> ${this.data.comment_count} Reviews</a>
+        </h6>
         <div class="widget-49-meeting-points  row">
-            <starInput id="oxy${this.data.id}"  class="col-6" label="Oxygen Care" content="Quality Rating for Oxyen Care" disabled="false"  value="${this.data.oxygen_rating}"></starInput>
+            <starInput id="oxy${this.data.id}"  class="col-6" label="Oxygen Care" content="Quality Rating for Oxyen Care" disabled="disabled"  value="${this.data.oxygen_rating}"></starInput>
             <starInput id="aff${this.data.id}"  class="col-6" extra_class="financial" label="Affordability" content="Affordability of the hospital .higher is expensive" disabled="disabled" value=${this.data.financial_rating}  ></starInput>
         </div>
         <div class="widget-49-meeting-points  row">
          <starInput id="con${this.data.id}"  class="col-6"  label="Convenience" content="Convenience of Getting Care (higher is Better) the ease with dealing with Administrative" disabled="disabled" value=${this.data.care_rating}></starInput>
-         <starInput id="cov${this.data.id}"  class="col-6"  label="Covid Care" content="Quality of Covid Care (higher is better)" disabled="false"  value=${this.data.covid_rating}  ></starInput>
+         <starInput id="cov${this.data.id}"  class="col-6"  label="Covid Care" content="Quality of Covid Care (higher is better)" disabled="disabled"  value=${this.data.covid_rating}  ></starInput>
         </div>
         <div class="widget-49-meeting-points mt-2 row">
             <div class="col">Average Cost : <span >${this.data.avg_cost}</span> Rs</div>
@@ -47,6 +53,10 @@ class SearchCards extends Component {
             <div class="col">ICU Availability : <span>${this.data.icu_availability}</span> %
             </div>
         </div>
+        <h6 class="card-title card-title-left" id="{{ id }}title">
+            <a href="/details/${this.data.id}?review=true"
+               class="text-warning"><i class="fa fa-star"></i> Add Review</a>
+        </h6>
          <div class="d-flex d-flex justify-content-between">
            
             <a href="/details/${this.data.id}"  class="btn input-right input-left bg-dark btn-dark">More Info</a>

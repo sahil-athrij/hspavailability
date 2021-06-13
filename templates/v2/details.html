@@ -30,12 +30,13 @@
         {% include 'v2/components/review_card.html' %}
     </div>
     <div hidden>
-      {% include 'v2/components/sidebar.html' %}
+        {% include 'v2/components/sidebar.html' %}
     </div>
 {% endblock %}
 
 {% block script %}
     <script>
+
         function submitReview() {
             let affordability = $('input[name="affordability"]:checked').val() | 0
             let oxygenCare = $('input[name="oxygen-care"]:checked').val() | 0
@@ -109,7 +110,10 @@
                 }
             })
         }
-
-
+        {% if open_review %}
+            window.onload = function (event) {
+                $('#exampleModalLong').modal('toggle');
+            }
+        {% endif %}
     </script>
 {% endblock %}

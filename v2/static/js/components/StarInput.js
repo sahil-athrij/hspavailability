@@ -16,7 +16,7 @@ export class StarInput extends Component {
     render() {
         return `
         <div class="col my-2  ${this.data.col}">
-            <label for="{{ name }}" class="">${this.data.label}
+            <label for="${this.data.name}" class="">${this.data.label}
             <a data-toggle="popover"
                href="javascript:void(0)"
                data-bs-trigger="focus"
@@ -27,8 +27,8 @@ export class StarInput extends Component {
             </label>
             <div class="star-rating col">
         
-                <div id="${this.data.id}" class="form-check-inline">
-                    <div class="rate ${this.data.extra_class}">
+                <div id="${this.data.id} " class="form-check-inline">
+                    <div class="rate ${this.data.disabled} ${this.data.extra_class}">
                         
                         <output class="ot mx-2" id="${this.data.id}_output">
                             ${this.data.value}

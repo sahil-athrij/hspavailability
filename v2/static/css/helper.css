@@ -70,6 +70,13 @@
     content: url('/static/images/money_end.svg');
 }
 
+
+
+.rate.disabled{
+    pointer-events: none;
+    cursor: none;
+}
+
 .mapboxgl-ctrl-geocoder {
     width: 100%;
     max-width: none;
@@ -109,14 +116,15 @@ body {
 }
 
 .neumorphic-input {
-    box-shadow: 0 0 10px 2px rgba(0, 0, 0,  .1);
-    border:none;
+    box-shadow: 0 0 10px 2px rgba(0, 0, 0, .1);
+    border: none;
 }
 
-.move-up{
+.move-up {
     transform: translateX(5px) translateY(-2px);
     cursor: pointer;
 }
+
 #map {
     height: 100vh;
     /*position: absolute !important;*/
@@ -126,6 +134,7 @@ body {
     /*z-index: -1;*/
     /* The width is the width of the web page */
 }
-.inline-block{
+
+.inline-block {
     display: inline-flex;
 }

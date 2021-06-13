@@ -181,8 +181,10 @@ def details(request, hospital_id):
     query = Markers.objects.get(id=hospital_id)
     review = Reviews.objects.filter(marker=hospital_id)
     context['hospital'] = query
+    open_review = request.GET.get('review',0)
     stuff = review.values()
     context["reviews"] = review
+    context["open_review"] = open_review
     return render(request, template_name='v2/details.html', context=context)
 
 

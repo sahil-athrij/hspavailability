@@ -14,12 +14,14 @@ class getImageSerializer(serializers.ModelSerializer):
 class getMarkerSerializer(serializers.ModelSerializer):
     images = getImageSerializer(many=True, required=False, read_only=True)
 
+    comment_count = serializers.SerializerMethodField(read_only=True)
+
     class Meta:
         model = Markers
         fields = [
             'id', 'name', 'Phone', 'size', 'financial_rating', 'avg_cost', 'covid_rating', 'beds_available',
             'care_rating', 'oxygen_rating', 'ventilator_availability', 'oxygen_availability', 'icu_availability',
-            'lat', 'lng', 'datef', 'added_by_id', 'images', 'display_address'
+            'lat', 'lng', 'datef', 'added_by_id', 'images', 'display_address', 'comment_count'
         ]
         extra_kwargs = {
             'size': {'read_only': True},
@@ -35,6 +37,9 @@ class getMarkerSerializer(serializers.ModelSerializer):
             'datef': {'read_only': True},
             'added_by_id': {'read_only': True}
         }
+
+    def get_comment_count(self, marker):
+        return marker.comment.all().count()
 
 
 class getReviewSerializer(serializers.ModelSerializer):
@@ -55,6 +60,7 @@ class getSusSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'marker', 'comment', 'created_by_id', 'datef'
         ]
+
 
 class getPatientSerializer(serializers.ModelSerializer):
     class Meta:

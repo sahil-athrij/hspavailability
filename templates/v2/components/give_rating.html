@@ -13,6 +13,27 @@
                 <div class="container">
                     <div class="wrapper">
                         <div class="row">
+                            <div class="wrap">
+                                <!--Select with pure css-->
+                                <div class="select">
+                                    <select class="select-text" id="size" required name="size"
+                                            aria-describedby="sizefeedback">
+                                        <option hidden selected disabled></option>
+                                        <option value="2">Large</option>
+                                        <option value="1">Medium</option>
+                                        <option value="0">Small</option>
+                                    </select>
+
+                                    <span class="select-highlight"></span>
+                                    <span class="select-bar"></span>
+                                    <label for="size" class="select-label">Size</label>
+                                    <div id="sizefeedback" class="invalid-feedback">
+                                        Please select Size of Hospital.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
                             {% include 'v2/components/star_ratings.html' with name="affordability" col="col-6" extra_class="financial" label="Affordability" content="Affordability of the hospital .higher is expensive" feedback=1 %}
                             {% include 'v2/components/star_ratings.html' with name="oxygen-care" col="col-6" label="Oxygen Care" content="Quality Rating for Oxyen Care" feedback=1 %}
                         </div>

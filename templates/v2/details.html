@@ -47,6 +47,7 @@
             let avgCost = $('#avgcost').val()
             let bedsAvail = $('#Bed').val()
             let comment = $('#textarea').val()
+            let size = $('#size').val()
             let today = new Date().toLocaleDateString()
             console.log(conv)
             Review.create({
@@ -61,6 +62,7 @@
                 icu_availability: icuAvail,
                 comment: comment,
                 datef: today,
+                size: size,
                 marker:{{ hospital.id }}
             }).then(function (reviewobject) {
                 console.log(reviewobject)

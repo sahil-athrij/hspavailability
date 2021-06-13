@@ -75,6 +75,7 @@ class ReviewObject extends ModelObject {
     marker_id;
     financial_rating;
     avg_cost;
+    size;
     covid_rating;
     care_rating;
     oxygen_rating;
@@ -95,7 +96,7 @@ class ReviewObject extends ModelObject {
     constructor(data, baseUrl) {
 
         super(data, baseUrl);
-        this.fields = ["id", "marker", "financial_rating", "avg_cost", "covid_rating", "beds_available", "care_rating",
+        this.fields = ["id", "marker", "size", "financial_rating", "avg_cost", "covid_rating", "beds_available", "care_rating",
             "oxygen_rating", "ventilator_availability", "oxygen_availability", "icu_availability", "comment", "datef",
             "images", "day",]
         this.excluded_fields = ['image', 'written_by_id']

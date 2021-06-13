@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from django.db import models
 import datetime
 from django.contrib.gis.db import models
+from django.contrib.postgres.fields import ArrayField
 # Create your models here.
 
 rating = [
@@ -18,6 +19,17 @@ sizes = [
     (2, 'large'),
 ]
 
+gender = [
+    ('M', 'male'),
+    ('F', 'female'),
+    ('O', 'other')
+]
+
+bed = [
+    (1, 'normal'),
+    (2, 'ventilator'),
+    (3, 'ICU')
+]
 
 class Markers(models.Model):
     name = models.CharField(max_length=500)
@@ -62,6 +74,7 @@ class Reviews(models.Model):
     comment = models.TextField(blank=True,max_length=3000)
     datef = models.DateField(default=datetime.date.today)
     day = models.IntegerField(default=0)
+    size = models.IntegerField(choices= sizes,default=0)
     written_by = models.ForeignKey(User, default=1, on_delete=models.CASCADE)
 
 
@@ -77,3 +90,24 @@ class Images(models.Model):
     review = models.ForeignKey(Reviews,default=None,related_name='images', on_delete=models.CASCADE)
     hospital = models.ForeignKey(Markers, related_name='images', on_delete=models.CASCADE)
     useinmarker = models.BooleanField(default=False)
+
+class Patient(models.Model):
+    Name = models.CharField(max_length=40)
+    age = models.IntegerField(default=0)
+    gender = models.CharField(choices=gender, max_length=1)
+    symptoms = ArrayField(models.CharField(max_length=500))
+    symdays = models.IntegerField(default=0)
+    spo2 = models.IntegerField(default=0)
+    hospitalday = models.IntegerField(default=0)
+    covidresult = models.BooleanField(default=False)
+    hospitalpref = models.ForeignKey(Markers, related_name='hospital_preference', on_delete=models.PROTECT)
+    attendername = models.CharField(max_length=40)
+    attenderphone = models.CharField(max_length=20)
+    relation = models.CharField(max_length=30)
+    srfid = models.CharField(max_length=30)
+    bunum = models.CharField(max_length=40)
+    blood = models.CharField(max_length=2)
+    bedtype = models.IntegerField(choices=bed, default=0)
+    ct = models.BooleanField(default=False)
+    ctscore = models.IntegerField(default=0)
+    user = models.ForeignKey(User, default=1, on_delete=models.CASCADE)

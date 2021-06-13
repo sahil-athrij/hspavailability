@@ -29,6 +29,7 @@ def update_marker(id):
     vent = []
     oxya = []
     icu = []
+    size = []
     day = []
     den = []
     denb = []
@@ -45,6 +46,7 @@ def update_marker(id):
         fin.append(d * x.financial_rating)
         avg.append(d * x.avg_cost)
         covid.append(d * x.covid_rating)
+        size.append(d * (x.size + 1))
         care.append(d * x.care_rating)
         if x.beds_available != 0:
             bed.append(d * (x.beds_available - 1))
@@ -64,6 +66,7 @@ def update_marker(id):
     dens = sum(den)
     ob.financial_rating = round(sum(fin) / dens, 1)
     ob.avg_cost = sum(avg) / dens
+    ob.size = round(sum(size) / dens - 1)
     ob.covid_rating = round(sum(covid) / dens, 1)
     ob.care_rating = round(sum(care) / dens, 1)
     ob.oxygen_rating = round(sum(oxy) / sum(deno), 1) if deno else 0
@@ -168,7 +171,7 @@ class ReviewViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
     queryset = Reviews.objects.all()
     serializer_class = getReviewSerializer
-    http_method_names = ['get', 'post' 'head', 'options']
+    http_method_names = ['get', 'post', 'head', 'options']
 
     def perform_create(self, serializer):
         user = self.request.user

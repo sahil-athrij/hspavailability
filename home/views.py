@@ -96,7 +96,7 @@ class MarkerApiViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
     queryset = Markers.objects.all().order_by('id')
     serializer_class = getMarkerSerializer
-    # http_method_names = '__all__'
+    http_method_names = ['get', 'post', 'put', 'patch',  'head', 'options']
     page_size = 100
     max_page_size = 100
     max_limit = 100
@@ -116,7 +116,8 @@ class MarkerApiViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
     def perform_create(self, serializer):
         print(self.request.data)
         user = self.request.user
-        loc = Point(float(self.request.data['lng']), float(self.request.data['lat']), srid=4326)     # Point(x,y). x=lng and y=lat
+        loc = Point(float(self.request.data['lng']), float(self.request.data['lat']),
+                    srid=4326)  # Point(x,y). x=lng and y=lat
         url = 'https://eu1.locationiq.com/v1/reverse.php?key=pk.959200a41370341f608a91b67be6e8eb&lat=' + \
               self.request.data['lat'] + '&lon=' + self.request.data['lng'] + '&format=json'
         det = requests.get(url)
@@ -167,6 +168,7 @@ class ReviewViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
     queryset = Reviews.objects.all()
     serializer_class = getReviewSerializer
+    http_method_names = ['get', 'post' 'head', 'options']
 
     def perform_create(self, serializer):
         user = self.request.user
@@ -189,6 +191,8 @@ class ReviewViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
 class SusViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
     queryset = SuspiciousMarking.objects.all()
     serializer_class = getSusSerializer
+
+    http_method_names = ['get', 'post', 'head', 'options']
 
     def perform_create(self, serializer):
         user = self.request.user

@@ -2,31 +2,32 @@
 <h5 class="text-center h2">{{ hospital.name }}</h5>
 <div class="widget-49-meeting-info">
     {% if hospital.Phone != '0000000000' %}
-        <h5 class="widget-49-pro-title text-center h5">Phone : <a href="tel:{{ hospital.Phone }}">{{ hospital.Phone }}</a></h5>
+        <h5 class="widget-49-pro-title text-center h5">Phone : <a href="tel:{{ hospital.Phone }}"><i
+                class="fa fa-phone-alt text-success" aria-hidden="true"></i>{{ hospital.Phone }}</a></h5>
     {% else %}
-    <h5 id="addnum" class="text-center">Phone Number Missing. Click to add one.</h5>
-    <div class="align-self-center" id="numinput">
-        <input type="tel" id="phonenum">
-        <input type="submit" class="btn btn-primary" id="phonenumsub" value="submit">
-        <input id="id" hidden value="{{ hospital.id }}">
-    </div>
-    <script>
-        Marker = new Model('/api/marker/', MarkerObject)
-        $('#numinput').hide()
-        $('#addnum').on('click', function(){
-            $('#numinput').show()
-            let id = $('#id').val()
-            console.log(id)
-            $('#phonenumsub').on('click', function(){
-                let Phone = $('#phonenum').val()
-                console.log(Phone)
-                Marker.get(id=id).then(function(marker){
-                    marker.Phone = Phone
-                    marker.save()
+        <h5 id="addnum" class="text-center">Phone Number Missing. Click to add one.</h5>
+        <div class="align-self-center" id="numinput">
+            <input type="tel" id="phonenum">
+            <input type="submit" class="btn btn-primary" id="phonenumsub" value="submit">
+            <input id="id" hidden value="{{ hospital.id }}">
+        </div>
+        <script>
+            Marker = new Model('/api/marker/', MarkerObject)
+            $('#numinput').hide()
+            $('#addnum').on('click', function () {
+                $('#numinput').show()
+                let id = $('#id').val()
+                console.log(id)
+                $('#phonenumsub').on('click', function () {
+                    let Phone = $('#phonenum').val()
+                    console.log(Phone)
+                    Marker.get(id = id).then(function (marker) {
+                        marker.Phone = Phone
+                        marker.save()
+                    })
                 })
             })
-        })
-    </script>
+        </script>
     {% endif %}
 </div>
 <div class="card card-left neumorphic_input card-margin bg-grey">

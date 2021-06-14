@@ -25,7 +25,7 @@ class SearchCards extends Component {
         <h6 class="card-title card-title-left" >${this.data.display_address}</h6>
         ${
             this.data.Phone === '0000000000' ? '' : `<h6 class="card-title card-title-left" ><a
-                href="tel:${this.data.Phone}">${this.data.Phone}</a></h6>`
+                href="tel:${this.data.Phone}"><i class="fa fa-phone-alt text-success" aria-hidden="true"></i>${this.data.Phone}</a></h6>`
         }
         
         
@@ -55,7 +55,7 @@ class SearchCards extends Component {
         </div>
         <h6 class="card-title card-title-left" id="{{ id }}title">
             <a href="/details/${this.data.id}?review=true"
-               class="text-warning"><i class="fa fa-star"></i> Add Review</a>
+               class="text-warning"><i class="fa fa-star"></i> Share Feedback</a>
         </h6>
          <div class="d-flex d-flex justify-content-between">
            

@@ -11,12 +11,14 @@
         <h6 class="card-title card-title-left" id="{{ id }}title">{{ marker.display_address }}</h6>
         {% if marker.Phone != '0000000000' %}
             <h6 class="card-title card-title-left" id="{{ id }}title"><a
-                    href="tel:{{ marker.Phone }}" id="{{ id }}phone">{{ marker.Phone }}</a></h6>
+                    href="tel:{{ marker.Phone }}" id="{{ id }}phone">
+
+                <i class="fa fa-phone-alt text-success" aria-hidden="true"></i> {{ marker.Phone }}</a></h6>
         {% endif %}
-        <h6 class="card-title card-title-left" id="{{ id }}title">
-            <a href="/details/{{ marker.id }}" id="{{ id }}modal"
-               class=""> {{ marker.comment.all.count }} Reviews</a>
-        </h6>
+        {#        <h6 class="card-title card-title-left" id="{{ id }}title">#}
+        {#            <a href="/details/{{ marker.id }}" id="{{ id }}modal"#}
+        {#               class=""> {{ marker.comment.all.count }} Reviews</a>#}
+        {#        </h6>#}
 
         <div class="widget-49-meeting-points  row">
             {% include 'v2/components/star_ratings.html' with name=id|add:"oxy"  label="Oxygen Care" content="Quality Rating for Oxyen Care" disabled="disabled" value=marker.oxygen_rating %}
@@ -39,14 +41,16 @@
             <div class="col">ICU Availability : <span id="{{ id|add:"icu" }}"> {{ marker.icu_availability }}</span> %
             </div>
         </div>
-        <h6 class="card-title card-title-left" id="{{ id }}title">
-            <a href="/details/{{ marker.id }}?review=true" id="{{ id }}modal"
-               class="text-warning"><i class="fa fa-star"></i> Add Review</a>
+        <h6 class="card-title card-title-left my-3" id="{{ id }}title">
+             <a href="/details/{{ marker.id }}?review=true" id="{{ id }}modal"
+               class="text-warning"><i class="fa fa-star"></i> Share Feedback</a>
         </h6>
         <div class="d-flex d-flex justify-content-between">
             <a href="/details/{{ marker.id }}" id="{{ id }}redirect"
                class="btn input-right input-left bg-dark btn-dark">More
                 Info</a>
+
+
 
             <a target="_blank" id="{{ id }}maps"
                href="https://www.google.com/maps/search/{{ marker.name }}/@{{ marker.lat }},{{ marker.lng }},19.88z">

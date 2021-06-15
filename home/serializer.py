@@ -67,5 +67,5 @@ class getPatientSerializer(serializers.ModelSerializer):
         model = Patient
         fields = [
             'Name', 'age', 'gender', 'symptoms', 'symdays', 'spo2', 'hospitalday', 'covidresult', 'hospitalpref',
-            'attendername', 'attenderphone', 'relation', 'srfid', 'bunum', 'blood', 'bedype', 'ct', 'ctscore'
+            'attendername', 'attenderphone', 'relation', 'srfid', 'bunum', 'blood', 'bedtype', 'ct', 'ctscore'
         ]

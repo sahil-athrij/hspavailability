@@ -10,6 +10,7 @@ from rest_framework import viewsets, generics, filters
 from rest_framework.pagination import PageNumberPagination, LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
+from rest_framework.decorators import action
 
 from .serializer import *
 
@@ -130,6 +131,16 @@ class MarkerApiViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
         else:
             raise serializers.ValidationError({"detail": "Address not obtainable from Latitude and Longitude"})
 
+    @action(detail=True, methods=['post'])
+    def upload_docs(request):
+        print(request.__dict__)
+        try:
+            file = request.data['files']
+        except KeyError:
+            raise ParseError('Request has no resource file attached')
+        # marker = Markers.objects.get(id=request.get['id'])
+        # marker.
+
     def get_pagination_class(self):
         if self.condition:
             return LimitOffsetPaginationWithMaxLimit
@@ -167,6 +178,7 @@ class MarkerApiViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
         return queryset
 
 
+
 class ReviewViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
     queryset = Reviews.objects.all()
@@ -200,3 +212,13 @@ class SusViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
     def perform_create(self, serializer):
         user = self.request.user
         serializer.save(created_by=user)
+
+class PatientViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
+    queryset = Patient.objects.all()
+    serializer_class = getPatientSerializer
+
+    http_method_names = ['get', 'post', 'head', 'options']
+
+    def perform_create(self, serializer):
+        user = self.request.user
+        serializer.save(user=user)

@@ -77,6 +77,8 @@ class Reviews(models.Model):
     size = models.IntegerField(choices= sizes,default=0)
     written_by = models.ForeignKey(User, default=1, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.written_by+','+self.marker
 
 class SuspiciousMarking(models.Model):
     marker = models.ForeignKey(Markers, on_delete=models.CASCADE)

@@ -99,7 +99,7 @@ class MarkerApiViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
     queryset = Markers.objects.all().order_by('id')
     serializer_class = getMarkerSerializer
-    http_method_names = ['get', 'post', 'put', 'patch',  'head', 'options']
+    http_method_names = ['get', 'post', 'put', 'patch', 'head', 'options']
     page_size = 100
     max_page_size = 100
     max_limit = 100
@@ -129,6 +129,19 @@ class MarkerApiViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
             serializer.save(address=data["address"], display_address=data["display_name"], added_by=user, location=loc)
         else:
             raise serializers.ValidationError({"detail": "Address not obtainable from Latitude and Longitude"})
+
+    def perform_update(self, serializer):
+        instance = self.get_object()
+        print(instance.Phone)
+        print(self.request.data)
+        lst = ['', '0', '00', '000', '0000', '00000', '000000', '0000000', '00000000', '000000000', '0000000000']
+        if instance.Phone not in lst and instance.Phone != self.request.data['Phone']:
+            raise serializers.ValidationError({
+                "detail": "Please Do Not edit exiting valid Phone Numbers."
+                          " Please Report if you think the existing phone number is wrong."
+            })
+        else:
+            serializer.save()
 
     def get_pagination_class(self):
         if self.condition:

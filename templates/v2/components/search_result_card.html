@@ -9,15 +9,15 @@
     <div class="card-body card-body-left widget-49 bg-white w-100">
         <h5 class="card-title card-title-left" id="{{ id }}title">{{ marker.name }}</h5>
         <h6 class="card-title card-title-left" id="{{ id }}title">{{ marker.display_address }}</h6>
-        <div class="d-flex row d-flex justify-content-between mb-3">
-            <h6 class="card-title card-title-left col">
+        <div class="d-flex d-flex justify-content-between mb-3">
+            <h6 class="card-title card-title-left ">
                 {% if marker.Phone != '0000000000' %}
                     <a href="tel:{{ marker.Phone }}" id="{{ id }}phone">
                         <i class="fa fa-phone-alt text-success" aria-hidden="true"></i>{{ marker.Phone }}</a>
                 {% endif %}
             </h6>
 
-            <h6 class="card-title card-title-left col">
+            <h6 class="card-title card-title-left ">
                 <a target="_blank" id="{{ id }}maps"
                    href="https://www.google.com/maps/search/{{ marker.name }}/@{{ marker.lat }},{{ marker.lng }},19.88z">
                     <i class="fa fa-map-marker"></i> Route Map

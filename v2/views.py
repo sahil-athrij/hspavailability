@@ -150,7 +150,7 @@ def search(request):
                                        lat__lte=lat + 0.5,
                                        lng__gte=lng - 0.5,
                                        lng__lte=lng + 0.5, )
-        queryset = queryset.filter(location__distance_lte=(loc, D(m=1000000))).annotate(
+        queryset = queryset.filter(location__distance_lte=(loc, D(m=10000000))).annotate(
             distance=Distance('location', loc)).order_by('distance')[:10]
 
         context["search_results"] = queryset

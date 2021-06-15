@@ -23,11 +23,16 @@ class SearchCards extends Component {
     <div class="card-body card-body-left widget-49 bg-white w-100">
         <h5 class="card-title card-title-left" >${this.data.name}</h5>
         <h6 class="card-title card-title-left" >${this.data.display_address}</h6>
+        <div class="d-flex d-flex justify-content-between mb-3">
         ${
             this.data.Phone === '0000000000' ? '' : `<h6 class="card-title card-title-left" ><a
                 href="tel:${this.data.Phone}"><i class="fa fa-phone-alt text-success" aria-hidden="true"></i>${this.data.Phone}</a></h6>`
         }
+        <a target="_blank" href="https://www.google.com/maps/search/${this.data.name}/@${this.data.lat},${this.data.lng},19.88z">
+                <i class="fa fa-map-marker"></i> Route Map
+          </a>
         
+        </div>
         
         
         
@@ -56,9 +61,7 @@ class SearchCards extends Component {
          <div class="d-flex d-flex justify-content-between">
            <a href="/details/${this.data.id}?review=true"
                class="text-warning"><i class="fa fa-star"></i> Share Feedback</a>
-            <a target="_blank" href="https://www.google.com/maps/search/${this.data.name}/@${this.data.lat},${this.data.lng},19.88z">
-                <i class="fa fa-map-marker"></i> Route Map
-            </a>
+            
         </div>
                    <a href="/details/${this.data.id}"  class="btn input-right input-left bg-dark btn-dark">More Info</a>
     </div>

@@ -30,7 +30,7 @@ class SearchCards extends Component {
         
         
         
-    
+        
         <div class="widget-49-meeting-points  row">
             <starInput id="oxy${this.data.id}"  class="col-6" label="Oxygen Care" content="Quality Rating for Oxyen Care" disabled="disabled"  value="${this.data.oxygen_rating}"></starInput>
             <starInput id="aff${this.data.id}"  class="col-6" extra_class="financial" label="Affordability" content="Affordability of the hospital .higher is expensive" disabled="disabled" value=${this.data.financial_rating}  ></starInput>

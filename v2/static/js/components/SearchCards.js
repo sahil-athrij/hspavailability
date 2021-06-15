@@ -64,9 +64,8 @@ class SearchCards extends Component {
          <div class="d-flex d-flex justify-content-between">
            <a href="/details/${this.data.id}?review=true"
                class="text-warning"><i class="fa fa-star"></i>Share Feedback</a>
-            
+                               <a href="/details/${this.data.id}"  class="btn input-right input-left bg-dark btn-dark">More Info</a>
         </div>
-                   <a href="/details/${this.data.id}"  class="btn input-right input-left bg-dark btn-dark">More Info</a>
     </div>
 </div>`;
     }

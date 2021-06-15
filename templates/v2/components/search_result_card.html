@@ -53,10 +53,8 @@
 
         <div class="d-flex d-flex justify-content-between mb-3">
 
-            <h6 class="card-title card-title-" id="{{ id }}title">
-                <a href="/details/{{ marker.id }}?review=true" id="{{ id }}modal"
-                   class="text-warning"><i class="fa fa-star"></i>Share Feedback</a>
-            </h6>
+            <a href="/details/{{ marker.id }}?review=true" id="{{ id }}modal"
+               class="text-warning btn bg-white"><i class="fa fa-star"></i>Share Feedback</a>
 
             <a href="/details/{{ marker.id }}" id="{{ id }}redirect"
                class="btn input-right input-left bg-dark btn-dark">More

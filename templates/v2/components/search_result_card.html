@@ -41,21 +41,20 @@
             <div class="col">ICU Availability : <span id="{{ id|add:"icu" }}"> {{ marker.icu_availability }}</span> %
             </div>
         </div>
-        <h6 class="card-title card-title-left my-3" id="{{ id }}title">
-             <a href="/details/{{ marker.id }}?review=true" id="{{ id }}modal"
-               class="text-warning"><i class="fa fa-star"></i> Share Feedback</a>
-        </h6>
-        <div class="d-flex d-flex justify-content-between">
-            <a href="/details/{{ marker.id }}" id="{{ id }}redirect"
-               class="btn input-right input-left bg-dark btn-dark">More
-                Info</a>
 
+        <div class="d-flex d-flex justify-content-between mb-3">
 
-
+            <h6 class="card-title card-title-" id="{{ id }}title">
+                <a href="/details/{{ marker.id }}?review=true" id="{{ id }}modal"
+                   class="text-warning"><i class="fa fa-star"></i> Share Feedback</a>
+            </h6>
             <a target="_blank" id="{{ id }}maps"
                href="https://www.google.com/maps/search/{{ marker.name }}/@{{ marker.lat }},{{ marker.lng }},19.88z">
                 <i class="fa fa-map-marker"></i> Route Map
             </a>
         </div>
+        <a href="/details/{{ marker.id }}" id="{{ id }}redirect"
+           class="btn input-right input-left bg-dark btn-dark">More
+            Info</a>
     </div>
 </div>

@@ -51,17 +51,16 @@ class SearchCards extends Component {
             </div>
         </div>
         <h6 class="card-title card-title-left" id="{{ id }}title">
-            <a href="/details/${this.data.id}?review=true"
-               class="text-warning"><i class="fa fa-star"></i> Share Feedback</a>
+            
         </h6>
          <div class="d-flex d-flex justify-content-between">
-           
-            <a href="/details/${this.data.id}"  class="btn input-right input-left bg-dark btn-dark">More Info</a>
+           <a href="/details/${this.data.id}?review=true"
+               class="text-warning"><i class="fa fa-star"></i> Share Feedback</a>
             <a target="_blank" href="https://www.google.com/maps/search/${this.data.name}/@${this.data.lat},${this.data.lng},19.88z">
                 <i class="fa fa-map-marker"></i> Route Map
             </a>
         </div>
-       
+                   <a href="/details/${this.data.id}"  class="btn input-right input-left bg-dark btn-dark">More Info</a>
     </div>
 </div>`;
     }
@@ -94,6 +93,8 @@ export class SearchResultList extends Component {
                 return new SearchCards(`.seachCard${marker.id}`, {...marker})
             }
         ))
+        $('[data-toggle="popover"]').popover()
+
     }
 }
 

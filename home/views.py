@@ -100,7 +100,7 @@ class MarkerApiViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
     queryset = Markers.objects.all().order_by('id')
     serializer_class = getMarkerSerializer
-    http_method_names = ['get', 'post', 'put', 'patch',  'head', 'options']
+    http_method_names = ['get', 'post', 'put', 'patch', 'head', 'options']
     page_size = 100
     max_page_size = 100
     max_limit = 100
@@ -141,6 +141,19 @@ class MarkerApiViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
         # marker = Markers.objects.get(id=request.get['id'])
         # marker.
 
+    def perform_update(self, serializer):
+        instance = self.get_object()
+        print(instance.Phone)
+        print(self.request.data)
+        lst = ['', '0', '00', '000', '0000', '00000', '000000', '0000000', '00000000', '000000000', '0000000000']
+        if instance.Phone not in lst and instance.Phone != self.request.data['Phone']:
+            raise serializers.ValidationError({
+                "detail": "Please Do Not edit exiting valid Phone Numbers."
+                          " Please Report if you think the existing phone number is wrong."
+            })
+        else:
+            serializer.save()
+
     def get_pagination_class(self):
         if self.condition:
             return LimitOffsetPaginationWithMaxLimit
@@ -166,12 +179,13 @@ class MarkerApiViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
         lng = float(self.request.GET.get('lng', 0))
         if lat and lng:
             loc = Point(lng, lat, srid=4326)
-            queryset = queryset.filter(
-                lat__gte=lat - 2.5,
-                lat__lte=lat + 2.5,
-                lng__gte=lng - 2.5,
-                lng__lte=lng + 2.5,
-            )
+            if queryset.count() > 400:
+                queryset = queryset.filter(
+                    lat__gte=lat - 2.5,
+                    lat__lte=lat + 2.5,
+                    lng__gte=lng - 2.5,
+                    lng__lte=lng + 2.5,
+                )
             queryset = queryset.filter(location__distance_lte=(loc, D(m=distance))).annotate(
                 distance=Distance('location', loc)).order_by('distance')
         #   print(len(queryset.filter(location__distance_lte=(loc, D(m=distance)))))

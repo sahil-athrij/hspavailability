@@ -76,7 +76,16 @@ class ModelObject {
 
     save = async () => {
         this.setData()
-        return patch(`${this.baseUrl}${this.id}/`, this.data)
+        try {
+            let data = await patch(`${this.baseUrl}${this.id}/`, this.data)
+            return new this.constructor(data, this.baseUrl)
+        } catch (e) {
+            let errors;
+            errors = await e.json()
+            console.log(errors)
+            throw errors
+
+        }
     }
 
 }

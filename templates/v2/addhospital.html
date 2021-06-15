@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block title %}
-    Add Hospitals
+    Add Hospitals - Needmedi.com
 {% endblock %}
 {% block css %}
 
@@ -56,37 +56,79 @@
 
         let marker = new google.maps.Marker()
         map.addListener("click", (mapsMouseEvent) => {
-                if(marker)
-                {
-                    marker.setMap(null)
-                }
-                $('#id').val(-1)
-                console.log(mapsMouseEvent.latLng)
-                $('#lat').val(mapsMouseEvent.latLng.lat)
-                $('#lng').val(mapsMouseEvent.latLng.lng)
-                marker = new google.maps.Marker({
-                    position: mapsMouseEvent.latLng,
-                    map: map
-                    })
+            if (marker) {
+                marker.setMap(null)
+            }
+            $('#id').val(-1)
+            console.log(mapsMouseEvent.latLng)
+            $('#lat').val(mapsMouseEvent.latLng.lat)
+            $('#lng').val(mapsMouseEvent.latLng.lng)
+            marker = new google.maps.Marker({
+                position: mapsMouseEvent.latLng,
+                map: map
+            })
         });
 
-        $('#submit').on('click', function(){
+        $('#submit').on('click', function () {
             let id = $('#id').val()
-            let name =  $('#valuetitleinput').val()
+            let name = $('#valuetitleinput').val()
             let Phone = $('#valuephoneinput').val()
-            let lat =   $('#lat').val()
-            let lng =   $('#lng').val()
-            let dictm ={id:id, name:name, Phone:Phone,
-                        lat:lat, lng:lng}
+            let lat = $('#lat').val()
+            let lng = $('#lng').val()
+            let dictm = {
+                id: id, name: name, Phone: Phone,
+                lat: lat, lng: lng
+            }
             console.log(id)
-            if(id!=-1){
+            if (id != -1) {
                 Current_Marker.data = dictm
                 console.log(Current_Marker)
                 Current_Marker.getData()
-                Current_Marker.save()
-            }
-            else{
-                Marker.create(kwargs=dictm)
+                Current_Marker.save().then(function (reviewobject) {
+                    console.log(reviewobject)
+                    $('#exampleModalLong').modal('toggle');
+                    addToast("Hospital Modified", "Thank you for your valuable Contribution!")
+                }).catch(function (error) {
+                    const detail = error.detail
+                    console.log(detail)
+                    var current_path;
+                    if ('Authentication credentials were not provided.' === detail) {
+                        current_path = window.location.pathname
+                        window.location.href = '/login?next=' + current_path
+                        addToast("Failed to Modify Hospital", "Please Sign in to Modify Hospital")
+
+
+                    } else if (detail) {
+                        $('#exampleModalLong').modal('toggle');
+                        addToast("Failed to Modify Hospital", detail)
+                    } else {
+                        addToast("Failed to Modify Hospital", "Please Enter the Highlighted Values")
+
+                    }
+
+                })
+            } else {
+                Marker.create(kwargs = dictm).then(function (reviewobject) {
+                    console.log(reviewobject)
+                    addToast("Hospital Added", "Thank you for your valuable Contribution!")
+                }).catch(function (error) {
+                    const detail = error.detail
+                    console.log(detail)
+                    var current_path;
+                    if ('Authentication credentials were not provided.' === detail) {
+                        current_path = window.location.pathname
+                        window.location.href = '/login?next=' + current_path
+                        addToast("Failed to Add Hospital", "Please Sign in to Add Hospital")
+
+
+                    } else if (detail) {
+                        addToast("Failed to Add Hospital", detail)
+                    } else {
+                        addToast("Failed to Add Hospital", "Please Enter the Highlighted Values")
+
+                    }
+
+                })
             }
 
         })

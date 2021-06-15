@@ -132,10 +132,7 @@ def search(request):
                 print(e)
         print(lat, lng)
         queryset = Markers.objects.filter(
-            lat__gte=lat - 0.5,
-            lat__lte=lat + 0.5,
-            lng__gte=lng - 0.5,
-            lng__lte=lng + 0.5,
+
             financial_rating__gte=fin,
             avg_cost__gte=costmin,
             avg_cost__lte=costmax,
@@ -148,9 +145,13 @@ def search(request):
             name__icontains=query
         )
         loc = Point(lng, lat, srid=4326)
-        queryset = queryset.filter(location__distance_lte=(loc, D(m=100000))).annotate(
+        if queryset.count() > 400:
+            queryset = queryset.filter(lat__gte=lat - 0.5,
+                                       lat__lte=lat + 0.5,
+                                       lng__gte=lng - 0.5,
+                                       lng__lte=lng + 0.5, )
+        queryset = queryset.filter(location__distance_lte=(loc, D(m=10000000))).annotate(
             distance=Distance('location', loc)).order_by('distance')[:10]
-
 
         context["search_results"] = queryset
         print(context)
@@ -181,7 +182,7 @@ def details(request, hospital_id):
     query = Markers.objects.get(id=hospital_id)
     review = Reviews.objects.filter(marker=hospital_id)
     context['hospital'] = query
-    open_review = request.GET.get('review',0)
+    open_review = request.GET.get('review', 0)
     stuff = review.values()
     context["reviews"] = review
     context["open_review"] = open_review

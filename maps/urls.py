@@ -19,5 +19,7 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/',include('home.urls')),
-    path('',include('v2.urls'))
+    path('',include('v2.urls')),
+    path('auth/',include('authentication.urls')),
+    path('openid/',include('oidc_provider.urls', namespace='oidc_provider'))
 ]

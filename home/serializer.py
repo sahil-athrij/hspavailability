@@ -21,7 +21,7 @@ class getMarkerSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'name', 'Phone', 'size', 'financial_rating', 'avg_cost', 'covid_rating', 'beds_available',
             'care_rating', 'oxygen_rating', 'ventilator_availability', 'oxygen_availability', 'icu_availability',
-            'lat', 'lng', 'datef', 'added_by_id', 'images', 'display_address', 'comment_count'
+            'lat', 'lng', 'datef', 'added_by_id', 'images', 'display_address', 'comment_count','address'
         ]
         extra_kwargs = {
             'size': {'read_only': True},
@@ -35,7 +35,8 @@ class getMarkerSerializer(serializers.ModelSerializer):
             'oxygen_availability': {'read_only': True},
             'icu_availability': {'read_only': True},
             'datef': {'read_only': True},
-            'added_by_id': {'read_only': True}
+            'added_by_id': {'read_only': True},
+            'address': {'read_only': True}
         }
 
     def get_comment_count(self, marker):

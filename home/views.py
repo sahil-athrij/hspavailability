@@ -5,12 +5,12 @@ import requests
 from django.contrib.gis.db.models.functions import Distance
 from django.contrib.gis.geos import Point
 from django.contrib.gis.measure import D
-from django.http import HttpResponseRedirect
 from rest_framework import viewsets, generics, filters
+from rest_framework.decorators import action
+from rest_framework.exceptions import ParseError
 from rest_framework.pagination import PageNumberPagination, LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
-from rest_framework.decorators import action
 
 from .serializer import *
 
@@ -76,20 +76,6 @@ def update_marker(id):
     ob.oxygen_availability = round(sum(oxya) * 100 / sum(denoa), 2) if denoa else 0
     ob.icu_availability = round(sum(icu) * 100 / sum(deni), 2) if deni else 0
     ob.save()
-
-
-def suspicious(request):
-    if request.method == "POST":
-        print(request.POST)
-        id = int(request.POST['id'])
-        mob = Markers.objects.get(id=id)
-        user = request.user
-        ob = SuspiciousMarking.objects.create(marker_id=id, created_by=user, comment=request.POST['comments'])
-        ob.save()
-        mob.Suspicious += 1
-        mob.save()
-
-    return HttpResponseRedirect('/')
 
 
 class LimitOffsetPaginationWithMaxLimit(LimitOffsetPagination):
@@ -192,7 +178,6 @@ class MarkerApiViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
         return queryset
 
 
-
 class ReviewViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
     queryset = Reviews.objects.all()
@@ -226,6 +211,7 @@ class SusViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
     def perform_create(self, serializer):
         user = self.request.user
         serializer.save(created_by=user)
+
 
 class PatientViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
     queryset = Patient.objects.all()

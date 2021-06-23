@@ -89,7 +89,8 @@ OAUTH2_PROVIDER = {
     "OIDC_ENABLED": True,
     "OIDC_RSA_PRIVATE_KEY": os.environ.get("OIDC_RSA_PRIVATE_KEY"),
     # this is the list of available scopes
-    'SCOPES': {"openid": "OpenID Connect scope",'read': 'Read scope', 'write': 'Write scope', 'groups': 'Access to your groups'}
+    'SCOPES': {"openid": "OpenID Connect scope", 'read': 'Read scope', 'write': 'Write scope',
+               'groups': 'Access to your groups'}
 }
 
 REST_FRAMEWORK = {
@@ -116,6 +117,11 @@ REST_FRAMEWORK = {
     },
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_PARSER_CLASSES': (
+        'rest_framework.parsers.JSONParser',
+        'rest_framework.parsers.FormParser',
+        'rest_framework.parsers.MultiPartParser',
     ),
     'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema'
 }

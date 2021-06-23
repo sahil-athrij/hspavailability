@@ -1,17 +1,23 @@
-from django.shortcuts import render
 from oauth2_provider.contrib.rest_framework import TokenHasReadWriteScope, TokenHasScope
+from rest_framework import viewsets, generics, permissions
+from rest_framework_swagger import renderers
+
 from .serializer import *
+
+
 # Create your views here.
 # Create the API views
-class UserList(generics.ListCreateAPIView):
-    permission_classes = [permissions.IsAuthenticated, TokenHasReadWriteScope]
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
 
-class UserDetails(generics.RetrieveAPIView):
+class UserApiViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
     permission_classes = [permissions.IsAuthenticated, TokenHasReadWriteScope]
-    queryset = User.objects.all()
     serializer_class = UserSerializer
+    queryset = User.objects.all()
+    http_method_names = ['get', 'post', 'put', 'patch', 'head', 'options']
+    renderer_classes = [
+        renderers.OpenAPIRenderer,
+        renderers.SwaggerUIRenderer
+    ]
+
 
 class GroupList(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated, TokenHasScope]

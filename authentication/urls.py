@@ -8,7 +8,6 @@ router = DefaultRouter()
 router.register(r'users', UserApiViewSet)
 urlpatterns = [
     path(r'', include(router.urls)),
-
     path('o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
     path('social/', include('rest_framework_social_oauth2.urls')),
     path('groups/', GroupList.as_view()),

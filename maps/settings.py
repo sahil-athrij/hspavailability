@@ -45,7 +45,7 @@ INSTALLED_APPS = [
     'django_filters',
     'oidc_provider',
     'rest_framework_swagger',
-
+    'drf_yasg',
     # custom
     'home',
     'v2'

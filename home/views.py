@@ -11,6 +11,7 @@ from rest_framework.exceptions import ParseError
 from rest_framework.pagination import PageNumberPagination, LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
+from rest_framework.parsers import FileUploadParser, JSONParser
 
 from .serializer import *
 
@@ -117,13 +118,13 @@ class MarkerApiViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
         else:
             raise serializers.ValidationError({"detail": "Address not obtainable from Latitude and Longitude"})
 
-    @action(detail=True, methods=['post'])
-    def upload_docs(request):
-        print(request.__dict__)
         try:
             file = request.data['files']
         except KeyError:
             raise ParseError('Request has no resource file attached')
+    @action(detail=True, methods=['post'])
+    def upload_docs(self, request, pk):
+        print(request.__dict__)
         # marker = Markers.objects.get(id=request.get['id'])
         # marker.
 
@@ -222,3 +223,8 @@ class PatientViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
     def perform_create(self, serializer):
         user = self.request.user
         serializer.save(user=user)
+
+class ImageViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
+    queryset = Images.objects.all()
+    serializer_class = getImageSerializer
+    parser_class = [FileUploadParser]

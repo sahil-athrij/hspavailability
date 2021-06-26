@@ -12,5 +12,6 @@ urlpatterns = [
     path('search/', search, name='search'),
     path('getlocation/', get_location),
     path('details/<int:hospital_id>', details),
-    path('help/',help)
+    path('help/',help),
+    path('google-login/', Google_login)
 ]

@@ -7,7 +7,7 @@ class getImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Images
         fields = [
-            'image', 'useinmarker'
+            'image', 'useinmarker', 'hospital', 'review'
         ]
 
 

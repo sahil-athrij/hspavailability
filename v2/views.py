@@ -9,6 +9,7 @@ from django.contrib.gis.measure import D
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import ensure_csrf_cookie
+from rest_framework.authtoken.models import Token
 
 from home.models import *
 
@@ -197,3 +198,32 @@ def help(request):
 @ensure_csrf_cookie
 def addHospital(request):
     return render(request, template_name='v2/addhospital.html')
+
+
+def Google_login(request):
+    if request.method=="GET":
+        auth_code=request.GET.get('code')
+        print(auth_code)
+        redirect_uri='http://127.0.0.1:8000/google-login'
+        data = {'code': auth_code,
+                'client_id': '569002618626-kr65dimckmmdbgfuafrakqa0g6h18f55.apps.googleusercontent.com',
+                'client_secret': 'w_424dxoSAR5m9l-Xl9nOIwH',
+                'redirect_uri': redirect_uri,
+                'grant_type': 'authorization_code'}
+        r = requests.post('https://oauth2.googleapis.com/token', data=data)
+        print('access code',r.content)
+        content=json.loads(r.content.decode())
+        token=content["access_token"]
+        data={
+            'grant_type':'convert_token',
+            'client_id':'Ahn9ELq2nVTrWjnaKeDbbf1p7FWPyIGM4hxLeUvb',
+            'client_secret':'eTkLmNzC2uJNkRSP9qPb5k8IR3OmueIa5KEVqDbTuRJ1GURzp9Jm3Vviz0qMCk73AzlW0TSM0n981JBYr2MEC8t0tsWSZFgaTIdaxN4eFvsjUROzSL3RoVlVdE2iaEHy',
+            'backend':'google-oauth2',
+            'token':token
+        }
+        url='http://127.0.0.1:8000/auth/social/convert-token'
+        r = requests.post(url,data=data)
+        print('django app',r.content)
+        
+        user = Token.objects.get(key=access_token).user
+    return HttpResponseRedirect('/')

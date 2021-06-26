@@ -2,8 +2,6 @@
 import json
 
 from braces.views import CsrfExemptMixin
-from drf_yasg import openapi
-from drf_yasg.utils import swagger_auto_schema
 from oauth2_provider.contrib.rest_framework import OAuth2Authentication
 from oauth2_provider.models import Application, AccessToken
 from oauth2_provider.oauth2_backends import OAuthLibCore
@@ -64,7 +62,6 @@ class ConvertTokenView(CsrfExemptMixin, OAuthLibMixin, GenericAPIView):
     oauthlib_backend_class = KeepRequestCore
     permission_classes = (permissions.AllowAny,)
     serializer_class = TokensSerializer
-
 
     def post(self, request, *args, **kwargs):
         # Use the rest framework `.data` to fake the post body of the django request.

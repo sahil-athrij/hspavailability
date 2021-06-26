@@ -7,11 +7,10 @@ from django.contrib.gis.geos import Point
 from django.contrib.gis.measure import D
 from rest_framework import viewsets, generics, filters
 from rest_framework.decorators import action
-from rest_framework.exceptions import ParseError
 from rest_framework.pagination import PageNumberPagination, LimitOffsetPagination
+from rest_framework.parsers import FileUploadParser
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
-from rest_framework.parsers import FileUploadParser, JSONParser
 
 from .serializer import *
 
@@ -86,7 +85,7 @@ class LimitOffsetPaginationWithMaxLimit(LimitOffsetPagination):
 class MarkerApiViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
     queryset = Markers.objects.all().order_by('id')
-    serializer_class = getMarkerSerializer
+    serializer_class = GetMarkerSerializer
     http_method_names = ['get', 'post', 'put', 'patch', 'head', 'options']
     page_size = 100
     max_page_size = 100
@@ -104,6 +103,13 @@ class MarkerApiViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
         super().__init__(*args, **kwargs)
         self.condition = False
 
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return GetMarkerSerializer
+        if self.action == 'retrieve':
+            return DetailMarkerSerializer
+        return GetMarkerSerializer
+
     def perform_create(self, serializer):
         print(self.request.data)
         user = self.request.user
@@ -118,10 +124,6 @@ class MarkerApiViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
         else:
             raise serializers.ValidationError({"detail": "Address not obtainable from Latitude and Longitude"})
 
-        try:
-            file = request.data['files']
-        except KeyError:
-            raise ParseError('Request has no resource file attached')
     @action(detail=True, methods=['post'])
     def upload_docs(self, request, pk):
         print(request.__dict__)
@@ -175,14 +177,13 @@ class MarkerApiViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
                 )
             queryset = queryset.filter(location__distance_lte=(loc, D(m=distance))).annotate(
                 distance=Distance('location', loc)).order_by('distance')
-        #   print(len(queryset.filter(location__distance_lte=(loc, D(m=distance)))))
         return queryset
 
 
 class ReviewViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
-    queryset = Reviews.objects.all()
-    serializer_class = getReviewSerializer
+    queryset = Reviews.objects.all().order_by('id')
+    serializer_class = GetReviewSerializer
     http_method_names = ['get', 'post', 'head', 'options']
 
     def perform_create(self, serializer):
@@ -205,7 +206,7 @@ class ReviewViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
 
 class SusViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
     queryset = SuspiciousMarking.objects.all()
-    serializer_class = getSusSerializer
+    serializer_class = GetSusSerializer
 
     http_method_names = ['get', 'post', 'head', 'options']
 
@@ -216,15 +217,15 @@ class SusViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
 
 class PatientViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
     queryset = Patient.objects.all()
-    serializer_class = getPatientSerializer
-
+    serializer_class = GetPatientSerializer
     http_method_names = ['get', 'post', 'head', 'options']
 
     def perform_create(self, serializer):
         user = self.request.user
         serializer.save(user=user)
 
+
 class ImageViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
     queryset = Images.objects.all()
-    serializer_class = getImageSerializer
+    serializer_class = GetImageSerializer
     parser_class = [FileUploadParser]

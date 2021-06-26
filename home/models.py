@@ -1,8 +1,9 @@
-from django.contrib.auth.models import User
-from django.db import models
 import datetime
+
+from django.contrib.auth.models import User
 from django.contrib.gis.db import models
 from django.contrib.postgres.fields import ArrayField
+
 # Create your models here.
 
 rating = [
@@ -31,6 +32,7 @@ bed = [
     (3, 'ICU')
 ]
 
+
 class Markers(models.Model):
     name = models.CharField(max_length=500)
     Phone = models.CharField(max_length=100)
@@ -50,14 +52,12 @@ class Markers(models.Model):
     place_id = models.CharField(max_length=60, default="")
     added_by = models.ForeignKey(User, default=1, on_delete=models.CASCADE)
     Suspicious = models.IntegerField(default=0)
-    display_address = models.TextField(default="",max_length=3000, blank=True)
+    display_address = models.TextField(default="", max_length=3000, blank=True)
     address = models.JSONField(blank=True)
     location = models.PointField(srid=4326, verbose_name='Location')
 
     def __str__(self):
         return self.name
-
-
 
 
 class Reviews(models.Model):
@@ -71,14 +71,15 @@ class Reviews(models.Model):
     ventilator_availability = models.IntegerField(default=0)
     oxygen_availability = models.IntegerField(default=0)
     icu_availability = models.IntegerField(default=0)
-    comment = models.TextField(blank=True,max_length=3000)
+    comment = models.TextField(blank=True, max_length=3000)
     datef = models.DateField(default=datetime.date.today)
     day = models.IntegerField(default=0)
-    size = models.IntegerField(choices= sizes,default=0)
+    size = models.IntegerField(choices=sizes, default=0)
     written_by = models.ForeignKey(User, default=1, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.written_by+','+self.marker
+        return self.written_by + ',' + self.marker
+
 
 class SuspiciousMarking(models.Model):
     marker = models.ForeignKey(Markers, on_delete=models.CASCADE)
@@ -89,9 +90,10 @@ class SuspiciousMarking(models.Model):
 
 class Images(models.Model):
     image = models.ImageField(upload_to="pic", blank=True)
-    review = models.ForeignKey(Reviews,default=None,related_name='images', on_delete=models.CASCADE)
+    review = models.ForeignKey(Reviews, default=None, related_name='images', on_delete=models.CASCADE)
     hospital = models.ForeignKey(Markers, related_name='images', on_delete=models.CASCADE)
     useinmarker = models.BooleanField(default=False)
+
 
 class Patient(models.Model):
     Name = models.CharField(max_length=40)

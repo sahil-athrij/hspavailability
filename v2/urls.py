@@ -1,7 +1,7 @@
 from django.urls import path
 
 from v2.views import index, signin, log_out, addHospital, signup, search, get_location, details, Google_login, csrf, \
-    ping,help
+    ping, help_page
 
 urlpatterns = [
     path('', index),

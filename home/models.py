@@ -115,3 +115,8 @@ class Patient(models.Model):
     ct = models.BooleanField(default=False)
     ctscore = models.IntegerField(default=0)
     user = models.ForeignKey(User, default=1, on_delete=models.CASCADE)
+
+class Tokens(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    private_token = models.CharField(max_length=10)
+    invite_token = models.CharField(max_length=10)

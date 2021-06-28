@@ -12,8 +12,10 @@ from django.middleware.csrf import get_token
 from django.shortcuts import render
 from django.views.decorators.csrf import ensure_csrf_cookie
 from rest_framework.authtoken.models import Token
-
+from uuid import uuid4
+from pprint import pprint
 from home.models import Markers, Reviews
+from oauth2_provider.models import AccessToken
 
 
 def get_client_ip(request):
@@ -41,6 +43,8 @@ def index(request):
 @ensure_csrf_cookie
 def signin(request):
     context1 = {}
+    print("Hello There")
+    pprint(request.META['QUERY_STRING'])
     if request.method == "POST":
         email = request.POST["username"]
         password = request.POST["password"]
@@ -51,7 +55,8 @@ def signin(request):
         if user is not None:
             login(request, user)
             # Redirect to a success page.
-            redirect_location = request.POST.get('next', '/') or '/'
+            redirect_location = request.GET.get('next','/')+'?'+request.META['QUERY_STRING']
+            print(redirect_location)
             return HttpResponseRedirect(redirect_location)
         else:
             # Return an 'invalid login' error message.
@@ -76,7 +81,12 @@ def signup(request):
                 try:
                     user = User.objects.create_user(email=email, password=password, username=email)
                     login(request, user)
-                    redirect_location = request.POST.get('next', '/') or '/'
+                    try:
+                        inv = request.GET["invite_token"]
+                    except:
+                        inv = ""
+                    Tokens.objects.create(User=user, private_token= uuid4, invite_token=inv)
+                    redirect_location = request.GET.get('next=','/')+request.META['QUERY_STRING']
                     return HttpResponseRedirect(redirect_location)
 
                 except Exception as e:
@@ -92,7 +102,8 @@ def signup(request):
 @login_required
 def log_out(request):
     logout(request)
-    return HttpResponseRedirect('/')
+    url='/?'+request.META['QUERY_STRING']
+    return HttpResponseRedirect(url)
 
 
 @ensure_csrf_cookie
@@ -216,6 +227,7 @@ def Google_login(request):
         print('access code', r.content)
         content = json.loads(r.content.decode())
         token = content["access_token"]
+        print('Token=',token)
         data = {
             'grant_type': 'convert_token',
             'client_id': 'Ahn9ELq2nVTrWjnaKeDbbf1p7FWPyIGM4hxLeUvb',
@@ -226,8 +238,11 @@ def Google_login(request):
         url = 'http://127.0.0.1:8000/auth/social/convert-token'
         r = requests.post(url, data=data)
         print('django app', r.content)
-
-        user = Token.objects.get(key=access_token).user
+        cont = json.loads(r.content.decode())
+        access_token=cont['access_token']
+        user = AccessToken.objects.get(token=access_token).user
+        print(user)
+        login(request,user,backend='django.contrib.auth.backends.ModelBackend')
     return HttpResponseRedirect('/')
 
 

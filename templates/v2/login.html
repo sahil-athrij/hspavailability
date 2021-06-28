@@ -5,7 +5,7 @@
 {% block form %}
     <p class="sign" align="center">Sign In</p>
 
-    <form class="form1" action="/login/?next={{ request.GET.next }}" method="POST">
+    <form class="form1" action="/login/?{{ request.META.QUERY_STRING }}" method="POST">
         {% csrf_token %}
         {% if pswderr %}
             <div class=" text-danger " align='center' role="alert">

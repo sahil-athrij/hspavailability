@@ -191,9 +191,8 @@ def details(request, hospital_id):
     context["open_review"] = open_review
     return render(request, template_name='v2/details.html', context=context)
 
-
 @ensure_csrf_cookie
-def help(request):
+def help_page(request):
     return render(request, template_name='v2/help.html')
 
 

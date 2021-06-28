@@ -78,7 +78,7 @@ class Reviews(models.Model):
     written_by = models.ForeignKey(User, default=1, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.written_by + ',' + self.marker
+        return self.written_by.username + ',' + self.marker.name
 
 
 class SuspiciousMarking(models.Model):

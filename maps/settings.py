@@ -54,6 +54,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'oauth2_provider.middleware.OAuth2TokenMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -87,10 +88,14 @@ WSGI_APPLICATION = 'maps.wsgi.application'
 
 OAUTH2_PROVIDER = {
     "OIDC_ENABLED": True,
-    "OIDC_RSA_PRIVATE_KEY": os.environ.get("OIDC_RSA_PRIVATE_KEY"),
+    "OIDC_RSA_PRIVATE_KEY": os.environ.get("OIDC_RSA_PRIVATE_KEY").replace(r'\n', '\n') if DEBUG else os.environ.get(
+        "OIDC_RSA_PRIVATE_KEY"),
     # this is the list of available scopes
-    'SCOPES': {"openid": "OpenID Connect scope", 'read': 'Read scope', 'write': 'Write scope',
-               'groups': 'Access to your groups'}
+    'SCOPES': {"openid": "OpenID Connect scope",
+               'read': 'Read scope',
+               'write': 'Write scope',
+               'groups': 'Access to your groups'},
+    'OAUTH2_BACKEND_CLASS': 'oauth2_provider.oauth2_backends.JSONOAuthLibCore'
 }
 
 REST_FRAMEWORK = {
@@ -99,7 +104,6 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 100,
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.SessionAuthentication',
-        # 'rest_framework.authentication.BasicAuthentication',
         'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
         'rest_framework_social_oauth2.authentication.SocialAuthentication',
     ],
@@ -135,6 +139,9 @@ AUTHENTICATION_BACKENDS = (
 
     # Django
     'django.contrib.auth.backends.ModelBackend',
+
+    'oauth2_provider.backends.OAuth2Backend',
+
 )
 
 # Google configuration
@@ -206,16 +213,8 @@ MEDIA_URL = '/media/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # GDAL_LIBRARY_PATH = 'C:/OSGeo4W/bin'
-
-CORS_ALLOWED_ORIGINS = [
-    "https://needmedi.com",
-    "https://sub.example.com",
-    "http://localhost:8000",
-    "http://localhost:3000",
-    "http://127.0.0.1:8000",
-    "http://127.0.0.1:3000",
-]
-
+CORS_ALLOW_CREDENTIALS = True
+CORS_ORIGIN_ALLOW_ALL = True
 LOGIN_URL = '/login/'
 
 SWAGGER_SETTINGS = {

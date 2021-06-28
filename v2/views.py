@@ -1,4 +1,7 @@
 import json
+from pprint import pprint
+from urllib import parse
+from uuid import uuid4
 
 import requests
 from django.contrib.auth import authenticate, login, logout
@@ -7,15 +10,13 @@ from django.contrib.auth.models import User
 from django.contrib.gis.db.models.functions import Distance
 from django.contrib.gis.geos import Point
 from django.contrib.gis.measure import D
-from django.http import HttpResponseRedirect, JsonResponse
+from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
 from django.middleware.csrf import get_token
 from django.shortcuts import render
 from django.views.decorators.csrf import ensure_csrf_cookie
-from rest_framework.authtoken.models import Token
-from uuid import uuid4
-from pprint import pprint
-from home.models import Markers, Reviews
 from oauth2_provider.models import AccessToken
+
+from home.models import Markers, Reviews
 
 
 def get_client_ip(request):
@@ -55,7 +56,7 @@ def signin(request):
         if user is not None:
             login(request, user)
             # Redirect to a success page.
-            redirect_location = request.GET.get('next','/')+'?'+request.META['QUERY_STRING']
+            redirect_location = request.GET.get('next', '/') + '?' + request.META['QUERY_STRING']
             print(redirect_location)
             return HttpResponseRedirect(redirect_location)
         else:
@@ -85,8 +86,8 @@ def signup(request):
                         inv = request.GET["invite_token"]
                     except:
                         inv = ""
-                    Tokens.objects.create(User=user, private_token= uuid4, invite_token=inv)
-                    redirect_location = request.GET.get('next=','/')+request.META['QUERY_STRING']
+                    Tokens.objects.create(User=user, private_token=uuid4, invite_token=inv)
+                    redirect_location = request.GET.get('next=', '/') + request.META['QUERY_STRING']
                     return HttpResponseRedirect(redirect_location)
 
                 except Exception as e:
@@ -102,7 +103,7 @@ def signup(request):
 @login_required
 def log_out(request):
     logout(request)
-    url='/?'+request.META['QUERY_STRING']
+    url = '/?' + request.META['QUERY_STRING']
     return HttpResponseRedirect(url)
 
 
@@ -214,36 +215,45 @@ def addHospital(request):
 
 
 def Google_login(request):
-    if request.method == "GET":
-        auth_code = request.GET.get('code')
-        print(auth_code)
-        redirect_uri = 'http://127.0.0.1:8000/google-login'
-        data = {'code': auth_code,
-                'client_id': '569002618626-kr65dimckmmdbgfuafrakqa0g6h18f55.apps.googleusercontent.com',
-                'client_secret': 'w_424dxoSAR5m9l-Xl9nOIwH',
-                'redirect_uri': redirect_uri,
-                'grant_type': 'authorization_code'}
-        r = requests.post('https://oauth2.googleapis.com/token', data=data)
-        print('access code', r.content)
-        content = json.loads(r.content.decode())
-        token = content["access_token"]
-        print('Token=',token)
-        data = {
-            'grant_type': 'convert_token',
-            'client_id': 'Ahn9ELq2nVTrWjnaKeDbbf1p7FWPyIGM4hxLeUvb',
-            'client_secret': 'eTkLmNzC2uJNkRSP9qPb5k8IR3OmueIa5KEVqDbTuRJ1GURzp9Jm3Vviz0qMCk73AzlW0TSM0n981JBYr2MEC8t0tsWSZFgaTIdaxN4eFvsjUROzSL3RoVlVdE2iaEHy',
-            'backend': 'google-oauth2',
-            'token': token
-        }
-        url = 'http://127.0.0.1:8000/auth/social/convert-token'
-        r = requests.post(url, data=data)
-        print('django app', r.content)
+    auth_code = request.GET.get('code')
+    print(auth_code)
+    redirect_uri = 'http://127.0.0.1:8000/google-login'
+    data = {'code': auth_code,
+            'client_id': '569002618626-kr65dimckmmdbgfuafrakqa0g6h18f55.apps.googleusercontent.com',
+            'client_secret': 'w_424dxoSAR5m9l-Xl9nOIwH',
+            'redirect_uri': redirect_uri,
+            'grant_type': 'authorization_code'}
+    r = requests.post('https://oauth2.googleapis.com/token', data=data)
+    print('access code', r.content)
+    content = json.loads(r.content.decode())
+    token = content["access_token"]
+    print('Token=', token)
+    data = {
+        'grant_type': 'convert_token',
+        'client_id': '6tWdAZrlxUA26FJSMjE7oKBpTNGaqJRl2bsmNMRb',
+        'client_secret': 'mwFcVOr4NicFnxlTDHRy5h48tbj3ohsJ5HxOIs0juJEmwQ25r8hByHkn9qqsMudm2Qju4Qh57117PHIPJTSupLNNTspcvwdDovM1P7Icw9PEwdcJ1djLCU5PbruqeSWv',
+        'backend': 'google-oauth2',
+        'token': token
+    }
+    url = 'http://127.0.0.1:8000/auth/social/convert-token'
+    r = requests.post(url, data=data)
+    try:
         cont = json.loads(r.content.decode())
-        access_token=cont['access_token']
-        user = AccessToken.objects.get(token=access_token).user
-        print(user)
-        login(request,user,backend='django.contrib.auth.backends.ModelBackend')
-    return HttpResponseRedirect('/')
+        print(cont)
+    except:
+        return HttpResponse(r.content)
+    access_token = cont['access_token']
+    user = AccessToken.objects.get(token=access_token).user
+    print(user)
+    login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+    next = request.GET.get('state', False)
+    if next:
+        parsed = parse.parse_qs(next)
+        next = dict(parsed)
+        next = next['next'][0]
+        return HttpResponseRedirect(next)
+    else:
+        return HttpResponseRedirect('/')
 
 
 @ensure_csrf_cookie

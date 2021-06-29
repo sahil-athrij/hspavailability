@@ -56,7 +56,8 @@ def signin(request):
         if user is not None:
             login(request, user)
             # Redirect to a success page.
-            redirect_location = request.GET.get('next', '/') + '?' + request.META['QUERY_STRING']
+            redirect_location = request.GET.get('next', '/')
+
             print(redirect_location)
             return HttpResponseRedirect(redirect_location)
         else:
@@ -87,7 +88,7 @@ def signup(request):
                     except:
                         inv = ""
                     Tokens.objects.create(User=user, private_token=uuid4, invite_token=inv)
-                    redirect_location = request.GET.get('next=', '/') + request.META['QUERY_STRING']
+                    redirect_location = request.GET.get('next=', '/')
                     return HttpResponseRedirect(redirect_location)
 
                 except Exception as e:

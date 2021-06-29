@@ -1,5 +1,6 @@
 from django.urls import path
-
+from django.conf.urls.static import static
+from django.conf import settings
 from v2.views import index, signin, log_out, addHospital, signup, search, get_location, details, Google_login, csrf, \
     ping, help_page
 
@@ -17,3 +18,4 @@ urlpatterns = [
     path('csrf/', csrf),
     path('ping/', ping),
 ]
+urlpatterns+=static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

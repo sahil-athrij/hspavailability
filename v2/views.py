@@ -16,7 +16,7 @@ from django.shortcuts import render
 from django.views.decorators.csrf import ensure_csrf_cookie
 from oauth2_provider.models import AccessToken
 
-from home.models import Markers, Reviews
+from home.models import Markers, Reviews, Tokens
 
 
 def get_client_ip(request):
@@ -82,12 +82,11 @@ def signup(request):
             if passwrd2 == password:
                 try:
                     user = User.objects.create_user(email=email, password=password, username=email)
-                    login(request, user)
-                    try:
-                        inv = request.GET["invite_token"]
-                    except:
-                        inv = ""
-                    Tokens.objects.create(User=user, private_token=uuid4, invite_token=inv)
+                    login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+                    print(request.GET.__dict__)
+                    inv = request.GET.get('invite','')
+                    print(inv)
+                    Tokens.objects.create(user=user, invite_token=inv)
                     redirect_location = request.GET.get('next=', '/')
                     return HttpResponseRedirect(redirect_location)
 

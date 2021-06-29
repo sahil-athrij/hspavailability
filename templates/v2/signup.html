@@ -4,7 +4,7 @@
 {% endblock %}
 {% block form %}
     <p class="sign" align="center">Register</p>
-    <form class="form1" action="/signup/?next={{ request.GET.next }}" method="POST">
+    <form class="form1" action="/signup/?next={{ request.GET.next }}&invite={{ request.GET.invite }}" method="POST">
         {% csrf_token %}
         {% if pswderr %}
             <div class=" text-danger " align='center' role="alert">

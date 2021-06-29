@@ -88,7 +88,8 @@ WSGI_APPLICATION = 'maps.wsgi.application'
 
 OAUTH2_PROVIDER = {
     "OIDC_ENABLED": True,
-    "OIDC_RSA_PRIVATE_KEY": os.environ.get("OIDC_RSA_PRIVATE_KEY").replace(r'\n', '\n') if DEBUG else os.environ.get(
+    "OIDC_RSA_PRIVATE_KEY": #os.environ.get("OIDC_RSA_PRIVATE_KEY").replace(r'\n', '\n') if DEBUG else
+        os.environ.get(
         "OIDC_RSA_PRIVATE_KEY"),
     # this is the list of available scopes
     'SCOPES': {"openid": "OpenID Connect scope",

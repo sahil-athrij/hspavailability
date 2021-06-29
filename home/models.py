@@ -3,7 +3,7 @@ import datetime
 from django.contrib.auth.models import User
 from django.contrib.gis.db import models
 from django.contrib.postgres.fields import ArrayField
-
+import string, random
 # Create your models here.
 
 rating = [
@@ -90,7 +90,7 @@ class SuspiciousMarking(models.Model):
 
 class Images(models.Model):
     image = models.ImageField(upload_to="pic", blank=True)
-    review = models.ForeignKey(Reviews, default=None, related_name='images', on_delete=models.CASCADE)
+    review = models.ForeignKey(Reviews, default=None, null=True, blank=True, related_name='images', on_delete=models.CASCADE)
     hospital = models.ForeignKey(Markers, related_name='images', on_delete=models.CASCADE)
     useinmarker = models.BooleanField(default=False)
 
@@ -116,7 +116,18 @@ class Patient(models.Model):
     ctscore = models.IntegerField(default=0)
     user = models.ForeignKey(User, default=1, on_delete=models.CASCADE)
 
+def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
+    return ''.join(random.choice(chars) for _ in range(size))
+
+def create_new_id():
+    not_unique = True
+    while not_unique:
+        unique_id=id_generator()
+        if not Tokens.objects.filter(private_token=unique_id):
+            not_unique = False
+    return str(unique_id)
+
 class Tokens(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    private_token = models.CharField(max_length=10)
-    invite_token = models.CharField(max_length=10)
+    private_token = models.CharField(max_length=10, unique=True, default=create_new_id)
+    invite_token = models.CharField(max_length=10, blank=True, null=True)

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Images, Markers, Reviews, SuspiciousMarking, Patient
+from .models import Images, Markers, Reviews, SuspiciousMarking, Patient, Tokens
 
 
 class GetImageSerializer(serializers.ModelSerializer):
@@ -80,3 +80,10 @@ class DetailMarkerSerializer(GetMarkerSerializer):
 
     class Meta(GetMarkerSerializer.Meta):
         fields = GetMarkerSerializer.Meta.fields + ['comment']
+
+class GetTokensSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tokens
+        fields = [
+            'user', 'private_token', 'invite_token'
+        ]

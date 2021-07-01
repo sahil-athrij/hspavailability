@@ -86,7 +86,7 @@ def signup(request):
         else:
             if passwrd2 == password:
                 try:
-                    user = User.objects.create_user(email=email, password=password, username=username, firstname=firstname, lastname=lastname)
+                    user = User.objects.create_user(email=email, password=password, username=username, first_name=firstname, last_name=lastname)
                     login(request, user, backend='django.contrib.auth.backends.ModelBackend')
                     print(request.GET.__dict__)
                     inv = request.GET.get('invite','')

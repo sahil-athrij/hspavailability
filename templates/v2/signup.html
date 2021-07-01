@@ -4,18 +4,21 @@
 {% endblock %}
 {% block form %}
     <p class="sign" align="center">Register</p>
-    <form class="form1" action="/signup/?next={{ request.GET.next }}&invite={{ request.GET.invite }}" method="POST">
+    <form class="form1" action="/signup/?{{ request.META.QUERY_STRING }}" method="POST">
         {% csrf_token %}
         {% if pswderr %}
             <div class=" text-danger " align='center' role="alert">
                 <i class="fa fa-exclamation-circle"></i> {{ pswderr }}
             </div>
         {% endif %}
+        <input class="un " type="text" align="center" placeholder="User Name" name="username">
+        <input class="un " type="text" align="center" placeholder="First Name" name="firstname">
+        <input class="un " type="text" align="center" placeholder="Last Name" name="lastname">
         <input class="un " type="text" align="center" placeholder="E-mail" name="email">
         <input class="pass" type="password" align="center" placeholder="Password" name="password">
         <input class="pass" type="password" align="center" placeholder="Retype Password" name="password retype">
         <input name="next" value="{{ request.GET.next }}" hidden>
         <button class="submit" align="center">Sign Up</button>
-        <p class="forgot" align="center"><a href="/login?next={{ request.GET.next }}">Existing User?</a>
+        <p class="forgot pb-4" align="center"><a href="/login?{{ request.META.QUERY_STRING }}">Existing User?</a>
     </form>
 {% endblock %}  

@@ -56,7 +56,7 @@ def signin(request):
         if user is not None:
             login(request, user)
             # Redirect to a success page.
-            redirect_location = request.GET.get('next', '/')
+            redirect_location = request.GET.get('next', '/')+'?'+request.META['QUERY_STRING']
 
             print(redirect_location)
             return HttpResponseRedirect(redirect_location)
@@ -74,20 +74,25 @@ def signup(request):
         email = request.POST["email"]
         password = request.POST["password"]
         passwrd2 = request.POST["password retype"]
+        username = request.POST["username"]
+        firstname = request.POST["firstname"]
+        lastname = request.POST["lastname"]
         if not email:
             context1['pswderr'] = 'Email cannot be empty'
         elif not password or not passwrd2:
             context1['pswderr'] = 'Password cannot be empty'
+        elif not username:
+            context1['pswderr'] = 'Username cannot be empty'
         else:
             if passwrd2 == password:
                 try:
-                    user = User.objects.create_user(email=email, password=password, username=email)
+                    user = User.objects.create_user(email=email, password=password, username=username, firstname=firstname, lastname=lastname)
                     login(request, user, backend='django.contrib.auth.backends.ModelBackend')
                     print(request.GET.__dict__)
                     inv = request.GET.get('invite','')
                     print(inv)
                     Tokens.objects.create(user=user, invite_token=inv)
-                    redirect_location = request.GET.get('next=', '/')
+                    redirect_location = request.GET.get('next=', '/')+'?'+request.META['QUERY_STRING']
                     return HttpResponseRedirect(redirect_location)
 
                 except Exception as e:

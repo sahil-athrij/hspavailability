@@ -1,7 +1,6 @@
 import json
 from pprint import pprint
 from urllib import parse
-from uuid import uuid4
 
 import requests
 from django.contrib.auth import authenticate, login, logout
@@ -56,7 +55,7 @@ def signin(request):
         if user is not None:
             login(request, user)
             # Redirect to a success page.
-            redirect_location = request.GET.get('next', '/')+'?'+request.META['QUERY_STRING']
+            redirect_location = request.GET.get('next', '/') + '?' + request.META['QUERY_STRING']
 
             print(redirect_location)
             return HttpResponseRedirect(redirect_location)
@@ -71,12 +70,12 @@ def signin(request):
 def signup(request):
     context1 = {}
     if request.method == "POST":
-        email = request.POST["email"]
-        password = request.POST["password"]
-        passwrd2 = request.POST["password retype"]
-        username = request.POST["username"]
-        firstname = request.POST["firstname"]
-        lastname = request.POST["lastname"]
+        email = request.POST.get("email")
+        password = request.POST.get("password")
+        passwrd2 = request.POST.get("password retype")
+        username = request.POST.get("username", '')
+        firstname = request.POST.get("firstname", "")
+        lastname = request.POST.get("lastname", "")
         if not email:
             context1['pswderr'] = 'Email cannot be empty'
         elif not password or not passwrd2:
@@ -86,13 +85,14 @@ def signup(request):
         else:
             if passwrd2 == password:
                 try:
-                    user = User.objects.create_user(email=email, password=password, username=username, first_name=firstname, last_name=lastname)
+                    user = User.objects.create_user(email=email, password=password, username=username,
+                                                    first_name=firstname, last_name=lastname)
                     login(request, user, backend='django.contrib.auth.backends.ModelBackend')
                     print(request.GET.__dict__)
-                    inv = request.GET.get('invite','')
+                    inv = request.GET.get('invite', '')
                     print(inv)
                     Tokens.objects.create(user=user, invite_token=inv)
-                    redirect_location = request.GET.get('next=', '/')+'?'+request.META['QUERY_STRING']
+                    redirect_location = request.GET.get('next=', '/') + '?' + request.META['QUERY_STRING']
                     return HttpResponseRedirect(redirect_location)
 
                 except Exception as e:

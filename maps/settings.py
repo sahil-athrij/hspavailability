@@ -145,9 +145,15 @@ AUTHENTICATION_BACKENDS = (
 
 )
 
+# Default Client
+DEFAULT_CLIENT = os.environ.get('DEFAULT_CLIENT')
+
 # Google configuration
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '569002618626-kr65dimckmmdbgfuafrakqa0g6h18f55.apps.googleusercontent.com'
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'w_424dxoSAR5m9l-Xl9nOIwH'
+
+
+
 
 # Define SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE to get extra permissions from Google.
 SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [

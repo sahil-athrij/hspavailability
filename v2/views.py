@@ -3,17 +3,18 @@ from pprint import pprint
 from urllib import parse
 
 import requests
+from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.gis.db.models.functions import Distance
 from django.contrib.gis.geos import Point
 from django.contrib.gis.measure import D
-from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
+from django.http import HttpResponseRedirect, JsonResponse
 from django.middleware.csrf import get_token
 from django.shortcuts import render
 from django.views.decorators.csrf import ensure_csrf_cookie
-from oauth2_provider.models import AccessToken
+from oauth2_provider.models import AccessToken, Application
 
 from home.models import Markers, Reviews, Tokens
 
@@ -89,18 +90,34 @@ def signup(request):
                                                     first_name=firstname, last_name=lastname)
                     login(request, user, backend='django.contrib.auth.backends.ModelBackend')
                     print(request.GET.__dict__)
-                    inv = request.GET.get('invite', '')
-                    print(inv)
+                    inv = request.POST.get('invite', '')
                     Tokens.objects.create(user=user, invite_token=inv)
-                    redirect_location = request.GET.get('next=', '/') + '?' + request.META['QUERY_STRING']
+                    invited = Tokens.objects.get(private_token=inv)
+                    invited.invited += 1
+                    invited.points += 10
+                    invited.save()
+
+                    redirect_location = request.GET.get('next', '/') + '?' + request.META['QUERY_STRING']
                     return HttpResponseRedirect(redirect_location)
 
-                except Exception as e:
+                except User.DoesNotExist as e:
                     print(e)
                     context1['pswderr'] = 'User already exists'
+                except Tokens.DoesNotExist as e:
+                    print(e)
+                    context1['pswderr'] = 'Invite Code is invalid'
+
             else:
                 context1['pswderr'] = 'Password Does not match'
     context1['sign_text'] = "Register"
+    next_loc = request.GET.get('next', '')
+    parsed = parse.parse_qs(next_loc)
+    next_loc = dict(parsed)
+    print(next_loc)
+    try:
+        context1['invite'] = next_loc["invite"][0]
+    except:
+        context1['invite'] = ''
 
     return render(request, template_name="v2/signup.html", context=context1)
 
@@ -219,24 +236,28 @@ def addHospital(request):
     return render(request, template_name='v2/addhospital.html')
 
 
-def Google_login(request):
-    auth_code = request.GET.get('code')
-    print(auth_code)
-    redirect_uri = 'http://127.0.0.1:8000/google-login'
+def request_google(auth_code, redirect_uri):
     data = {'code': auth_code,
             'client_id': '569002618626-kr65dimckmmdbgfuafrakqa0g6h18f55.apps.googleusercontent.com',
             'client_secret': 'w_424dxoSAR5m9l-Xl9nOIwH',
             'redirect_uri': redirect_uri,
             'grant_type': 'authorization_code'}
     r = requests.post('https://oauth2.googleapis.com/token', data=data)
-    print('access code', r.content)
-    content = json.loads(r.content.decode())
-    token = content["access_token"]
-    print('Token=', token)
+    try:
+        content = json.loads(r.content.decode())
+        token = content["access_token"]
+        return token
+    except:
+        return False
+
+
+def convert_google_token(token, client_id):
+    application = Application.objects.get(client_id=client_id)
+
     data = {
         'grant_type': 'convert_token',
-        'client_id': '6tWdAZrlxUA26FJSMjE7oKBpTNGaqJRl2bsmNMRb',
-        'client_secret': 'mwFcVOr4NicFnxlTDHRy5h48tbj3ohsJ5HxOIs0juJEmwQ25r8hByHkn9qqsMudm2Qju4Qh57117PHIPJTSupLNNTspcvwdDovM1P7Icw9PEwdcJ1djLCU5PbruqeSWv',
+        'client_id': client_id,
+        'client_secret': application.client_secret,
         'backend': 'google-oauth2',
         'token': token
     }
@@ -245,20 +266,47 @@ def Google_login(request):
     try:
         cont = json.loads(r.content.decode())
         print(cont)
+        access_token = cont['access_token']
+        return access_token
     except:
-        return HttpResponse(r.content)
-    access_token = cont['access_token']
-    user = AccessToken.objects.get(token=access_token).user
-    print(user)
-    login(request, user, backend='django.contrib.auth.backends.ModelBackend')
-    next = request.GET.get('state', False)
-    if next:
-        parsed = parse.parse_qs(next)
-        next = dict(parsed)
-        next = next['next'][0]
-        return HttpResponseRedirect(next)
-    else:
-        return HttpResponseRedirect('/')
+        return False
+
+
+def Google_login(request):
+    next_loc = request.GET.get('state', False)
+    auth_code = request.GET.get('code')
+    client_id = settings.DEFAULT_CLIENT
+    redirect_uri = 'http://127.0.0.1:8000/google-login'
+    if next_loc:
+        parsed = parse.parse_qs(next_loc)
+        next_loc = dict(parsed)
+        next_loc = next_loc['next'][0]
+        search_query = next_loc.split('?')[1]
+        parsed_token = parse.parse_qs(search_query)
+        original_query = dict(parsed_token)
+        print(original_query)
+        client_id = original_query['client_id'][0]
+    token = request_google(auth_code, redirect_uri)
+    if token:
+        access_token = convert_google_token(token, client_id)
+        if access_token:
+            user = AccessToken.objects.get(token=access_token).user
+            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+            if next_loc:
+                try:
+                    token = original_query['invite'][0]
+                    Tokens.objects.create(user=user, invite_token=token)
+                    invited = Tokens.objects.get(private_token=token)
+                    invited.points += 10
+                    invited.invited += 1
+                    invited.save()
+                except:
+                    pass
+                return HttpResponseRedirect(next_loc)
+            else:
+                return HttpResponseRedirect('/')
+
+    return HttpResponseRedirect('/login/')
 
 
 @ensure_csrf_cookie

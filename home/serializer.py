@@ -85,5 +85,5 @@ class GetTokensSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tokens
         fields = [
-            'user', 'private_token', 'invite_token'
+            'user', 'private_token', 'invite_token','invited','points','reviews','reports'
         ]

@@ -178,8 +178,7 @@ def Google_login(request):
     next_loc = request.GET.get('state', False)
     auth_code = request.GET.get('code')
     client_id = settings.DEFAULT_CLIENT
-    scheme = "http://" if request.META.get('HTTP_HOST') == '127.0.0.1:8000' else "https://"
-    baseUrl = scheme + request.META.get('HTTP_HOST')
+    baseUrl = "http://127.0.0.1:8000"
     redirect_uri = baseUrl + '/google-login'
     if next_loc:
         parsed = parse.parse_qs(next_loc)
@@ -189,7 +188,8 @@ def Google_login(request):
         parsed_token = parse.parse_qs(search_query)
         original_query = dict(parsed_token)
         print(original_query)
-        client_id = original_query['client_id'][0]
+        if original_query['client_id'][0]:
+            client_id = original_query['client_id'][0]
     token = request_google(auth_code, redirect_uri)
     print(token)
     if token:

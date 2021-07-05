@@ -6,7 +6,6 @@
 
 {% block css %}
     <link href="{% static 'css/main.css' %}" rel="stylesheet"/>
-    <link href="{% static 'css/helper.css' %}" rel="stylesheet"/>
 {% endblock %}
 
 {% block body %}
@@ -15,40 +14,7 @@
         <div class="row mt-5 pt-5 align-self-center">
             <div class="col-12 col-md-2 col-lg-3"></div>
             <div class="col12 col-md-8 col-lg-6 neumorphic_form" id="toplevel">
-                <form action="/search/" method="get" class="my-3">
-                    <div class="text-center h3 p-3">Search For Hospitals</div>
-
-                    <div class="form-row mb-3 px-2 px-md-5">
-                        <div class="input-group">
-                            {% include 'v2/components/locationsearch.html' %}
-                        </div>
-
-                    </div>
-
-                    <div class="" id="topsearch">
-                        <center>
-                            <button type="submit" class="btn input-left input-right bg-dark btn-dark">Search
-                            </button>
-                        </center>
-                    </div>
-                    <div class="text-center mb-3">
-                        <a class="links link-primary" href="javascript:void(0)" onclick="toggleFilters()"
-                           id="filtertext">
-                            Filter Results
-                        </a>
-                    </div>
-                    <div class="container text-center h6" id="filters">
-                        {% include 'v2/components/ratings_form.html' %}
-
-
-                    </div>
-                    <div class="mb-3" id="bottomsearch">
-                        <center>
-                            <button type="submit" class="btn input-left input-right bg-dark btn-dark">Search
-                            </button>
-                        </center>
-                    </div>
-                </form>
+                <div class="text-center h3 p-3">Search For Hospitals</div>
 
             </div>
         </div>
@@ -56,28 +22,3 @@
 
 {% endblock %}
 
-{% block script %}
-    <script>
-        shown = false
-        $('#filters').hide()
-        $('#bottomsearch').hide()
-
-        function toggleFilters() {
-            if (shown) {
-                $('#filters').hide()
-                $('#topsearch').show()
-                $('#bottomsearch').hide()
-                $('#filtertext').html('Show Filter')
-            } else {
-                $('#filters').show()
-                $('#topsearch').hide()
-                $('#bottomsearch').show()
-                $('#filtertext').html('Hide Filter')
-            }
-            shown = !shown
-        }
-
-
-    </script>
-
-{% endblock %}

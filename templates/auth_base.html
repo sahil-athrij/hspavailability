@@ -2,21 +2,13 @@
 {% load static %}
 
 {% block css %}
-    {#        <link href="https://cdn.jsdelivr.net/gh/alphardex/aqua.css/dist/aqua.min.css" rel="stylesheet"/>#}
-    <!-- Latest compiled and minified CSS -->
-
-
     <link href="{% static 'css/main.css' %}" rel="stylesheet"/>
-    <link href="{% static 'css/login.css' %}" rel="stylesheet"/>
-    <link href="{% static 'css/helper.css' %}" rel="stylesheet"/>
-
 {% endblock %}
 
 {% block body %}
 
-    <div class="container">
+    <div class="container d-flex justify-content-center align-items-center vh-100">
 
-        <div class="main h-auto">
             {% block form %}
 
             {% endblock %}

@@ -224,6 +224,11 @@ class PatientViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
         user = self.request.user
         serializer.save(user=user)
 
+    def filter_queryset(self, queryset):
+        user = self.request.user
+        queryset = super(PatientViewSet, self).filter_queryset(queryset)
+        return queryset.filter(user=user)
+
 
 class ImageViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
     queryset = Images.objects.all()

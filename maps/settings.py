@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'oidc_provider',
     'rest_framework_swagger',
     'drf_yasg',
+    'admin_honeypot',
     # custom
     'home',
     'v2'
@@ -91,10 +92,10 @@ OAUTH2_PROVIDER = {
     "OIDC_RSA_PRIVATE_KEY":  # os.environ.get("OIDC_RSA_PRIVATE_KEY").replace(r'\n', '\n') if DEBUG else
         os.environ.get("OIDC_RSA_PRIVATE_KEY"),
     # this is the list of available scopes
-    'SCOPES': {"openid": "OpenID Connect scope",
-               'read': 'Read scope',
-               'write': 'Write scope',
-               'groups': 'Access to your groups'},
+    'SCOPES': {"openid": "See Profile",
+               'read': 'Read Patient Data',
+               'write': 'Add Patient Data',
+               'groups': 'Add Invites'},
     'OAUTH2_BACKEND_CLASS': 'oauth2_provider.oauth2_backends.JSONOAuthLibCore'
 }
 
@@ -147,8 +148,8 @@ AUTHENTICATION_BACKENDS = (
 DEFAULT_CLIENT = os.environ.get('DEFAULT_CLIENT')
 
 # Google configuration
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '569002618626-kr65dimckmmdbgfuafrakqa0g6h18f55.apps.googleusercontent.com'
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'w_424dxoSAR5m9l-Xl9nOIwH'
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.environ.get('GOOGLE_KEY')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.environ.get('GOOGLE_SECRET')
 
 # Define SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE to get extra permissions from Google.
 SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
@@ -161,8 +162,12 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.contrib.gis.db.backends.spatialite',
-        'NAME': str(os.path.join(BASE_DIR, "db.sqlite3")),
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        'NAME':  os.environ.get('DB_NAME'),
+        'USER':  os.environ.get('DB_USER'),
+        'PASSWORD': os.environ.get('DB_PASSWORD'),
+        'HOST': 'localhost',
+        'PORT': os.environ.get('DB_PORT'),
     }
 }
 
@@ -184,7 +189,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-from .settings_prod import *
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/

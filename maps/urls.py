@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import path, include, re_path
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
-from rest_framework import permissions
+from rest_framework import permissions, authentication
 
 ...
 
@@ -26,17 +26,20 @@ schema_view = get_schema_view(
         title="Snippets API",
         default_version='v1',
         description="Test description",
+
         terms_of_service="https://www.google.com/policies/terms/",
-        contact=openapi.Contact(email="contact@snippets.local"),
+        contact=openapi.Contact(email="sahilathrij@gmail.com"),
         license=openapi.License(name="BSD License"),
     ),
     public=True,
-    permission_classes=[permissions.AllowAny],
+    permission_classes=[permissions.IsAdminUser],
+    authentication_classes=[authentication.SessionAuthentication]
 )
 
 urlpatterns = [
 
-    path('admin/', admin.site.urls),
+    path('admin/', include('admin_honeypot.urls', namespace='admin_honeypot')),
+    path('super-secret/', admin.site.urls),
     path('api/', include('home.urls')),
     path('', include('v2.urls')),
     path('auth/', include('authentication.urls')),

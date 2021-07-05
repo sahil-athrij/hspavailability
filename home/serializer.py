@@ -70,7 +70,7 @@ class GetPatientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Patient
         fields = [
-            'id','Name', 'age', 'gender', 'address', 'symptoms', 'symdays', 'spo2', 'hospitalday', 'oxy_bed', 'covidresult',
+            'id','Name', 'age', 'gender', 'address', 'symptoms', 'symdays', 'spo2', 'oxy_bed', 'covidresult',
             'hospitalpref', 'attendername', 'attenderphone', 'relation', 'srfid', 'bunum', 'blood', 'bedtype', 'ct',
             'ctscore'
         ]

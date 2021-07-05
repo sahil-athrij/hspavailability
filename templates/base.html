@@ -10,39 +10,12 @@
         {% endblock %}
     </title>
     <!-- CSS only -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"
-            crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"
-            crossorigin="anonymous"></script>
 
 
-    <script src="https://kit.fontawesome.com/ae2a29eda9.js" crossorigin="anonymous"></script>
-    <script src="https://tiles.locationiq.com/v2/libs/gl-geocoder/4.5.1/locationiq-gl-geocoder.min.js?v=0.2.2"></script>
-    <link rel="stylesheet"
-          href="https://tiles.locationiq.com/v2/libs/gl-geocoder/4.5.1/locationiq-gl-geocoder.css?v=0.2.2"
-          type="text/css">
-    <link href="https://tiles.locationiq.com/v2/css/liq-styles-ctrl-gl.css?v=0.1.6" rel="stylesheet">
-    <script src="https://tiles.locationiq.com/v2/js/liq-styles-ctrl-gl.js?v=0.1.6"></script>
-    <script>
-        let csrf = "{{ csrf_token }}"
-    </script>
-    <script src="{% static 'js/api.js' %}"></script>
-    <script src="{% static 'js/Models.js' %}"></script>
-    <script src="{% static 'js/ObservableSlim.js' %}"></script>
-    {% if ip %}
-
-        <script>
-            let ip = "{{ ip }}"
-        </script>
-    {% else %}
-        <script>
-            let ip = "0.0.0.0"
-        </script>
-    {% endif %}
-    <script src="{% static 'js/main.js' %}"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
+            rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.6.0/mdb.min.css"
+            rel="stylesheet"/>
     {% block css %}
     {% endblock %}
 
@@ -53,22 +26,16 @@
 {% csrf_token %}
 {% block body %}
 {% endblock %}
-<div aria-live="polite" aria-atomic="true" class="position-relative polite">
-    <div class="toast-container position-fixed bottom-0 end-0 p-3" id='toastContainer'>
-        <!-- Then put toasts within -->
-    </div>
-    <!-- Then put toasts within -->
-</div>
-<script>
-    $(document).ready(function () {
-        $('[data-toggle="popover"]').popover();
-    });
-</script>
-{#{% include 'v2/components/component.html' %}#}
-{#<script src="{% static 'js/component.js' %}"></script>#}
+
+
+<script
+        type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.6.0/mdb.min.js"
+></script>
+
+
 {% block script %}
 {% endblock %}
-{#<script src="{% static 'js/Component.js' %}"></script>#}
 
 
 </body>

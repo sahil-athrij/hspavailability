@@ -1,8 +1,0 @@
-#map{
-    height: 70vh;
-}
-@media (max-width: 768px) {
-    #map{
-    height: 40vh;
-}
-}

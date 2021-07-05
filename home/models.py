@@ -24,7 +24,8 @@ sizes = [
 gender = [
     ('M', 'male'),
     ('F', 'female'),
-    ('O', 'other')
+    ('NB', 'Non Binary'),
+    ('NP', 'Prefer Not to Say')
 ]
 
 bed = [
@@ -100,8 +101,8 @@ class Images(models.Model):
 class Patient(models.Model):
     Name = models.CharField(max_length=40)
     age = models.IntegerField(default=0)
-    gender = models.CharField(choices=gender, max_length=1)
-    address = models.TextField(max_length=2048, default='')
+    gender = models.CharField(choices=gender, max_length=2)
+    address = models.TextField(max_length=2048, default='',blank=True)
 
     symptoms = models.TextField(max_length=2048)
     symdays = models.DateField(blank=True, null=True)
@@ -112,7 +113,7 @@ class Patient(models.Model):
     blood = models.CharField(max_length=2, blank=True, null=True)
     ct = models.BooleanField(default=False)
     covidresult = models.BooleanField(default=False)
-    ctscore = models.IntegerField(default=0, blank=True, null=True)
+    ctscore = models.TextField(max_length=20, blank=True, null=True)
 
     attendername = models.CharField(max_length=40, blank=True, null=True)
     attenderphone = models.CharField(max_length=20, blank=True, null=True)

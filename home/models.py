@@ -4,7 +4,6 @@ import string
 
 from django.contrib.auth.models import User
 from django.contrib.gis.db import models
-from django.contrib.postgres.fields import ArrayField
 
 # Create your models here.
 
@@ -102,21 +101,28 @@ class Patient(models.Model):
     Name = models.CharField(max_length=40)
     age = models.IntegerField(default=0)
     gender = models.CharField(choices=gender, max_length=1)
-    symptoms = ArrayField(models.CharField(max_length=500))
-    symdays = models.IntegerField(default=0)
+    address = models.TextField(max_length=2048, default='')
+
+    symptoms = models.TextField(max_length=2048)
+    # symdays = models.DateField(blank=True, null=True)
     spo2 = models.IntegerField(default=0)
-    hospitalday = models.IntegerField(default=0)
-    covidresult = models.BooleanField(default=False)
-    hospitalpref = models.ForeignKey(Markers, related_name='hospital_preference', on_delete=models.PROTECT)
-    attendername = models.CharField(max_length=40)
-    attenderphone = models.CharField(max_length=20)
-    relation = models.CharField(max_length=30)
-    srfid = models.CharField(max_length=30)
-    bunum = models.CharField(max_length=40)
-    blood = models.CharField(max_length=2)
-    bedtype = models.IntegerField(choices=bed, default=0)
+    oxy_bed = models.BooleanField(default=False)
+    bedtype = models.IntegerField(choices=bed, default=0, blank=True, null=True)
+
+    blood = models.CharField(max_length=2, blank=True, null=True)
     ct = models.BooleanField(default=False)
-    ctscore = models.IntegerField(default=0)
+    covidresult = models.BooleanField(default=False)
+    ctscore = models.IntegerField(default=0, blank=True, null=True)
+
+    attendername = models.CharField(max_length=40, blank=True, null=True)
+    attenderphone = models.CharField(max_length=20, blank=True, null=True)
+    relation = models.CharField(max_length=30, blank=True, null=True)
+
+    hospitalpref = models.ForeignKey(Markers, related_name='hospital_preference', blank=True, null=True,
+                                     on_delete=models.PROTECT)
+    srfid = models.CharField(max_length=30, blank=True, null=True)
+    bunum = models.CharField(max_length=40, blank=True, null=True)
+
     user = models.ForeignKey(User, default=1, on_delete=models.CASCADE)
 
 

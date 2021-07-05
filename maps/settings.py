@@ -88,9 +88,8 @@ WSGI_APPLICATION = 'maps.wsgi.application'
 
 OAUTH2_PROVIDER = {
     "OIDC_ENABLED": True,
-    "OIDC_RSA_PRIVATE_KEY": #os.environ.get("OIDC_RSA_PRIVATE_KEY").replace(r'\n', '\n') if DEBUG else
-        os.environ.get(
-        "OIDC_RSA_PRIVATE_KEY"),
+    "OIDC_RSA_PRIVATE_KEY":  # os.environ.get("OIDC_RSA_PRIVATE_KEY").replace(r'\n', '\n') if DEBUG else
+        os.environ.get("OIDC_RSA_PRIVATE_KEY"),
     # this is the list of available scopes
     'SCOPES': {"openid": "OpenID Connect scope",
                'read': 'Read scope',
@@ -104,7 +103,6 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 100,
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.SessionAuthentication',
         'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
         'rest_framework_social_oauth2.authentication.SocialAuthentication',
     ],
@@ -151,9 +149,6 @@ DEFAULT_CLIENT = os.environ.get('DEFAULT_CLIENT')
 # Google configuration
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '569002618626-kr65dimckmmdbgfuafrakqa0g6h18f55.apps.googleusercontent.com'
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'w_424dxoSAR5m9l-Xl9nOIwH'
-
-
-
 
 # Define SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE to get extra permissions from Google.
 SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [

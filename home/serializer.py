@@ -70,8 +70,9 @@ class GetPatientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Patient
         fields = [
-            'Name', 'age', 'gender', 'symptoms', 'symdays', 'spo2', 'hospitalday', 'covidresult', 'hospitalpref',
-            'attendername', 'attenderphone', 'relation', 'srfid', 'bunum', 'blood', 'bedtype', 'ct', 'ctscore'
+            'id','Name', 'age', 'gender', 'address', 'symptoms', 'symdays', 'spo2', 'hospitalday', 'oxy_bed', 'covidresult',
+            'hospitalpref', 'attendername', 'attenderphone', 'relation', 'srfid', 'bunum', 'blood', 'bedtype', 'ct',
+            'ctscore'
         ]
 
 
@@ -81,9 +82,10 @@ class DetailMarkerSerializer(GetMarkerSerializer):
     class Meta(GetMarkerSerializer.Meta):
         fields = GetMarkerSerializer.Meta.fields + ['comment']
 
+
 class GetTokensSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tokens
         fields = [
-            'user', 'private_token', 'invite_token','invited','points','reviews','reports'
+            'user', 'private_token', 'invite_token', 'invited', 'points', 'reviews', 'reports'
         ]

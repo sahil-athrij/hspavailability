@@ -13,6 +13,8 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+import os
+
 from django.contrib import admin
 from django.urls import path, include, re_path
 from drf_yasg import openapi
@@ -39,7 +41,7 @@ schema_view = get_schema_view(
 urlpatterns = [
 
     path('admin/', include('admin_honeypot.urls', namespace='admin_honeypot')),
-    path('super-secret/', admin.site.urls),
+    path(os.environ.get('ADMIN_URL'), admin.site.urls),
     path('api/', include('home.urls')),
     path('', include('v2.urls')),
     path('auth/', include('authentication.urls')),

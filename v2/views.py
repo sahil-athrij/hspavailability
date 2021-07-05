@@ -141,6 +141,7 @@ def request_google(auth_code, redirect_uri):
             'client_secret': settings.SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET,
             'redirect_uri': redirect_uri,
             'grant_type': 'authorization_code'}
+    print(data)
     r = requests.post('https://oauth2.googleapis.com/token', data=data)
     try:
         pprint(r.content.decode())

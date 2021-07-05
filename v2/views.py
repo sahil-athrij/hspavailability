@@ -179,7 +179,7 @@ def Google_login(request):
     auth_code = request.GET.get('code')
     client_id = settings.DEFAULT_CLIENT
     baseUrl = "http://127.0.0.1:8000"
-    redirect_uri = baseUrl + '/google-login'
+    redirect_uri = 'http://127.0.0.1:8000/google-login'
     if next_loc:
         parsed = parse.parse_qs(next_loc)
         next_loc = dict(parsed)

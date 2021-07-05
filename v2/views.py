@@ -61,7 +61,8 @@ def signin(request):
             context1['pswderr'] = "Invalid Credentials"
     context1['sign_text'] = 'Sign In'
     context1['GOOGLE_CLIENT_ID'] = settings.SOCIAL_AUTH_GOOGLE_OAUTH2_KEY
-    context1['redirect_uri'] = request.scheme + '://' + request.META.get('HTTP_HOST') + '/google-login'
+    scheme = "http://" if request.META.get('HTTP_HOST') == '127.0.0.1:8000' else "https://"
+    context1['redirect_uri'] = scheme + request.META.get('HTTP_HOST') + '/google-login'
     return render(request, template_name="v2/login.html", context=context1)
 
 
@@ -117,7 +118,8 @@ def signup(request):
     except:
         context1['invite'] = ''
     context1['GOOGLE_CLIENT_ID'] = settings.SOCIAL_AUTH_GOOGLE_OAUTH2_KEY
-    context1['redirect_uri'] = request.scheme + '://' + request.META.get('HTTP_HOST') + '/google-login'
+    scheme = "http://" if request.META.get('HTTP_HOST') == '127.0.0.1:8000' else "https://"
+    context1['redirect_uri'] = scheme + request.META.get('HTTP_HOST') + '/google-login'
     return render(request, template_name="v2/signup.html", context=context1)
 
 
@@ -176,7 +178,8 @@ def Google_login(request):
     next_loc = request.GET.get('state', False)
     auth_code = request.GET.get('code')
     client_id = settings.DEFAULT_CLIENT
-    baseUrl = request.scheme + '://' + request.META.get('HTTP_HOST')
+    scheme = "http://" if request.META.get('HTTP_HOST') == '127.0.0.1:8000' else "https://"
+    baseUrl = scheme + request.META.get('HTTP_HOST')
     redirect_uri = baseUrl + '/google-login'
     if next_loc:
         parsed = parse.parse_qs(next_loc)

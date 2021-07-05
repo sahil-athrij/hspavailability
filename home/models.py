@@ -104,8 +104,8 @@ class Patient(models.Model):
     address = models.TextField(max_length=2048, default='')
 
     symptoms = models.TextField(max_length=2048)
-    symdays = models.DateField(blank=True, null=True)
-    # spo2 = models.IntegerField(default=0)
+    # symdays = models.DateField(blank=True, null=True)
+    spo2 = models.IntegerField(default=0)
     oxy_bed = models.BooleanField(default=False)
     bedtype = models.IntegerField(choices=bed, default=0, blank=True, null=True)
 

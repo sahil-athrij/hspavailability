@@ -15,6 +15,64 @@ from oauth2_provider.models import AccessToken, Application
 from home.models import Tokens
 
 
+def give_points(personal_token, option):
+    """
+     Throws Error if the invite code is invalid
+    @param personal_token: str
+    @type option: str
+    """
+    if personal_token:
+        invited = Tokens.objects.get(private_token=personal_token)
+        if option == 'invite':
+            invited.invited += 1
+            invited.points += 10
+        elif option == 'review':
+            invited.reviews += 1
+            invited.points += 5
+        elif option == 'report':
+            invited.reports += 1
+            invited.points += 1
+        invited.save()
+
+
+def parse_url_next(next_loc):
+    parsed = parse.parse_qs(next_loc)
+    try:
+        next_loc = dict(parsed)
+        return next_loc
+    except Exception as e:
+        print(e)
+        return False
+
+
+def get_item_from_list_dict(parsed_loc, key):
+    try:
+        invite = parsed_loc[key][0]
+    except (IndexError, KeyError) as e:
+        invite = ''
+        print(e)
+    return invite
+
+
+def get_item_from_url(url_params, key):
+    parsed_loc = parse_url_next(url_params)
+    if parsed_loc:
+        return get_item_from_list_dict(parsed_loc, key)
+    else:
+        return ''
+
+
+def get_client_id(next_string):
+    client_id = settings.DEFAULT_CLIENT
+    if next_string:
+        search_query = next_string.split('?')[1]
+        try:
+            client_id = get_item_from_url(search_query, 'client_id')
+        except IndexError:
+            pass
+    return client_id
+
+
 def get_client_ip(request):
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
     print(x_forwarded_for)
@@ -33,14 +91,12 @@ def index(request):
     ipaddress = get_client_ip(request)
     context['ip'] = ipaddress
     context['searchbar'] = True
-
     return render(request, template_name='v2/index.html', context=context)
 
 
 @ensure_csrf_cookie
 def signin(request):
     context1 = {}
-    print("Hello There")
     pprint(request.META['QUERY_STRING'])
     if request.method == "POST":
         email = request.POST["username"]
@@ -53,16 +109,13 @@ def signin(request):
             login(request, user)
             # Redirect to a success page.
             redirect_location = request.GET.get('next', '/') + '?' + request.META['QUERY_STRING']
-
-            print(redirect_location)
             return HttpResponseRedirect(redirect_location)
         else:
             # Return an 'invalid login' error message.
             context1['pswderr'] = "Invalid Credentials"
     context1['sign_text'] = 'Sign In'
     context1['GOOGLE_CLIENT_ID'] = settings.SOCIAL_AUTH_GOOGLE_OAUTH2_KEY
-    scheme = "http://" if request.META.get('HTTP_HOST') == '127.0.0.1:8000' else "https://"
-    context1['redirect_uri'] = scheme + request.META.get('HTTP_HOST') + '/google-login'
+    context1['redirect_uri'] = settings.DEPLOYMENT_URL + '/google-login'
     return render(request, template_name="v2/login.html", context=context1)
 
 
@@ -85,17 +138,13 @@ def signup(request):
         else:
             if passwrd2 == password:
                 try:
+                    inv = request.POST.get('invite', '')
+                    give_points(inv, 'invite')
                     user = User.objects.create_user(email=email, password=password, username=username,
                                                     first_name=firstname, last_name=lastname)
-                    login(request, user, backend='django.contrib.auth.backends.ModelBackend')
-                    print(request.GET.__dict__)
-                    inv = request.POST.get('invite', '')
                     Tokens.objects.create(user=user, invite_token=inv)
-                    invited = Tokens.objects.get(private_token=inv)
-                    invited.invited += 1
-                    invited.points += 10
-                    invited.save()
 
+                    login(request, user, backend='django.contrib.auth.backends.ModelBackend')
                     redirect_location = request.GET.get('next', '/') + '?' + request.META['QUERY_STRING']
                     return HttpResponseRedirect(redirect_location)
 
@@ -104,22 +153,16 @@ def signup(request):
                     context1['pswderr'] = 'User already exists'
                 except Tokens.DoesNotExist as e:
                     print(e)
-                    context1['pswderr'] = 'Invite Code is invalid'
+                    context1['pswderr'] = 'Invalid Token'
 
             else:
                 context1['pswderr'] = 'Password Does not match'
-    context1['sign_text'] = "Register"
+
     next_loc = request.GET.get('next', '')
-    parsed = parse.parse_qs(next_loc)
-    next_loc = dict(parsed)
-    print(next_loc)
-    try:
-        context1['invite'] = next_loc["invite"][0]
-    except:
-        context1['invite'] = ''
+    context1['sign_text'] = "Register"
+    context1['invite'] = get_item_from_url(next_loc, 'invite')
+    context1['redirect_uri'] = settings.DEPLOYMENT_URL + '/google-login'
     context1['GOOGLE_CLIENT_ID'] = settings.SOCIAL_AUTH_GOOGLE_OAUTH2_KEY
-    scheme = "http://" if request.META.get('HTTP_HOST') == '127.0.0.1:8000' else "https://"
-    context1['redirect_uri'] = scheme + request.META.get('HTTP_HOST') + '/google-login'
     return render(request, template_name="v2/signup.html", context=context1)
 
 
@@ -153,9 +196,8 @@ def request_google(auth_code, redirect_uri):
         return False
 
 
-def convert_google_token(baseUrl, token, client_id):
+def convert_google_token(token, client_id):
     application = Application.objects.get(client_id=client_id)
-
     data = {
         'grant_type': 'convert_token',
         'client_id': client_id,
@@ -163,11 +205,10 @@ def convert_google_token(baseUrl, token, client_id):
         'backend': 'google-oauth2',
         'token': token
     }
-    url = baseUrl + '/auth/social/convert-token'
+    url = 'http://127.0.0.1:8000/auth/social/convert-token'
     r = requests.post(url, data=data)
     try:
         cont = json.loads(r.content.decode())
-        print(cont)
         access_token = cont['access_token']
         return access_token
     except Exception as e:
@@ -176,41 +217,25 @@ def convert_google_token(baseUrl, token, client_id):
 
 
 def Google_login(request):
-    next_loc = request.GET.get('state', False)
+    state = request.GET.get('state', '')
     auth_code = request.GET.get('code')
-    client_id = settings.DEFAULT_CLIENT
-    baseUrl = "http://127.0.0.1:8000"
-    redirect_uri = 'https://needmedi.com/google-login'
-    if next_loc:
-        parsed = parse.parse_qs(next_loc)
-        next_loc = dict(parsed)
-        next_loc = next_loc['next'][0]
-        search_query = next_loc.split('?')[1]
-        parsed_token = parse.parse_qs(search_query)
-        original_query = dict(parsed_token)
-        print(original_query)
-        if original_query['client_id'][0]:
-            client_id = original_query['client_id'][0]
+    redirect_uri = settings.DEPLOYMENT_URL + '/google-login'
+
+    next_loc = get_item_from_url(state, 'next')
+    invite_token = get_item_from_url(next_loc, 'invite')
+    client_id = get_client_id(next_loc)
+
     token = request_google(auth_code, redirect_uri)
-    print(token)
+
     if token:
-        access_token = convert_google_token(baseUrl, token, client_id)
+        access_token = convert_google_token(token, client_id)
         if access_token:
             user = AccessToken.objects.get(token=access_token).user
             login(request, user, backend='django.contrib.auth.backends.ModelBackend')
-            if next_loc:
-                try:
-                    token = original_query['invite'][0]
-                    invited = Tokens.objects.get(private_token=token)
-                    Tokens.objects.create(user=user, invite_token=token)
-                    invited.points += 10
-                    invited.invited += 1
-                    invited.save()
-                except Exception as e:
-                    print(e)
-                print(next_loc)
-                return HttpResponseRedirect(next_loc)
-            else:
-                return HttpResponseRedirect('/')
-
+            Tokens.objects.create(user=user, invite_token=invite_token)
+            try:
+                give_points(invite_token, 'invite')
+            except Tokens.DoesNotExist:
+                pass
+            return HttpResponseRedirect(next_loc)
     return HttpResponseRedirect('/login/')

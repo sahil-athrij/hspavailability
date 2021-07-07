@@ -24,7 +24,12 @@ SECRET_KEY = os.getenv("SECRET_KEY", 'django-insecure-tr#83t$_--71h1yzg^@w6n^w29
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', False)
 
-ALLOWED_HOSTS = ['hospitals.trebuchet.one', 'needmedi.com', '127.0.0.1','13.233.106.146']
+ALLOWED_HOSTS = ['hospitals.trebuchet.one', 'needmedi.com', '127.0.0.1', '13.233.106.146']
+
+if not DEBUG:
+    DEPLOYMENT_URL = 'https://needmedi.com'
+else:
+    DEPLOYMENT_URL = 'http://127.0.0.1:8000'
 
 # Application definition
 
@@ -132,13 +137,10 @@ REST_FRAMEWORK = {
 AUTHENTICATION_BACKENDS = (
     # Google OAuth2
     'social_core.backends.google.GoogleOAuth2',
-
     # django-rest-framework-social-oauth2
     'rest_framework_social_oauth2.backends.DjangoOAuth2',
-
     # Django
     'django.contrib.auth.backends.ModelBackend',
-
     'oauth2_provider.backends.OAuth2Backend',
 
 )
@@ -174,31 +176,19 @@ DATABASES = {
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator', },
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator', },
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator', },
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator', },
 ]
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
@@ -206,17 +196,13 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-# Media
-
 MEDIA_ROOT = BASE_DIR / 'media'
 STATIC_ROOT = BASE_DIR / 'static'
 MEDIA_URL = '/media/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-# GDAL_LIBRARY_PATH = 'C:/OSGeo4W/bin'
 CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_ALLOW_ALL = True
 LOGIN_URL = '/login/'

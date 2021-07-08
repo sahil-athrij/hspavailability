@@ -208,6 +208,7 @@ def convert_google_token(token, client_id):
     }
     url = 'http://127.0.0.1:8000/auth/social/convert-token'
     r = requests.post(url, data=data)
+    print(r.content)
     try:
         cont = json.loads(r.content.decode())
         access_token = cont['access_token']
@@ -234,6 +235,7 @@ def Google_login(request):
         print('here')
         access_token = convert_google_token(token, client_id)
         print(access_token)
+
         if access_token:
             print('here1')
             user = AccessToken.objects.get(token=access_token).user

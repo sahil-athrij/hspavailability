@@ -272,7 +272,6 @@ LOGGING = {
         },
     },
     'loggers': {
-
         '': {
             'handlers': ['console', 'default'],
             'level': 'INFO',

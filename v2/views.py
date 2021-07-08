@@ -235,23 +235,24 @@ def Google_login(request):
     redirect_uri = settings.DEPLOYMENT_URL + '/google-login'
 
     next_loc = get_item_from_url(state, 'next', '/')
-    logger.info('next' + next_loc)
+    logger.info('next ' + next_loc)
     invite_token = get_item_from_url(next_loc, 'invite')
     client_id = get_client_id(next_loc)
     token = request_google(auth_code, redirect_uri)
     if token:
         access_token = convert_google_token(token, client_id)
-
+        logger.info('recived access token')
         if access_token:
             user = AccessToken.objects.get(token=access_token).user
             login(request, user, backend='django.contrib.auth.backends.ModelBackend')
             try:
-                Tokens.objects.get_or_create(user=user, invite_token=invite_token)
-            except:
-                token = Tokens.objects.get(user_id=user.id)
+
+                token =  Tokens.objects.get_or_create(user=user)
                 if not token.invite_token:
                     token.invite_token = invite_token
                     token.save()
+            except:
+                logger.exception('failed to create token')
             try:
                 give_points(invite_token, 'invite')
             except Exception:

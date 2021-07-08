@@ -197,6 +197,7 @@ def request_google(auth_code, redirect_uri):
 
 
 def convert_google_token(token, client_id):
+
     application = Application.objects.get(client_id=client_id)
     data = {
         'grant_type': 'convert_token',
@@ -225,6 +226,7 @@ def Google_login(request):
     invite_token = get_item_from_url(next_loc, 'invite')
     next_page = get_item_from_url(next_loc, 'next')
     client_id = get_client_id(next_loc)
+    print("here0",client_id)
 
     token = request_google(auth_code, redirect_uri)
 

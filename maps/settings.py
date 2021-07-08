@@ -28,8 +28,10 @@ ALLOWED_HOSTS = ['hospitals.trebuchet.one', 'needmedi.com', '127.0.0.1', '13.233
 
 if not DEBUG:
     DEPLOYMENT_URL = 'https://needmedi.com'
+
 else:
-    DEPLOYMENT_URL = 'http://127.0.0.1:8000'
+    # DEPLOYMENT_URL = 'http://127.0.0.1:8000'
+    DEPLOYMENT_URL = 'https://needmedi.com'
 
 # Application definition
 

@@ -233,7 +233,8 @@ def Google_login(request):
             user = AccessToken.objects.get(token=access_token).user
             login(request, user, backend='django.contrib.auth.backends.ModelBackend')
 
-            Tokens.objects.create(user_id=user.id, invite_token=invite_token)
+            Tokens.objects.get_or_create(user_id=user.id, invite_token=invite_token)
+
             try:
                 give_points(invite_token, 'invite')
             except Tokens.DoesNotExist:

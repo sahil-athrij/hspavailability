@@ -239,5 +239,6 @@ def Google_login(request):
                 give_points(invite_token, 'invite')
             except Tokens.DoesNotExist:
                 pass
+            print(next_loc)
             return HttpResponseRedirect(next_loc)
     return HttpResponseRedirect('/login/')

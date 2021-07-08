@@ -223,12 +223,14 @@ def Google_login(request):
 
     next_loc = get_item_from_url(state, 'next')
     invite_token = get_item_from_url(next_loc, 'invite')
+    next_page = get_item_from_url(next_loc, 'next')
     client_id = get_client_id(next_loc)
 
     token = request_google(auth_code, redirect_uri)
 
     if token:
         access_token = convert_google_token(token, client_id)
+        print(access_token)
         if access_token:
             user = AccessToken.objects.get(token=access_token).user
             login(request, user, backend='django.contrib.auth.backends.ModelBackend')
@@ -240,5 +242,5 @@ def Google_login(request):
             except Tokens.DoesNotExist:
                 pass
             print(next_loc)
-            return HttpResponseRedirect(next_loc)
+            return HttpResponseRedirect(next_page)
     return HttpResponseRedirect('/login/')

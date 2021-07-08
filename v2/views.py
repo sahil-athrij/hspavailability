@@ -242,5 +242,5 @@ def Google_login(request):
             except Tokens.DoesNotExist:
                 pass
             print(next_loc)
-            return HttpResponseRedirect(next_page)
+            return HttpResponseRedirect(next_loc)
     return HttpResponseRedirect('/login/')

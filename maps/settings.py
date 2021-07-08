@@ -30,8 +30,8 @@ if not DEBUG:
     DEPLOYMENT_URL = 'https://needmedi.com'
 
 else:
-    # DEPLOYMENT_URL = 'http://127.0.0.1:8000'
-    DEPLOYMENT_URL = 'https://needmedi.com'
+    DEPLOYMENT_URL = 'http://127.0.0.1:8000'
+    # DEPLOYMENT_URL = 'https://needmedi.com'
 
 # Application definition
 
@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'rest_framework_swagger',
     'drf_yasg',
     'admin_honeypot',
+    "log_viewer",
     # custom
     'home',
     'v2'
@@ -211,4 +212,54 @@ LOGIN_URL = '/login/'
 
 SWAGGER_SETTINGS = {
     'JSON_EDITOR': True
+}
+
+LOG_VIEWER_FILES = ['v2.log', 'home.log', 'default.log']
+LOG_VIEWER_FILES_PATTERN = '*'
+LOG_VIEWER_FILES_DIR = os.path.join(BASE_DIR, 'logs')
+LOG_VIEWER_MAX_READ_LINES = 1000  # total log lines will be read
+LOG_VIEWER_PAGE_LENGTH = 25  # total log lines per-page
+LOG_VIEWER_PATTERNS = [']OFNI[', ']GUBED[', ']GNINRAW[', ']RORRE[', ']LACITIRC[']
+
+# Optionally you can set the next variables in order to customize the admin:
+
+LOG_VIEWER_FILE_LIST_TITLE = "Custom title"
+# LOG_VIEWER_FILE_LIST_STYLES = "/static/css/my-custom.css"
+LOGGING_ROOT = os.path.join(BASE_DIR, 'logs')
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'mail_admins': {
+            'level': 'INFO',
+            'class': 'django.utils.log.AdminEmailHandler'
+        },
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'standard'
+        },
+        'v2': {
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(LOGGING_ROOT, 'v2.log'),
+            'maxBytes': 1024 * 1024 * 15,  # 5MB
+            'backupCount': 0,
+            'formatter': 'standard',
+        },
+
+    },
+    'formatters': {
+        'standard': {
+            'format': "[%(levelname)s] [%(asctime)s] [%(name)s:%(lineno)s] %(message)s",
+            'datefmt': "%d/%b/%Y %H:%M:%S"
+        },
+    },
+    'loggers': {
+        'v2': {
+            'handlers': ['console', 'v2'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+    }
 }

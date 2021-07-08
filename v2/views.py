@@ -1,4 +1,6 @@
 import json
+import logging
+import os
 from pprint import pprint
 from urllib import parse
 
@@ -14,6 +16,7 @@ from oauth2_provider.models import AccessToken, Application
 
 from home.models import Tokens
 
+logger = logging.getLogger('v2')
 
 def give_points(personal_token, option):
     """
@@ -21,7 +24,8 @@ def give_points(personal_token, option):
     @param personal_token: str
     @type option: str
     """
-    if personal_token:
+
+    if personal_token and personal_token != 'null':
         invited = Tokens.objects.get(private_token=personal_token)
         if option == 'invite':
             invited.invited += 1
@@ -41,7 +45,7 @@ def parse_url_next(next_loc):
         next_loc = dict(parsed)
         return next_loc
     except Exception as e:
-        print(e)
+        logger.exception("Parser")
         return False
 
 
@@ -49,27 +53,28 @@ def get_item_from_list_dict(parsed_loc, key):
     try:
         invite = parsed_loc[key][0]
     except (IndexError, KeyError) as e:
+        logger.error('item not in list ' + str(e))
         invite = ''
         print(e)
     return invite
 
 
-def get_item_from_url(url_params, key):
+def get_item_from_url(url_params, key, default=''):
     parsed_loc = parse_url_next(url_params)
     if parsed_loc:
         return get_item_from_list_dict(parsed_loc, key)
     else:
-        return ''
+        return default
 
 
 def get_client_id(next_string):
     client_id = settings.DEFAULT_CLIENT
     if next_string:
-        search_query = next_string.split('?')[1]
         try:
+            search_query = next_string.split('?')[1]
             client_id = get_item_from_url(search_query, 'client_id')
         except IndexError:
-            pass
+            logger.debug('client id was not provided')
     return client_id
 
 
@@ -131,10 +136,13 @@ def signup(request):
         lastname = request.POST.get("lastname", "")
         if not email:
             context1['pswderr'] = 'Email cannot be empty'
+            logger.info('Email was empty')
         elif not password or not passwrd2:
             context1['pswderr'] = 'Password cannot be empty'
+            logger.info('Password was empty')
         elif not username:
             context1['pswderr'] = 'Username cannot be empty'
+            logger.info('Username was empty')
         else:
             if passwrd2 == password:
                 try:
@@ -142,20 +150,22 @@ def signup(request):
                     give_points(inv, 'invite')
                     user = User.objects.create_user(email=email, password=password, username=username,
                                                     first_name=firstname, last_name=lastname)
-                    Tokens.objects.create(user=user, invite_token=inv)
-
+                    Tokens.objects.get_or_create(user=user, invite_token=inv)
                     login(request, user, backend='django.contrib.auth.backends.ModelBackend')
                     redirect_location = request.GET.get('next', '/') + '?' + request.META['QUERY_STRING']
                     return HttpResponseRedirect(redirect_location)
 
                 except User.DoesNotExist as e:
                     print(e)
+                    logger.info('User already exist')
                     context1['pswderr'] = 'User already exists'
                 except Tokens.DoesNotExist as e:
                     print(e)
+                    logger.info('Token was invalid')
                     context1['pswderr'] = 'Invalid Token'
 
             else:
+                logger.info('Password Does not match')
                 context1['pswderr'] = 'Password Does not match'
 
     next_loc = request.GET.get('next', '')
@@ -187,17 +197,17 @@ def request_google(auth_code, redirect_uri):
     print(data)
     r = requests.post('https://oauth2.googleapis.com/token', data=data)
     try:
-        pprint(r.content.decode())
+        logger.info('google auth ')
         content = json.loads(r.content.decode())
         token = content["access_token"]
         return token
     except Exception as e:
+        logger.exception('google auth fail')
         print(e)
         return False
 
 
 def convert_google_token(token, client_id):
-
     application = Application.objects.get(client_id=client_id)
     data = {
         'grant_type': 'convert_token',
@@ -210,44 +220,42 @@ def convert_google_token(token, client_id):
     r = requests.post(url, data=data)
     print(r.content)
     try:
+        logger.info('google auth')
         cont = json.loads(r.content.decode())
         access_token = cont['access_token']
         return access_token
     except Exception as e:
-        print(e)
+        logger.exception('google convert')
         return False
 
 
 def Google_login(request):
-    state = request.GET.get('state', '')
+    state = request.GET.get('state', '/')
     auth_code = request.GET.get('code')
     redirect_uri = settings.DEPLOYMENT_URL + '/google-login'
 
-    next_loc = get_item_from_url(state, 'next')
+    next_loc = get_item_from_url(state, 'next', '/')
+    logger.info('next' + next_loc)
     invite_token = get_item_from_url(next_loc, 'invite')
-    next_page = get_item_from_url(next_loc, 'next')
     client_id = get_client_id(next_loc)
-    print("here0",client_id)
-
     token = request_google(auth_code, redirect_uri)
-
     if token:
-        print('here')
         access_token = convert_google_token(token, client_id)
-        print(access_token)
 
         if access_token:
-            print('here1')
             user = AccessToken.objects.get(token=access_token).user
-            print('here2')
             login(request, user, backend='django.contrib.auth.backends.ModelBackend')
-
-            print(user,user.id)
-            Tokens.objects.get_or_create(user_id=user.id, invite_token=invite_token)
+            try:
+                Tokens.objects.get_or_create(user=user, invite_token=invite_token)
+            except:
+                token = Tokens.objects.get(user_id=user.id)
+                if not token.invite_token:
+                    token.invite_token = invite_token
+                    token.save()
             try:
                 give_points(invite_token, 'invite')
-            except Tokens.DoesNotExist:
-                pass
-            print(next_loc)
-            return HttpResponseRedirect(next_loc)
+            except Exception:
+                logger.exception('tokens')
+
+        return HttpResponseRedirect(next_loc)
     return HttpResponseRedirect('/login/')

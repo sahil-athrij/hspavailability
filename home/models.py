@@ -120,7 +120,7 @@ class Patient(models.Model):
     relation = models.CharField(max_length=30, blank=True, null=True)
 
     hospitalpref = models.CharField(max_length=300, blank=True, null=True)
-    hospitalprefid = models.CharField(Markers, related_name='hospital_preference', blank=True, null=True,on_delete=models.PROTECT)
+    hospitalprefid = models.ForeignKey(Markers, related_name='hospital_preference', blank=True, null=True,on_delete=models.PROTECT)
     srfid = models.CharField(max_length=30, blank=True, null=True)
     bunum = models.CharField(max_length=40, blank=True, null=True)
 

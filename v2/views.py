@@ -229,10 +229,13 @@ def Google_login(request):
     token = request_google(auth_code, redirect_uri)
 
     if token:
+        print('here')
         access_token = convert_google_token(token, client_id)
         print(access_token)
         if access_token:
+            print('here1')
             user = AccessToken.objects.get(token=access_token).user
+            print('here2')
             login(request, user, backend='django.contrib.auth.backends.ModelBackend')
 
             print(user,user.id)

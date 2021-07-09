@@ -2,7 +2,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path
 
-from v2.views import index, signin, log_out, signup, Google_login, help_page
+from v2.views import index, signin, log_out, signup, Google_login, help_page, Facebook_login
 
 urlpatterns = [
     path('', index),
@@ -11,5 +11,6 @@ urlpatterns = [
     path('signup/', signup),
     path('help/', help_page),
     path('google-login/', Google_login),
+    path('facebook-login/', Facebook_login),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

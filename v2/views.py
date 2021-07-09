@@ -206,7 +206,6 @@ def request_google(auth_code, redirect_uri):
 
 
 def convert_google_token(token, client_id):
-
     application = Application.objects.get(client_id=client_id)
     data = {
         'grant_type': 'convert_token',
@@ -215,11 +214,9 @@ def convert_google_token(token, client_id):
         'backend': 'google-oauth2',
         'token': token
     }
-    logger.info('trying to trying url'+ str(data))
 
-    url = settings.DEPLOYMENT_URL+'/auth/social/convert-token/'
+    url = settings.DEPLOYMENT_URL + '/auth/social/convert-token/'
     r = requests.post(url, data=data)
-    logger.info('recived the request')
     try:
         logger.info('google auth convert')
         cont = json.loads(r.content.decode())
@@ -241,28 +238,25 @@ def Google_login(request):
     invite_token = get_item_from_url(next_loc, 'invite')
     client_id = get_client_id(next_loc)
     logger.info('Recived client id ' + client_id)
-    logger.info('Trying access token')
     token = request_google(auth_code, redirect_uri)
-    logger.info('Trying access token')
     if token:
-        logger.info('Trying access token')
+        logger.info(' Token Success')
         access_token = convert_google_token(token, client_id)
-        logger.info('received access token')
         if access_token:
             user = AccessToken.objects.get(token=access_token).user
             login(request, user, backend='django.contrib.auth.backends.ModelBackend')
             try:
 
-                token, _ = Tokens.objects.get_or_create(user=user)
-                if not token.invite_token:
-                    token.invite_token = invite_token
-                token.save()
+                token_of_user, _ = Tokens.objects.get_or_create(user=user)
+                if not token_of_user.invite_token:
+                    token_of_user.invite_token = invite_token
+                token_of_user.save()
             except:
                 logger.exception('failed to create token')
             try:
                 give_points(invite_token, 'invite')
             except Exception:
-                logger.exception('tokens')
+                logger.exception('tokens point giving failure')
 
         return HttpResponseRedirect(next_loc)
     return HttpResponseRedirect('/login/')

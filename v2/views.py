@@ -218,15 +218,17 @@ def convert_google_token(token, client_id):
         'backend': 'google-oauth2',
         'token': token
     }
+    logger.info('trying to trying url')
     url = 'http://127.0.0.1:8000/auth/social/convert-token'
     r = requests.post(url, data=data)
+    logger.info('recived the request')
     try:
-        logger.info('google auth')
+        logger.info('google auth convert')
         cont = json.loads(r.content.decode())
         access_token = cont['access_token']
         return access_token
     except Exception as e:
-        logger.exception('google convert')
+        logger.exception('google convert failed')
         logger.debug(r.content.decode())
         return False
 

@@ -206,7 +206,11 @@ def request_google(auth_code, redirect_uri):
 
 
 def convert_google_token(token, client_id):
-    application = Application.objects.get(client_id=client_id)
+    try:
+        application = Application.objects.get(client_id=client_id)
+    except:
+        logger.exception('failed to get application')
+        return False
     data = {
         'grant_type': 'convert_token',
         'client_id': client_id,
@@ -216,7 +220,6 @@ def convert_google_token(token, client_id):
     }
     url = 'http://127.0.0.1:8000/auth/social/convert-token'
     r = requests.post(url, data=data)
-    print(r.content)
     try:
         logger.info('google auth')
         cont = json.loads(r.content.decode())
@@ -237,7 +240,7 @@ def Google_login(request):
     logger.info('next ' + next_loc)
     invite_token = get_item_from_url(next_loc, 'invite')
     client_id = get_client_id(next_loc)
-    logger.info('Recived client id '+ client_id)
+    logger.info('Recived client id ' + client_id)
     logger.info('Trying access token')
     token = request_google(auth_code, redirect_uri)
     logger.info('Trying access token')

@@ -217,7 +217,7 @@ def convert_google_token(token, client_id):
     }
     logger.info('trying to trying url'+ str(data))
 
-    url = settings.DEPLOYMENT_URL+'/auth/social/convert-token'
+    url = settings.DEPLOYMENT_URL+'/auth/social/convert-token/'
     r = requests.post(url, data=data)
     logger.info('recived the request')
     try:

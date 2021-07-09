@@ -206,11 +206,8 @@ def request_google(auth_code, redirect_uri):
 
 
 def convert_google_token(token, client_id):
-    try:
-        application = Application.objects.get(client_id=client_id)
-    except:
-        logger.exception('failed to get application')
-        return False
+
+    application = Application.objects.get(client_id=client_id)
     data = {
         'grant_type': 'convert_token',
         'client_id': client_id,
@@ -218,8 +215,9 @@ def convert_google_token(token, client_id):
         'backend': 'google-oauth2',
         'token': token
     }
-    logger.info('trying to trying url')
-    url = 'http://127.0.0.1:8000/auth/social/convert-token'
+    logger.info('trying to trying url'+ str(data))
+
+    url = settings.DEPLOYMENT_URL+'/auth/social/convert-token'
     r = requests.post(url, data=data)
     logger.info('recived the request')
     try:

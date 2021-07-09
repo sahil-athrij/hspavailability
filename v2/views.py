@@ -1,6 +1,5 @@
 import json
 import logging
-import os
 from pprint import pprint
 from urllib import parse
 
@@ -17,6 +16,7 @@ from oauth2_provider.models import AccessToken, Application
 from home.models import Tokens
 
 logger = logging.getLogger('v2')
+
 
 def give_points(personal_token, option):
     """
@@ -55,7 +55,6 @@ def get_item_from_list_dict(parsed_loc, key):
     except (IndexError, KeyError) as e:
         logger.error('item not in list ' + str(e))
         invite = ''
-        print(e)
     return invite
 
 
@@ -194,7 +193,6 @@ def request_google(auth_code, redirect_uri):
             'client_secret': settings.SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET,
             'redirect_uri': redirect_uri,
             'grant_type': 'authorization_code'}
-    print(data)
     r = requests.post('https://oauth2.googleapis.com/token', data=data)
     try:
         logger.info('google auth ')
@@ -204,7 +202,6 @@ def request_google(auth_code, redirect_uri):
     except Exception as e:
         logger.exception('google auth fail')
         logger.debug(r.content.decode())
-        print(e)
         return False
 
 
@@ -240,19 +237,23 @@ def Google_login(request):
     logger.info('next ' + next_loc)
     invite_token = get_item_from_url(next_loc, 'invite')
     client_id = get_client_id(next_loc)
+    logger.info('Recived client id '+ client_id)
+    logger.info('Trying access token')
     token = request_google(auth_code, redirect_uri)
+    logger.info('Trying access token')
     if token:
+        logger.info('Trying access token')
         access_token = convert_google_token(token, client_id)
-        logger.info('recived access token')
+        logger.info('received access token')
         if access_token:
             user = AccessToken.objects.get(token=access_token).user
             login(request, user, backend='django.contrib.auth.backends.ModelBackend')
             try:
 
-                token =  Tokens.objects.get_or_create(user=user)
+                token, _ = Tokens.objects.get_or_create(user=user)
                 if not token.invite_token:
                     token.invite_token = invite_token
-                    token.save()
+                token.save()
             except:
                 logger.exception('failed to create token')
             try:

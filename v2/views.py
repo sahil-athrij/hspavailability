@@ -227,7 +227,7 @@ def convert_google_token(token, client_id):
         return access_token
     except Exception as e:
         logger.exception('google convert')
-        logger.debug('')
+        logger.debug(r.content.decode())
         return False
 
 

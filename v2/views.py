@@ -120,7 +120,9 @@ def signin(request):
             context1['pswderr'] = "Invalid Credentials"
     context1['sign_text'] = 'Sign In'
     context1['GOOGLE_CLIENT_ID'] = settings.SOCIAL_AUTH_GOOGLE_OAUTH2_KEY
-    context1['redirect_uri'] = settings.DEPLOYMENT_URL + '/google-login'
+    context1['google_redirect_uri'] = settings.DEPLOYMENT_URL + '/google-login'
+    context1['FACEBOOK_CLIENT_ID'] = settings.SOCIAL_AUTH_FACEBOOK_KEY
+    context1['facebook_redirect_uri'] = 'https://127.0.0.1:8000/facebook-login'
     return render(request, template_name="v2/login.html", context=context1)
 
 
@@ -266,10 +268,10 @@ def request_facebook(auth_code, redirect_uri):
     data = {'code': auth_code,
             'client_id': settings.SOCIAL_AUTH_FACEBOOK_KEY,
             'client_secret': settings.SOCIAL_AUTH_FACEBOOK_SECRET,
-            'redirect_uri': 'https://127.0.0.1:8000/facebook-login/',
+            'redirect_uri': 'https://127.0.0.1:8000/facebook-login',
             'grant_type': 'authorization_code'}
     print(data)
-    r = requests.get('https://graph.facebook.com/v11.0/oauth/access_token', params=data)
+    r = requests.get('https://graph.facebook.com/v11.0/oauth/access_token?', params=data)
     try:
         logger.info('facebook auth ')
         content = json.loads(r.content.decode())

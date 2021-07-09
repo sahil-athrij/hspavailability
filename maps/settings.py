@@ -224,7 +224,7 @@ LOG_VIEWER_PATTERNS = [']OFNI[', ']GUBED[', ']GNINRAW[', ']RORRE[', ']LACITIRC['
 # Optionally you can set the next variables in order to customize the admin:
 
 LOG_VIEWER_FILE_LIST_TITLE = "Custom title"
-# LOG_VIEWER_FILE_LIST_STYLES = "/static/css/my-custom.css"
+LOG_VIEWER_FILE_LIST_STYLES = "/static/css/logs.css"
 LOGGING_ROOT = os.path.join(BASE_DIR, 'logs')
 LOGGING = {
     'version': 1,

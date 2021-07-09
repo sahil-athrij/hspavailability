@@ -203,6 +203,7 @@ def request_google(auth_code, redirect_uri):
         return token
     except Exception as e:
         logger.exception('google auth fail')
+        logger.debug(r.content.decode())
         print(e)
         return False
 
@@ -226,6 +227,7 @@ def convert_google_token(token, client_id):
         return access_token
     except Exception as e:
         logger.exception('google convert')
+        logger.debug('')
         return False
 
 

@@ -1,0 +1,20 @@
+
+tr:nth-child(odd), .row-form-errors {
+    background: var(--body-bg) !important;
+}
+
+table.dataTable.order-column tbody tr > .sorting_1, table.dataTable.order-column tbody tr > .sorting_2, table.dataTable.order-column tbody tr > .sorting_3, table.dataTable.display tbody tr > .sorting_1, table.dataTable.display tbody tr > .sorting_2, table.dataTable.display tbody tr > .sorting_3 {
+    /* background-color: #fafafa; */
+    background: var(--body-bg) !important;
+
+}
+
+table.dataTable.display tbody tr.even > .sorting_1, table.dataTable.order-column.stripe tbody tr.even > .sorting_1 {
+    /* background-color: #fafafa; */
+    background: var(--darkened-bg) !important;
+
+}
+
+tr:nth-child(even), tr:nth-child(even) .errorlist, tr:nth-child(odd) + .row-form-errors, tr:nth-child(odd) + .row-form-errors .errorlist {
+    background: var(--darkened-bg) !important;
+}

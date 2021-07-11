@@ -33,7 +33,27 @@ bed = [
     (2, 'ventilator'),
     (3, 'ICU')
 ]
+category = [
+    ('E', 'Economy'),
+    ('N', 'Normal'),
+    ('S', 'Speacialty'),
+    ('SS', 'Super Specialty'),
+    ('U', 'Uncategorized')
+]
 
+type = [
+    ('H', 'Hospital'),
+    ('P', 'Pharmacy'),
+    ('C', 'Clinic'),
+    ('W', 'Wellness Center'),
+    ('U', 'Uncategorized')
+]
+ownership = [
+    ('Pu', 'Public'),
+    ('Pr', 'Private'),
+    ('Co', 'Co-operative'),
+    ('U', 'Uncategorized')
+]
 
 class Markers(models.Model):
     name = models.CharField(max_length=500)
@@ -57,6 +77,10 @@ class Markers(models.Model):
     display_address = models.TextField(default="", max_length=3000, blank=True)
     address = models.JSONField(blank=True)
     location = models.PointField(srid=4326, verbose_name='Location')
+    category = models.CharField(choices=category, default='U', max_length=2)
+    type = models.CharField(choices=type, default='U', max_length=2)
+    ownership = models.CharField(choices=ownership, default='U', max_length=2)
+
 
     def __str__(self):
         return self.name

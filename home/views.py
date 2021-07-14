@@ -6,7 +6,6 @@ from django.contrib.gis.db.models.functions import Distance
 from django.contrib.gis.geos import Point
 from django.contrib.gis.measure import D
 from rest_framework import viewsets, generics, filters
-from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination, LimitOffsetPagination
 from rest_framework.parsers import FileUploadParser
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
@@ -84,7 +83,7 @@ class LimitOffsetPaginationWithMaxLimit(LimitOffsetPagination):
 
 class MarkerApiViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
-    queryset = Markers.objects.all().order_by('id')
+    queryset = Markers.objects.all().filter().order_by('id')
     serializer_class = GetMarkerSerializer
     http_method_names = ['get', 'post', 'put', 'patch', 'head', 'options']
     page_size = 100
@@ -115,20 +114,16 @@ class MarkerApiViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
         user = self.request.user
         loc = Point(float(self.request.data['lng']), float(self.request.data['lat']),
                     srid=4326)  # Point(x,y). x=lng and y=lat
-        url = 'https://eu1.locationiq.com/v1/reverse.php?key=pk.959200a41370341f608a91b67be6e8eb&lat=' + \
-              self.request.data['lat'] + '&lon=' + self.request.data['lng'] + '&format=json'
+        url = f"https://eu1.locationiq.com/v1/reverse.php?key=pk.959200a41370341f608a91b67be6e8eb&lat={self.request.data['lat']}&lon={self.request.data['lng']}&format=json"
         det = requests.get(url)
         if det.status_code == 200:
             data = json.loads(det.content.decode())
-            serializer.save(address=data["address"], display_address=data["display_name"], added_by=user, location=loc)
+
+            serializer.save(address=data["address"], display_address=data["display_name"], added_by=user, location=loc,
+                            pending_approval=True)
+
         else:
             raise serializers.ValidationError({"detail": "Address not obtainable from Latitude and Longitude"})
-
-    @action(detail=True, methods=['post'])
-    def upload_docs(self, request, pk):
-        print(request.__dict__)
-        # marker = Markers.objects.get(id=request.get['id'])
-        # marker.
 
     def perform_update(self, serializer):
         instance = self.get_object()

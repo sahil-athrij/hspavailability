@@ -71,7 +71,7 @@ def get_client_id(next_string):
     if next_string:
         try:
             search_query = next_string.split('?')[1]
-            logger.info('search string is '+search_query)
+            logger.info('search string is ' + search_query)
             client_id = get_item_from_url(search_query, 'client_id')
         except IndexError:
             logger.debug('client id was not provided')
@@ -264,6 +264,7 @@ def Google_login(request):
         return HttpResponseRedirect(next_loc)
     return HttpResponseRedirect('/login/')
 
+
 def request_facebook(auth_code, redirect_uri):
     data = {'code': auth_code,
             'client_id': settings.SOCIAL_AUTH_FACEBOOK_KEY,
@@ -277,12 +278,13 @@ def request_facebook(auth_code, redirect_uri):
         content = json.loads(r.content.decode())
         print(content)
         token = content["access_token"]
-        logger.info('token is '+token)
+        logger.info('token is ' + token)
         return token
     except Exception as e:
         logger.exception('facebook auth fail')
         logger.debug(r.content.decode())
         return False
+
 
 def convert_facebook_token(token, client_id):
     try:
@@ -313,10 +315,11 @@ def convert_facebook_token(token, client_id):
         logger.debug(r.content.decode())
         return False
 
+
 def Facebook_login(request):
     state = request.GET.get('state', '/')
     auth_code = request.GET.get('code')
-    logger.info('url is ',settings.DEPLOYMENT_URL)
+    logger.info('url is ', settings.DEPLOYMENT_URL)
     redirect_uri = settings.DEPLOYMENT_URL + '/facebook-login/'
     print(redirect_uri)
     next_loc = get_item_from_url(state, 'next', '/')

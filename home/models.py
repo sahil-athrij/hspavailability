@@ -55,16 +55,17 @@ ownership = [
     ('U', 'Uncategorized')
 ]
 
+
 class Markers(models.Model):
     name = models.CharField(max_length=500)
     Phone = models.CharField(max_length=100)
     size = models.IntegerField(choices=sizes, default=0)
-    financial_rating = models.FloatField(default=1)
+    financial_rating = models.FloatField(default=0)
     avg_cost = models.IntegerField(default=0)
-    covid_rating = models.FloatField(default=1)
+    covid_rating = models.FloatField(default=0)
     beds_available = models.IntegerField(default=0)
-    care_rating = models.FloatField(default=1)
-    oxygen_rating = models.FloatField(default=1)
+    care_rating = models.FloatField(default=0)
+    oxygen_rating = models.FloatField(default=0)
     ventilator_availability = models.FloatField(default=0)
     oxygen_availability = models.FloatField(default=0)
     icu_availability = models.FloatField(default=0)
@@ -80,7 +81,7 @@ class Markers(models.Model):
     category = models.CharField(choices=category, default='U', max_length=2)
     type = models.CharField(choices=type, default='U', max_length=2)
     ownership = models.CharField(choices=ownership, default='U', max_length=2)
-
+    pending_approval = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
@@ -126,10 +127,10 @@ class Patient(models.Model):
     Name = models.CharField(max_length=40)
     age = models.IntegerField(default=0)
     gender = models.CharField(choices=gender, max_length=2)
-    address = models.TextField(max_length=2048, default='',blank=True)
+    address = models.TextField(max_length=2048, default='', blank=True)
 
     symptoms = models.TextField(max_length=2048)
-    #symdays = models.DateField(blank=True, null=True)
+    symdays = models.DateField(blank=True, null=True)
     spo2 = models.IntegerField(default=0)
     oxy_bed = models.BooleanField(default=False)
     bedtype = models.IntegerField(choices=bed, default=0, blank=True, null=True)
@@ -144,9 +145,13 @@ class Patient(models.Model):
     relation = models.CharField(max_length=30, blank=True, null=True)
 
     hospitalpref = models.CharField(max_length=300, blank=True, null=True)
-    hospitalprefid = models.ForeignKey(Markers, related_name='hospital_preference', blank=True, null=True,on_delete=models.PROTECT)
+    hospitalprefid = models.ForeignKey(Markers, related_name='hospital_preference', blank=True, null=True,
+                                       on_delete=models.PROTECT)
     srfid = models.CharField(max_length=30, blank=True, null=True)
     bunum = models.CharField(max_length=40, blank=True, null=True)
+
+    category = models.CharField(choices=category, default='U', max_length=2)
+    ownership = models.CharField(choices=ownership, default='U', max_length=2)
 
     user = models.ForeignKey(User, default=1, on_delete=models.CASCADE)
 

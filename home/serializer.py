@@ -20,9 +20,11 @@ class GetMarkerSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'name', 'Phone', 'size', 'financial_rating', 'avg_cost', 'covid_rating', 'beds_available',
             'care_rating', 'oxygen_rating', 'ventilator_availability', 'oxygen_availability', 'icu_availability',
-            'lat', 'lng', 'datef', 'added_by_id', 'images', 'display_address', 'comment_count', 'address'
+            'lat', 'lng', 'datef', 'added_by_id', 'images', 'display_address', 'comment_count', 'address',
+            'pending_approval', 'category', 'type', 'ownership'
         ]
         extra_kwargs = {
+            'pending_approval': {'read_only': True},
             'size': {'read_only': True},
             'financial_rating': {'read_only': True},
             'avg_cost': {'read_only': True},
@@ -70,9 +72,9 @@ class GetPatientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Patient
         fields = [
-            'id','Name', 'age', 'gender', 'address', 'symptoms', 'symdays', 'spo2', 'oxy_bed', 'covidresult',
+            'id', 'Name', 'age', 'gender', 'address', 'symptoms', 'symdays', 'spo2', 'oxy_bed', 'covidresult',
             'hospitalpref', 'attendername', 'attenderphone', 'relation', 'srfid', 'bunum', 'blood', 'bedtype', 'ct',
-            'ctscore'
+            'ctscore', 'category', 'ownership'
         ]
 
 

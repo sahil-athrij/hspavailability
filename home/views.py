@@ -11,6 +11,7 @@ from rest_framework.parsers import FileUploadParser
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 
+from v2.views import give_points
 from .serializer import *
 
 
@@ -116,6 +117,7 @@ class MarkerApiViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
                     srid=4326)  # Point(x,y). x=lng and y=lat
         url = f"https://eu1.locationiq.com/v1/reverse.php?key=pk.959200a41370341f608a91b67be6e8eb&lat={self.request.data['lat']}&lon={self.request.data['lng']}&format=json"
         det = requests.get(url)
+        give_points(user.tokens.private_token, 'review')
         if det.status_code == 200:
             data = json.loads(det.content.decode())
 
@@ -229,3 +231,8 @@ class ImageViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
     queryset = Images.objects.all()
     serializer_class = GetImageSerializer
     parser_class = [FileUploadParser]
+
+    def perform_create(self, serializer):
+        user = self.request.user
+        give_points(user.tokens.private_token, 'image')
+        serializer.save(user=user)

@@ -121,6 +121,7 @@ class Images(models.Model):
                                on_delete=models.CASCADE)
     hospital = models.ForeignKey(Markers, related_name='images', on_delete=models.CASCADE)
     useinmarker = models.BooleanField(default=False)
+    user = models.ForeignKey(User, on_delete=models.PROTECT, related_name='uploaded_images', blank=True, null=True)
 
 
 class Patient(models.Model):
@@ -171,10 +172,11 @@ def create_new_id():
 
 
 class Tokens(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, related_name='tokens', on_delete=models.CASCADE)
     private_token = models.CharField(max_length=10, unique=True, default=create_new_id)
     invited = models.IntegerField(default=0)
     points = models.IntegerField(default=0)
     reviews = models.IntegerField(default=0)
     reports = models.IntegerField(default=0)
+    images = models.IntegerField(default=0)
     invite_token = models.CharField(max_length=10, blank=True, null=True)

@@ -36,6 +36,9 @@ def give_points(personal_token, option):
         elif option == 'report':
             invited.reports += 1
             invited.points += 1
+        elif option == 'image':
+            invited.images += 1
+            invited.points += 5
         invited.save()
 
 

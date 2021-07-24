@@ -225,7 +225,14 @@ CORS_ORIGIN_ALLOW_ALL = True
 LOGIN_URL = '/login/'
 
 SWAGGER_SETTINGS = {
-    'JSON_EDITOR': True
+    'JSON_EDITOR': True,
+    'SECURITY_DEFINITIONS': {
+        'Bearer': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header'
+        }
+    }
 }
 
 LOG_VIEWER_FILES = ['v2.log', 'home.log', 'default.log']

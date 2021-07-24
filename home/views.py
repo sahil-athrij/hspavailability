@@ -5,7 +5,7 @@ import requests
 from django.contrib.gis.db.models.functions import Distance
 from django.contrib.gis.geos import Point
 from django.contrib.gis.measure import D
-from rest_framework import viewsets, generics, filters
+from rest_framework import viewsets, generics, filters, permissions
 from rest_framework.pagination import PageNumberPagination, LimitOffsetPagination
 from rest_framework.parsers import FileUploadParser
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
@@ -215,16 +215,17 @@ class SusViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
 class PatientViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
     queryset = Patient.objects.all()
     serializer_class = GetPatientSerializer
+    permission_classes = [permissions.IsAuthenticated]
     http_method_names = ['get', 'post', 'head', 'options']
 
     def perform_create(self, serializer):
         user = self.request.user
         serializer.save(user=user)
 
-    def filter_queryset(self, queryset):
-        user = self.request.user
-        queryset = super(PatientViewSet, self).filter_queryset(queryset)
-        return queryset.filter(user=user)
+    # def filter_queryset(self, queryset):
+    #     user = self.request.user
+    #     queryset = super(PatientViewSet, self).filter_queryset(queryset)
+    #     return queryset.filter(user=user.id)
 
 
 class ImageViewSet(viewsets.ModelViewSet, generics.GenericAPIView):

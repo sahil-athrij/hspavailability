@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Images, Markers, Reviews, SuspiciousMarking, Patient, Tokens
+from .models import Images, Markers, Reviews, SuspiciousMarking, Patient, Tokens, gender
 
 
 class GetImageSerializer(serializers.ModelSerializer):
@@ -69,12 +69,17 @@ class GetSusSerializer(serializers.ModelSerializer):
 
 
 class GetPatientSerializer(serializers.ModelSerializer):
+
+    gender_name = serializers.CharField(source='get_gender_display',read_only=True)
+    bedtype_name = serializers.CharField(source='get_bedtype_display',read_only=True)
+
     class Meta:
         model = Patient
         fields = [
             'id', 'Name', 'age', 'gender', 'address', 'symptoms', 'symdays', 'spo2', 'oxy_bed', 'covidresult',
             'hospitalpref', 'attendername', 'attenderphone', 'relation', 'srfid', 'bunum', 'blood', 'bedtype', 'ct',
-            'ctscore', 'category', 'ownership'
+            'ctscore', 'category', 'ownership', 'gender_name','bedtype_name'
+
         ]
 
 

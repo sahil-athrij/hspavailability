@@ -2,10 +2,12 @@ import json
 
 import django_filters
 import requests
+from django.contrib.auth.models import User
 from django.contrib.gis.db.models.functions import Distance
 from django.contrib.gis.geos import Point
 from django.contrib.gis.measure import D
 from rest_framework import viewsets, generics, filters, permissions
+from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination, LimitOffsetPagination
 from rest_framework.parsers import FileUploadParser
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
@@ -222,10 +224,27 @@ class PatientViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
         user = self.request.user
         serializer.save(user=user)
 
-    # def filter_queryset(self, queryset):
-    #     user = self.request.user
-    #     queryset = super(PatientViewSet, self).filter_queryset(queryset)
-    #     return queryset.filter(user=user.id)
+    def filter_queryset(self, queryset):
+        user = self.request.user
+        queryset = super(PatientViewSet, self).filter_queryset(queryset)
+        return queryset.filter(user=user.id)
+
+    @action(detail=False, methods=["get", "post"], url_path='friends')
+    def friends(self, request, *args, **kwargs):
+        token = Tokens.objects.get(user_id=self.request.user.id)
+        invite_token = token.invite_token
+        private_token = token.private_token
+        users = User.objects.filter(tokens__private_token=invite_token)\
+                | User.objects.filter(tokens__invite_token=private_token)
+        self.queryset = self.queryset.filter(user__in=users)
+        print(self.queryset)
+        page = self.paginate_queryset(self.queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+        serializer = self.get_serializer(self.queryset, many=True)
+
+        return Response(serializer.data)
 
 
 class ImageViewSet(viewsets.ModelViewSet, generics.GenericAPIView):

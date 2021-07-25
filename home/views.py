@@ -237,7 +237,6 @@ class PatientViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
         users = User.objects.filter(tokens__private_token=invite_token)\
                 | User.objects.filter(tokens__invite_token=private_token)
         self.queryset = self.queryset.filter(user__in=users)
-        print(self.queryset)
         page = self.paginate_queryset(self.queryset)
         if page is not None:
             serializer = self.get_serializer(page, many=True)

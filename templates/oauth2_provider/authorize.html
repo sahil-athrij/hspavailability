@@ -9,7 +9,7 @@
             <form id="authorizationForm" method="post">
                 <h3 class="m-0 block-center-heading">Continue as {{ request.user.username }}</h3>
                 <p>
-                    <a class="link" href="/login/?next={{ request.get_full_path | urlencode }}">Login as a Different user</a></p>
+                    <a class="link" href="/login/?next={{ request.get_full_path  | urlencode }}">Login as a Different user</a></p>
                 <h3 class="block-center-heading">{% trans "Authorize" %} {{ application.name }}?</h3>
                 {% csrf_token %}
 

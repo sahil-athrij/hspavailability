@@ -1,14 +1,7 @@
 from rest_framework import serializers
 
-from .models import Images, Markers, Reviews, SuspiciousMarking, Patient, Tokens, gender
-
-
-class GetImageSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Images
-        fields = [
-            'image', 'useinmarker', 'hospital', 'review'
-        ]
+from internals.serializers import GetImageSerializer, GetBuildingSerializer, DoctorSerializer
+from .models import Markers, Reviews, SuspiciousMarking, Patient, Tokens, gender
 
 
 class GetMarkerSerializer(serializers.ModelSerializer):
@@ -69,25 +62,26 @@ class GetSusSerializer(serializers.ModelSerializer):
 
 
 class GetPatientSerializer(serializers.ModelSerializer):
-
-    gender_name = serializers.CharField(source='get_gender_display',read_only=True)
-    bedtype_name = serializers.CharField(source='get_bedtype_display',read_only=True)
+    gender_name = serializers.CharField(source='get_gender_display', read_only=True)
+    bedtype_name = serializers.CharField(source='get_bedtype_display', read_only=True)
 
     class Meta:
         model = Patient
         fields = [
             'id', 'Name', 'age', 'gender', 'address', 'symptoms', 'symdays', 'spo2', 'oxy_bed', 'covidresult',
             'hospitalpref', 'attendername', 'attenderphone', 'relation', 'srfid', 'bunum', 'blood', 'bedtype', 'ct',
-            'ctscore', 'category', 'ownership', 'gender_name','bedtype_name'
+            'ctscore', 'category', 'ownership', 'gender_name', 'bedtype_name'
 
         ]
 
 
 class DetailMarkerSerializer(GetMarkerSerializer):
     comment = GetReviewSerializer(read_only=True, required=False, many=True)
+    buildings = GetBuildingSerializer(read_only=True, required=False, many=True)
+    doctors = DoctorSerializer(read_only=True, required=False, many=True)
 
     class Meta(GetMarkerSerializer.Meta):
-        fields = GetMarkerSerializer.Meta.fields + ['comment']
+        fields = GetMarkerSerializer.Meta.fields + ['comment', 'buildings', 'doctors']
 
 
 class GetTokensSerializer(serializers.ModelSerializer):

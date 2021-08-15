@@ -236,7 +236,7 @@ def convert_google_token(token, client_id):
         return False
 
 
-def Google_login(request):
+def google_login(request):
     state = request.GET.get('state', '/')
     auth_code = request.GET.get('code')
     redirect_uri = settings.DEPLOYMENT_URL + '/google-login'
@@ -321,7 +321,7 @@ def convert_facebook_token(token, client_id):
         return False
 
 
-def Facebook_login(request):
+def facebook_login(request):
     state = request.GET.get('state', '/')
     auth_code = request.GET.get('code')
     logger.info('url is ', settings.DEPLOYMENT_URL)

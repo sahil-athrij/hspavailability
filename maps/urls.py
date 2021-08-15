@@ -43,6 +43,7 @@ urlpatterns = [
     path(os.environ.get('ADMIN_URL') + 'log_viewer/', include('log_viewer.urls')),
     path(os.environ.get('ADMIN_URL'), admin.site.urls),
     path('api/', include('home.urls')),
+    path('internals/', include('internals.urls')),
     path('', include('v2.urls')),
     path('auth/', include('authentication.urls')),
     path('openid/', include('oidc_provider.urls', namespace='oidc_provider')),

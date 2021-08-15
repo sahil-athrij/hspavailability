@@ -81,20 +81,6 @@ department = [
 ]
 
 
-class Equipment_Name(models.Model):
-    name = models.CharField(max_length=200)
-
-    def __str__(self):
-        return self.name
-
-
-class Department_Name(models.Model):
-    name = models.CharField(max_length=200)
-
-    def __str__(self):
-        return self.name
-
-
 class Markers(models.Model):
     name = models.CharField(max_length=500)
     Phone = models.CharField(max_length=100)
@@ -108,8 +94,6 @@ class Markers(models.Model):
     ventilator_availability = models.FloatField(default=0)
     oxygen_availability = models.FloatField(default=0)
     icu_availability = models.FloatField(default=0)
-    floors = models.IntegerField(default=1)
-    buildings = models.IntegerField(default=1)
     lat = models.FloatField()
     lng = models.FloatField()
     datef = models.DateField(default=datetime.date.today)
@@ -123,7 +107,7 @@ class Markers(models.Model):
     type = models.CharField(choices=type, default='U', max_length=2)
     ownership = models.CharField(choices=ownership, default='U', max_length=2)
     pending_approval = models.BooleanField(default=False)
-    video_call = models.CharField(max_length=1000,null=True, blank=True)
+    video_call = models.CharField(max_length=1000, null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -155,31 +139,6 @@ class SuspiciousMarking(models.Model):
     comment = models.TextField(max_length=30000)
     created_by = models.ForeignKey(User, on_delete=models.PROTECT)
     datef = models.DateField(default=datetime.date.today)
-
-
-class Department(models.Model):
-    name = models.ForeignKey(Department_Name, on_delete=models.PROTECT)
-    hospital = models.ForeignKey(Markers, on_delete=models.CASCADE)
-    floor = models.IntegerField(default=0)
-    building = models.IntegerField(default=0)
-
-
-class Equipment(models.Model):
-    name = models.ForeignKey(Equipment_Name, on_delete=models.PROTECT)
-    department = models.ForeignKey(Department, on_delete=models.CASCADE)
-
-
-class Images(models.Model):
-    image = models.ImageField(upload_to="pic", blank=True)
-    review = models.ForeignKey(Reviews, default=None, null=True, blank=True, related_name='images',
-                               on_delete=models.PROTECT)
-    hospital = models.ForeignKey(Markers, related_name='images', on_delete=models.CASCADE)
-    department = models.ForeignKey(Department, related_name='images', on_delete=models.PROTECT, default=None, null=True,
-                                   blank=True)
-    equipment = models.ForeignKey(Equipment, related_name='images', on_delete=models.PROTECT, default=None, null=True,
-                                  blank=True)
-    useinmarker = models.BooleanField(default=False)
-    user = models.ForeignKey(User, on_delete=models.PROTECT, related_name='uploaded_images', blank=True, null=True)
 
 
 class Patient(models.Model):

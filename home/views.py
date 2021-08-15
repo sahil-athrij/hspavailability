@@ -13,6 +13,7 @@ from rest_framework.parsers import FileUploadParser
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 
+from internals.models import Images
 from v2.views import give_points
 from .serializer import *
 
@@ -234,7 +235,7 @@ class PatientViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
         token = Tokens.objects.get(user_id=self.request.user.id)
         invite_token = token.invite_token
         private_token = token.private_token
-        users = User.objects.filter(tokens__private_token=invite_token)\
+        users = User.objects.filter(tokens__private_token=invite_token) \
                 | User.objects.filter(tokens__invite_token=private_token)
         self.queryset = self.queryset.filter(user__in=users)
         page = self.paginate_queryset(self.queryset)

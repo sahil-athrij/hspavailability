@@ -59,7 +59,8 @@ INSTALLED_APPS = [
     "log_viewer",
     # custom
     'home',
-    'v2'
+    'v2',
+    'internals'
 ]
 
 MIDDLEWARE = [

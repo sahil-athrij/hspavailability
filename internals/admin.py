@@ -4,7 +4,7 @@ from django.contrib import admin
 # Register your models here.
 from django.utils.html import format_html
 
-from internals.models import Images
+from internals.models import Images, Department, Department_Name, Equipment_Name, Equipment, Floors, Building, Doctor
 
 
 class ImagesAdmin(admin.ModelAdmin):
@@ -21,3 +21,10 @@ class ImagesAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Images, ImagesAdmin)
+admin.site.register(Department, )
+admin.site.register(Department_Name, )
+admin.site.register(Equipment, )
+admin.site.register(Equipment_Name, )
+admin.site.register(Floors, )
+admin.site.register(Building, )
+admin.site.register(Doctor, )

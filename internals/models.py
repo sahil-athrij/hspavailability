@@ -35,7 +35,7 @@ class Department(models.Model):
     x = models.IntegerField()
     y = models.IntegerField()
     hospital = models.ForeignKey(Markers, related_name='departments', on_delete=models.CASCADE)
-    floor = models.ForeignKey(Floors, related_name='departments', on_delete=models.PROTECT)
+    floor = models.ForeignKey(Floors,null=True,blank=True, related_name='departments', on_delete=models.PROTECT)
 
 
 class Equipment(models.Model):

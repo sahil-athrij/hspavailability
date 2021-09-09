@@ -50,9 +50,9 @@ class GetDepartmentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Department
-        fields = ['name', 'x', 'y', 'hospital', 'images', 'doctors']
+        fields = ['name', 'x', 'y', 'hospital', 'images', 'doctors','name_id']
         extra_kwargs = {
-            'images': {'required': True},
+            'images': {'read_only': True},
             'doctor': {'read_only': True},
         }
 

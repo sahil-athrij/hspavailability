@@ -44,12 +44,13 @@ class EquipmentSerializer(serializers.ModelSerializer):
 
 class GetDepartmentSerializer(serializers.ModelSerializer):
     images = GetImageSerializer(many=True, required=False, read_only=True)
-    name = DepartmentNameSerializer(many=False, required=False)
+    name = DepartmentNameSerializer(many=False, required=False, read_only=True)
+    name_id = serializers.PrimaryKeyRelatedField(queryset=Department_Name.objects.all(), source='name')
     doctors = DoctorSerializer(many=True, required=False, read_only=True)
 
     class Meta:
         model = Department
-        fields = ['name', 'x', 'y', 'hospital', 'images','doctors']
+        fields = ['name', 'x', 'y', 'hospital', 'images', 'doctors']
         extra_kwargs = {
             'images': {'required': True},
             'doctor': {'read_only': True},

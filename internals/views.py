@@ -5,9 +5,9 @@ from django.shortcuts import render
 from rest_framework import viewsets, generics, filters
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
-from internals.models import Department_Name, Department, Building, Equipment_Name, Equipment, Doctor, Floors
+from internals.models import Department_Name, Department, Building, Equipment_Name, Equipment, Doctor, Floors,DoctorReviews
 from internals.serializers import DepartmentNameSerializer, GetDepartmentSerializer, GetBuildingSerializer, \
-    EquipmentNameSerializer, EquipmentSerializer, DoctorSerializer
+    EquipmentNameSerializer, EquipmentSerializer, DoctorSerializer,GetDoctorReviewSerializer
 
 
 class Department_NameApiViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
@@ -61,3 +61,19 @@ class DoctorApiViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
     queryset = Doctor.objects.all()
     serializer_class = DoctorSerializer
     http_method_names = ['get', 'post', 'put', 'patch', 'head', 'options']
+
+
+class DoctorReviewViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    queryset = DoctorReviews.objects.all()
+    serializer_class = GetDoctorReviewSerializer
+    http_method_names = ['get', 'post', 'head', 'options']
+
+    def perform_create(self, serializer):
+        user = self.request.user
+        doctor = self.request.data["doctor"]
+        rev = DoctorReviews.objects.filter(created_by=user, doctor=doctor).exists()
+        print(rev)
+        if rev:
+            raise serializer.ValidationError({"detail": "Only One Review Allowed Per Doctor"})
+        serializer.save(created_by=user)

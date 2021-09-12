@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.db import models
 
 # Create your models here.
-from home.models import Markers, Reviews
+from home.models import Markers,Reviews
 
 
 class Equipment_Name(models.Model):
@@ -35,7 +35,7 @@ class Department(models.Model):
     x = models.IntegerField()
     y = models.IntegerField()
     hospital = models.ForeignKey(Markers, related_name='departments', on_delete=models.CASCADE)
-    floor = models.ForeignKey(Floors,null=True,blank=True, related_name='departments', on_delete=models.PROTECT)
+    floor = models.ForeignKey(Floors,null=True, blank=True, related_name='departments', on_delete=models.PROTECT)
 
 
 class Equipment(models.Model):
@@ -44,11 +44,23 @@ class Equipment(models.Model):
 
 
 class Doctor(models.Model):
+    choices = ((1,1),(2,2),(3,3),(4,4),(5,5))
     name = models.CharField(max_length=200)
     phone_number = models.CharField(max_length=14)
     hospital = models.ManyToManyField(Markers, related_name='doctors')
     department = models.ManyToManyField(Department, related_name='doctors')
-    user = models.OneToOneField(User, related_name='doctor', on_delete=models.PROTECT, null=True, blank=True)
+    user = models.OneToOneField(User, related_name='doctor', on_delete=models.PROTECT, default=None, null=True, blank=True)
+    description = models.TextField(blank=True,null=True, max_length=1000)
+    working_time = models.CharField(max_length=120, blank=True, null=True)
+    rating = models.IntegerField(choices=choices, blank=True, null=True)
+    patients = models.PositiveIntegerField(default=0)
+    experience = models.PositiveIntegerField(default=0)
+
+
+class DoctorReviews(models.Model):
+    content = models.TextField(max_length=3000)
+    created_by = models.ForeignKey(User,on_delete=models.PROTECT, related_name="doctor_reviews")
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name="doctor_reviews")
 
 
 class Images(models.Model):

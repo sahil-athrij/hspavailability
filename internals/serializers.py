@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from internals.models import Department, Department_Name, Doctor, Equipment_Name, Floors, Building, Images, Equipment
+from internals.models import Department, Department_Name, Doctor, Equipment_Name, Floors, Building, Images, Equipment,DoctorReviews
 
 
 class GetImageSerializer(serializers.ModelSerializer):
@@ -23,10 +23,21 @@ class EquipmentNameSerializer(serializers.ModelSerializer):
         fields = ['id', 'name']
 
 
+class GetDoctorReviewSerializer(serializers.ModelSerializer):
+    created_by = serializers.ReadOnlyField(source="name")
+
+    class Meta:
+        model = DoctorReviews
+        fields = ["content", "created_by", "doctor"]
+
+
 class DoctorSerializer(serializers.ModelSerializer):
+    reviews = GetDoctorReviewSerializer(many=True)
+
     class Meta:
         model = Doctor
-        fields = ['name', 'phone_number', 'hospital', 'department', 'user']
+        fields = ["id", 'name', 'phone_number', 'hospital', 'department', 'user', 'working_time',
+                  'rating', 'reviews', 'patients', 'experience', "reviews"]
         extra_kwargs = {
             'hospital': {'required': False},
             'user': {'required': False},

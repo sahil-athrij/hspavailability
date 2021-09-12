@@ -50,17 +50,18 @@ class Doctor(models.Model):
     hospital = models.ManyToManyField(Markers, related_name='doctors')
     department = models.ManyToManyField(Department, related_name='doctors')
     user = models.OneToOneField(User, related_name='doctor', on_delete=models.PROTECT, default=None, null=True, blank=True)
-    description = models.TextField(blank=True,null=True, max_length=1000)
+    about = models.TextField(blank=True,null=True, max_length=1000)
     working_time = models.CharField(max_length=120, blank=True, null=True)
-    rating = models.IntegerField(choices=choices, blank=True, null=True)
+    rating = models.FloatField(default=0)
     patients = models.PositiveIntegerField(default=0)
     experience = models.PositiveIntegerField(default=0)
+    specialization = models.CharField(max_length=50, blank=True, null=True)
 
 
 class DoctorReviews(models.Model):
     content = models.TextField(max_length=3000)
     created_by = models.ForeignKey(User,on_delete=models.PROTECT, related_name="doctor_reviews")
-    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name="doctor_reviews")
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name="reviews")
 
 
 class Images(models.Model):

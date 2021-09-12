@@ -37,7 +37,7 @@ class DoctorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Doctor
         fields = ["id", 'name', 'phone_number', 'hospital', 'department', 'user', 'working_time',
-                  'rating', 'reviews', 'patients', 'experience', "reviews"]
+                  'rating', 'patients', 'experience']
         extra_kwargs = {
             'hospital': {'required': False},
             'user': {'required': False},

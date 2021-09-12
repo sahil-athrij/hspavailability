@@ -32,12 +32,12 @@ class GetDoctorReviewSerializer(serializers.ModelSerializer):
 
 
 class DoctorSerializer(serializers.ModelSerializer):
-    reviews = GetDoctorReviewSerializer(many=True)
+
 
     class Meta:
         model = Doctor
         fields = ["id", 'name', 'phone_number', 'hospital', 'department', 'user', 'working_time',
-                  'rating', 'patients', 'experience', "reviews"]
+                  'rating', 'patients', 'experience',]
         extra_kwargs = {
             'hospital': {'required': False},
             'user': {'required': False},

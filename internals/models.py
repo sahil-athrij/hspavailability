@@ -35,7 +35,7 @@ class Department(models.Model):
     x = models.IntegerField()
     y = models.IntegerField()
     hospital = models.ForeignKey(Markers, related_name='departments', on_delete=models.CASCADE)
-    floor = models.ForeignKey(Floors,null=True, blank=True, related_name='departments', on_delete=models.PROTECT)
+    floor = models.ForeignKey(Floors, null=True, blank=True, related_name='departments', on_delete=models.PROTECT)
 
 
 class Equipment(models.Model):
@@ -62,6 +62,11 @@ class DoctorReviews(models.Model):
     content = models.TextField(max_length=3000)
     created_by = models.ForeignKey(User,on_delete=models.PROTECT, related_name="doctor_reviews")
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name="reviews")
+
+
+class ProfilePicture(models.Model):
+    url = models.ImageField(upload_to="pic",blank=True)
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name="image")
 
 
 class Images(models.Model):

@@ -30,7 +30,7 @@ class DepartmentAdmin(admin.ModelAdmin):
 
 
 @admin.register(WorkingTime)
-class WorkingTimeAdmin(admin.TabularInline):
+class WorkingTimeAdmin(admin.ModelAdmin):
     pass
 
 

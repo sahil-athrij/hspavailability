@@ -108,6 +108,7 @@ class Markers(models.Model):
     ownership = models.CharField(choices=ownership, default='U', max_length=2)
     pending_approval = models.BooleanField(default=False)
     video_call = models.CharField(max_length=1000, null=True, blank=True)
+    about = models.TextField(default="")
 
     def __str__(self):
         return self.name

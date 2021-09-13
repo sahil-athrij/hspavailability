@@ -14,7 +14,7 @@ class GetMarkerSerializer(serializers.ModelSerializer):
             'id', 'name', 'Phone', 'size', 'financial_rating', 'avg_cost', 'covid_rating', 'beds_available',
             'care_rating', 'oxygen_rating', 'ventilator_availability', 'oxygen_availability', 'icu_availability',
             'lat', 'lng', 'datef', 'added_by_id', 'images', 'display_address', 'comment_count', 'address',
-            'pending_approval', 'category', 'type', 'ownership'
+            'pending_approval', 'category', 'type', 'ownership', 'about',
         ]
         extra_kwargs = {
             'pending_approval': {'read_only': True},

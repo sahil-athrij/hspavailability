@@ -52,7 +52,7 @@ class WorkingTime(models.Model):
 
 
 class HospitalWorkingTime(models.Model):
-    working_time = models.ManyToManyField(WorkingTime)
+    working_time = models.ForeignKey(WorkingTime,on_delete=models.RESTRICT,blank=True,null=True)
     hospital = models.ForeignKey(Markers, on_delete=models.PROTECT, blank=True, null=True)
     doctor = models.ForeignKey("Doctor", on_delete=models.PROTECT)
 

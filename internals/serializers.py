@@ -14,7 +14,7 @@ class GetImageSerializer(serializers.ModelSerializer):
 class DepartmentNameSerializer(serializers.ModelSerializer):
     class Meta:
         model = Department_Name
-        fields = ['id', 'name']
+        fields = ['id', 'name', "icon"]
 
 
 class EquipmentNameSerializer(serializers.ModelSerializer):

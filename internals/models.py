@@ -14,6 +14,7 @@ class Equipment_Name(models.Model):
 
 class Department_Name(models.Model):
     name = models.CharField(max_length=200)
+    icon = models.ImageField(upload_to="pic", blank=True, null=True)
 
     def __str__(self):
         return self.name

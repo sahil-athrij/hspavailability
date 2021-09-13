@@ -29,8 +29,9 @@ class DepartmentAdmin(admin.ModelAdmin):
     raw_id_fields = ('hospital',)
 
 
+@admin.register(WorkingTime)
 class WorkingTimeAdmin(admin.TabularInline):
-    model = WorkingTime
+    pass
 
 
 class HospitalWorkingTimeAdmin(admin.TabularInline):

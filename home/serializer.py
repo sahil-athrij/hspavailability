@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from internals.serializers import GetImageSerializer, GetBuildingSerializer, DoctorSerializer,DepartmentNameSerializer
+from internals.serializers import GetImageSerializer, GetBuildingSerializer, DoctorSerializer,GetDepartmentSerializer
 from .models import Markers, Reviews, SuspiciousMarking, Patient, Tokens, gender
 
 
@@ -78,7 +78,7 @@ class DetailMarkerSerializer(GetMarkerSerializer):
     comment = GetReviewSerializer(read_only=True, required=False, many=True)
     buildings = GetBuildingSerializer(read_only=True, required=False, many=True)
     doctors = DoctorSerializer(read_only=True, required=False, many=True)
-    departments = DepartmentNameSerializer(many=True,read_only=True)
+    departments = GetDepartmentSerializer(many=True, read_only=True)
     class Meta(GetMarkerSerializer.Meta):
         fields = GetMarkerSerializer.Meta.fields + ['comment', 'buildings', 'doctors',"departments"]
 

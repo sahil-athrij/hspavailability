@@ -44,15 +44,28 @@ class Equipment(models.Model):
     department = models.ForeignKey(Department,related_name='equipment', on_delete=models.CASCADE)
 
 
+class WorkingTime(models.Model):
+    days = ((1,  "monday"), (2, "tuesday"), (3, "Wednesday"),(4,"Thursday"), (5,"friday"),(6,"saturday"), (7,"sunday"))
+    day = models.IntegerField(default=1, choices=days)
+    starting_time = models.TimeField()
+    ending_time = models.TimeField()
+
+
+class HospitalWorkingTime(models.Model):
+    # working_time = models.ldCharFie(max_length=120, blank=True, null=True)
+    hospital = models.ForeignKey(Markers, on_delete=models.PROTECT, blank=True, null=True)
+    doctor = models.ForeignKey("Doctor", on_delete=models.PROTECT)
+
+
 class Doctor(models.Model):
-    choices = ((1,1),(2,2),(3,3),(4,4),(5,5))
+    choices = ((1,1), (2,2), (3,3), (4,4), (5,5))
     name = models.CharField(max_length=200)
     phone_number = models.CharField(max_length=14)
-    hospital = models.ManyToManyField(Markers, related_name='doctors')
+    # hospital = models.ManyToManyField(Markers, related_name='doctors', through=HospitalWorkingTime)
     department = models.ManyToManyField(Department, related_name='doctors')
     user = models.OneToOneField(User, related_name='doctor', on_delete=models.PROTECT, default=None, null=True, blank=True)
     about = models.TextField(blank=True,null=True, max_length=1000)
-    working_time = models.CharField(max_length=120, blank=True, null=True)
+
     rating = models.FloatField(default=0)
     patients = models.PositiveIntegerField(default=0)
     experience = models.PositiveIntegerField(default=0)

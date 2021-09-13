@@ -79,6 +79,7 @@ class DetailMarkerSerializer(GetMarkerSerializer):
     buildings = GetBuildingSerializer(read_only=True, required=False, many=True)
     doctors = DoctorSerializer(read_only=True, required=False, many=True)
     departments = GetDepartmentSerializer(many=True, read_only=True)
+
     class Meta(GetMarkerSerializer.Meta):
         fields = GetMarkerSerializer.Meta.fields + ['comment', 'buildings', 'doctors',"departments"]
 

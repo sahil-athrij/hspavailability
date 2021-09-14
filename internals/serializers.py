@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
-from internals.models import Department, Department_Name, Doctor, Equipment_Name, Floors, Building, Images, Equipment,DoctorReviews,ProfilePicture
+from internals.models import Department, Department_Name, Doctor, Equipment_Name,\
+    Floors, Building, Images, Equipment,DoctorReviews,ProfilePicture,WorkingTime, HospitalWorkingTime
 
 
 class GetImageSerializer(serializers.ModelSerializer):
@@ -9,6 +10,20 @@ class GetImageSerializer(serializers.ModelSerializer):
         fields = [
             'image', 'useinmarker', 'hospital', 'review'
         ]
+
+
+class GetWorkingTimeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = WorkingTime
+        fields = ["day", "starting_time", "ending_time"]
+
+
+class HospitalWorkingTimeSerializer(serializers.ModelSerializer):
+    working_time = GetWorkingTimeSerializer(many=False)
+
+    class Meta:
+        model = HospitalWorkingTime
+        fields = ["working_time", "hospital"]
 
 
 class DepartmentNameSerializer(serializers.ModelSerializer):
@@ -40,6 +55,7 @@ class GetDoctorImageSerializer(serializers.ModelSerializer):
 class DoctorSerializer(serializers.ModelSerializer):
     reviews = GetDoctorReviewSerializer(many=True, required=False, read_only=True)
     image = GetDoctorImageSerializer(many=False)
+    working_time = HospitalWorkingTimeSerializer(many=True)
 
     class Meta:
         model = Doctor

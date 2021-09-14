@@ -26,7 +26,7 @@ SECRET_KEY = os.getenv("SECRET_KEY", 'django-insecure-tr#83t$_--71h1yzg^@w6n^w29
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', False)
 
-ALLOWED_HOSTS = ['hospitals.trebuchet.one', 'needmedi.com', '127.0.0.1', '13.233.106.146']
+ALLOWED_HOSTS = ['hospitals.trebuchet.one', 'needmedi.com', '127.0.0.1', '13.233.106.146', "10.147.19.10"]
 
 if not DEBUG:
     DEPLOYMENT_URL = 'https://needmedi.com'

@@ -61,11 +61,10 @@ class Doctor(models.Model):
     choices = ((1,1), (2,2), (3,3), (4,4), (5,5))
     name = models.CharField(max_length=200)
     phone_number = models.CharField(max_length=14)
-    hospital = models.ManyToManyField(Markers, related_name='doctors', through=HospitalWorkingTime, blank=True, null=True)
+    hospital = models.ManyToManyField(Markers, related_name='doctors', through=HospitalWorkingTime, )
     department = models.ManyToManyField(Department, related_name='doctors')
     user = models.OneToOneField(User, related_name='doctor', on_delete=models.PROTECT, default=None, null=True, blank=True)
     about = models.TextField(blank=True,null=True, max_length=1000)
-
     rating = models.FloatField(default=0)
     patients = models.PositiveIntegerField(default=0)
     experience = models.PositiveIntegerField(default=0)

@@ -86,3 +86,4 @@ social-auth-app-django
 python-dotenv~=0.19.0
 django-oidc-provider
 django-rest-swagger
+django-json-widget

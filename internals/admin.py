@@ -4,7 +4,7 @@ from django.contrib import admin
 # Register your models here.
 from django.utils.html import format_html
 
-from internals.models import Images, Department, Department_Name, Equipment_Name, Equipment, Floors, Building, Doctor,HospitalWorkingTime,WorkingTime
+from internals.models import Images, Department, Department_Name, Equipment_Name, Equipment, Floors, Building, Doctor,HospitalWorkingTime,WorkingTime,ProfilePicture
 
 
 class ImagesAdmin(admin.ModelAdmin):
@@ -25,7 +25,7 @@ admin.site.register(Images, ImagesAdmin)
 
 @admin.register(Department)
 class DepartmentAdmin(admin.ModelAdmin):
-    fields = ('name', 'x', 'y','hospital')
+    fields = ('name', 'x', 'y','hospital',"rating")
     raw_id_fields = ('hospital',)
 
 
@@ -45,6 +45,7 @@ class DoctorAdmin(admin.ModelAdmin):
                   'rating', 'patients', 'experience', 'specialization',)
     inlines = (HospitalWorkingTimeAdmin,)
 
+admin.site.register(ProfilePicture,)
 admin.site.register(Department_Name, )
 admin.site.register(Equipment, )
 admin.site.register(Equipment_Name, )

@@ -33,6 +33,7 @@ class Floors(models.Model):
 
 class Department(models.Model):
     name = models.ForeignKey(Department_Name, on_delete=models.PROTECT)
+    rating = models.FloatField(default=0)
     x = models.IntegerField()
     y = models.IntegerField()
     hospital = models.ForeignKey(Markers, related_name='departments', on_delete=models.CASCADE)
@@ -45,14 +46,14 @@ class Equipment(models.Model):
 
 
 class WorkingTime(models.Model):
-    days = ((1,  "monday"), (2, "tuesday"), (3, "Wednesday"),(4,"Thursday"), (5,"friday"),(6,"saturday"), (7,"sunday"))
+    days = ((1,  "monday"), (2, "tuesday"), (3, "Wednesday"), (4,"Thursday"), (5,"friday"),(6,"saturday"), (7,"sunday"))
     day = models.IntegerField(default=1, choices=days)
     starting_time = models.TimeField()
     ending_time = models.TimeField()
 
 
 class HospitalWorkingTime(models.Model):
-    working_time = models.ForeignKey(WorkingTime,on_delete=models.RESTRICT,blank=True,null=True)
+    working_time = models.ForeignKey(WorkingTime, on_delete=models.RESTRICT,blank=True,null=True)
     hospital = models.ForeignKey(Markers, on_delete=models.PROTECT, blank=True, null=True)
     doctor = models.ForeignKey("Doctor", on_delete=models.PROTECT,related_name="working_time")
 
@@ -70,6 +71,9 @@ class Doctor(models.Model):
     experience = models.PositiveIntegerField(default=0)
     specialization = models.CharField(max_length=50, blank=True, null=True)
 
+    def __str__(self):
+        return f"Dr: {self.name}"
+
 
 class DoctorReviews(models.Model):
     content = models.TextField(max_length=3000)
@@ -78,7 +82,7 @@ class DoctorReviews(models.Model):
 
 
 class ProfilePicture(models.Model):
-    url = models.ImageField(upload_to="pic",blank=True)
+    url = models.ImageField(upload_to="pic", blank=True)
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name="image")
 
 

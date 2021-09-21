@@ -69,7 +69,7 @@ class DoctorApiViewSet(viewsets.ModelViewSet):
         if not doctor:
             serializer = self.get_serializer(data=request.data)
             serializer.is_valid(raise_exception=True)
-            self.perform_create(serializer)
+            doctor = serializer.save()
 
         print(doctor)
         working_times = self.request.data["working_time"]

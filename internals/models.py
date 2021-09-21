@@ -3,7 +3,7 @@ from django.db import models
 
 # Create your models here.
 from home.models import Markers,Reviews
-
+from datetime import timedelta
 
 class Equipment_Name(models.Model):
     name = models.CharField(max_length=200)
@@ -34,8 +34,8 @@ class Floors(models.Model):
 class Department(models.Model):
     name = models.ForeignKey(Department_Name, on_delete=models.PROTECT)
     rating = models.FloatField(default=0)
-    x = models.IntegerField()
-    y = models.IntegerField()
+    x = models.IntegerField(default=0)
+    y = models.IntegerField(default=0)
     hospital = models.ForeignKey(Markers, related_name='departments', on_delete=models.CASCADE)
     floor = models.ForeignKey(Floors, null=True, blank=True, related_name='departments', on_delete=models.PROTECT)
 
@@ -46,20 +46,25 @@ class Equipment(models.Model):
 
 
 class WorkingTime(models.Model):
-    days = ((1,  "monday"), (2, "tuesday"), (3, "Wednesday"), (4,"Thursday"), (5,"friday"),(6,"saturday"), (7,"sunday"))
+    days = ((1,  "monday"), (2, "tuesday"), (3, "Wednesday"), (4, "Thursday"), (5,"friday"),(6,"saturday"), (7,"sunday"))
     day = models.IntegerField(default=1, choices=days)
     starting_time = models.TimeField()
     ending_time = models.TimeField()
+    # time = models.DurationField(null=True, blank=True, validators=[])
+
+    # def save(self, force_insert=False, force_update=False, using=None,
+    #          update_fields=None):
+    #     self.time = timedelta(self.starting_time)
 
 
 class HospitalWorkingTime(models.Model):
     working_time = models.ForeignKey(WorkingTime, on_delete=models.RESTRICT,blank=True,null=True)
-    hospital = models.ForeignKey(Markers, on_delete=models.PROTECT, blank=True, null=True)
-    doctor = models.ForeignKey("Doctor", on_delete=models.PROTECT,related_name="working_time")
+    hospital = models.ForeignKey(Markers, on_delete=models.CASCADE, blank=True, null=True)
+    doctor = models.ForeignKey("Doctor", on_delete=models.CASCADE, related_name="working_time")
 
 
 class Doctor(models.Model):
-    choices = ((1,1), (2,2), (3,3), (4,4), (5,5))
+    choices = ((1, 1), (2, 2), (3, 3), (4, 4), (5, 5))
     name = models.CharField(max_length=200)
     phone_number = models.CharField(max_length=14)
     hospital = models.ManyToManyField(Markers, related_name='doctors', through=HospitalWorkingTime, )
@@ -70,6 +75,7 @@ class Doctor(models.Model):
     patients = models.PositiveIntegerField(default=0)
     experience = models.PositiveIntegerField(default=0)
     specialization = models.CharField(max_length=50, blank=True, null=True)
+    image = models.ImageField(upload_to="pic",null=True, blank=True)
 
     def __str__(self):
         return f"Dr: {self.name}"
@@ -79,11 +85,6 @@ class DoctorReviews(models.Model):
     content = models.TextField(max_length=3000)
     created_by = models.ForeignKey(User,on_delete=models.PROTECT, related_name="doctor_reviews")
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name="reviews")
-
-
-class ProfilePicture(models.Model):
-    url = models.ImageField(upload_to="pic", blank=True)
-    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name="image")
 
 
 class Images(models.Model):

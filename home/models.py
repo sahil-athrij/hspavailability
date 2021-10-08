@@ -116,6 +116,7 @@ class Markers(models.Model):
 
 class Reviews(models.Model):
     marker = models.ForeignKey(Markers, related_name="comment", on_delete=models.CASCADE)
+    total_rating = models.IntegerField(choices=rating, default=0)
     financial_rating = models.IntegerField(choices=rating, default=1)
     avg_cost = models.IntegerField(default=0)
     covid_rating = models.IntegerField(choices=rating, default=1)

@@ -33,7 +33,17 @@ class MarkersAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Markers, MarkersAdmin)
-admin.site.register(Reviews)
+
+
+@admin.register(Reviews)
+class ReviewsAdmin(admin.ModelAdmin):
+    raw_id_fields = ('marker',)
+
+
+@admin.register(Patient)
+class PatientAdmin(admin.ModelAdmin):
+    raw_id_fields = ('hospitalprefid',)
+
 admin.site.register(SuspiciousMarking)
-admin.site.register(Patient)
+
 admin.site.register(Tokens)

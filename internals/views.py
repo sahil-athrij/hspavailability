@@ -36,6 +36,7 @@ class DepartmentApiViewSet(viewsets.ModelViewSet):
     filter_backends = [django_filters.rest_framework.DjangoFilterBackend]
     filterset_fields = ['hospital']
 
+
 class EquipmentApiViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
     queryset = Equipment.objects.all()
@@ -70,24 +71,28 @@ class DoctorApiViewSet(viewsets.ModelViewSet):
             serializer = self.get_serializer(data=request.data)
             serializer.is_valid(raise_exception=True)
             doctor = serializer.save()
+        print(f"{request.data['department']}")
+        print(f"{doctor = }")
 
-        print(doctor)
-        working_times = self.request.data["working_time"]
-        print(working_times)
-        for data in working_times:
+        try:
+            working_times = self.request.data["working_time"]
+            print(working_times)
+            for data in working_times:
+                print(f"{data = }")
+                hospital = data['hospital']
+                print(f"{hospital = }")
+                working_time_obj, _ = WorkingTime.objects.get_or_create(day=data["working_time"].get("day"),
+                                                                        starting_time=data["working_time"].get(
+                                                                            "starting_time"),
+                                                                        ending_time=data["working_time"].get("ending_time"))
+                print(working_time_obj)
+                hs = Markers.objects.get(id=hospital)
+                HospitalWorkingTime.objects.get_or_create(working_time=working_time_obj,
+                                                          hospital=hs, doctor=doctor)
+        except Exception as e:
+            print(e)
+        return Response(self.serializer_class(doctor).data, status=201, )
 
-            print(f"{data = }")
-            hospital = data['hospital']
-            print(f"{hospital = }")
-            working_time_obj, _ = WorkingTime.objects.get_or_create(day=data["working_time"].get("day"),
-                                                                    starting_time=data["working_time"].get(
-                                                                        "starting_time"),
-                                                                    ending_time=data["working_time"].get("ending_time"))
-            print(working_time_obj)
-            hs = Markers.objects.get(id=hospital)
-            HospitalWorkingTime.objects.create(working_time=working_time_obj,
-                                               hospital=hs, doctor=doctor)
-            return Response(self.serializer_class(doctor).data, status=201, )
 
 class DoctorReviewViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticatedOrReadOnly]

@@ -7,6 +7,7 @@ from .models import Markers, Reviews, SuspiciousMarking, Patient, Tokens, gender
 class GetMarkerSerializer(serializers.ModelSerializer):
     images = GetImageSerializer(many=True, required=False, read_only=True)
     comment_count = serializers.SerializerMethodField(read_only=True)
+
     class Meta:
         model = Markers
         fields = [
@@ -43,9 +44,9 @@ class GetReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Reviews
         fields = [
-            'id', 'marker', 'financial_rating', 'avg_cost', 'covid_rating', 'care_rating', 'oxygen_rating',
+            'id', 'marker', 'financial_rating','total_rating','avg_cost', 'covid_rating', 'care_rating', 'oxygen_rating',
             'beds_available', 'size', 'ventilator_availability', 'oxygen_availability',
-            'icu_availability', 'comment', 'written_by', 'images', 'written_by_name', 'datef'
+            'icu_availability', 'comment', 'written_by', 'images', 'written_by_name', 'datef',
         ]
 
     def get_written_by_name(self, review):
@@ -77,7 +78,7 @@ class GetPatientSerializer(serializers.ModelSerializer):
 class DetailMarkerSerializer(GetMarkerSerializer):
     comment = GetReviewSerializer(read_only=True, required=False, many=True)
     buildings = GetBuildingSerializer(read_only=True, required=False, many=True)
-    doctors = DoctorSerializer(read_only=True, required=False, many=True)
+    doctors = DoctorSerializer(read_only=True, required=False, many=True,)
     departments = GetDepartmentSerializer(many=True, read_only=True)
 
     class Meta(GetMarkerSerializer.Meta):

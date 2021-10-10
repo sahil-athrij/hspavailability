@@ -155,7 +155,7 @@ class Patient(models.Model):
     oxy_bed = models.BooleanField(default=False)
     bedtype = models.IntegerField(choices=bed, default=0, blank=True, null=True)
 
-    blood = models.CharField(max_length=2, blank=True, null=True)
+    blood = models.CharField(max_length=4, blank=True, null=True)
     ct = models.BooleanField(default=False)
     covidresult = models.BooleanField(default=False)
     ctscore = models.TextField(max_length=20, blank=True, null=True)

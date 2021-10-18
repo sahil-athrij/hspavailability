@@ -48,7 +48,7 @@ class Equipment(models.Model):
 
 class WorkingTime(models.Model):
     days = (
-    (1, "monday"), (2, "tuesday"), (3, "Wednesday"), (4, "Thursday"), (5, "friday"), (6, "saturday"), (7, "sunday"))
+        (1, "monday"), (2, "tuesday"), (3, "Wednesday"), (4, "Thursday"), (5, "friday"), (6, "saturday"), (7, "sunday"))
     day = models.IntegerField(default=1, choices=days)
     starting_time = models.TimeField()
     ending_time = models.TimeField()
@@ -101,3 +101,8 @@ class Images(models.Model):
                                   blank=True)
     useinmarker = models.BooleanField(default=False)
     user = models.ForeignKey(User, on_delete=models.PROTECT, related_name='uploaded_images', blank=True, null=True)
+
+
+class ProfileImage(models.Model):
+    image = models.ImageField(upload_to="pic", null=True, blank=True)
+    user = models.OneToOneField(User, related_name='profile', on_delete=models.CASCADE)

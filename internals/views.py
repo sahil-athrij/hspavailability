@@ -5,9 +5,19 @@ from django.shortcuts import render
 from rest_framework import viewsets, generics, filters
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
-
+from home.models import Tokens
 from internals.models import *
 from internals.serializers import *
+from maps import settings
+
+def add_points(user, points):
+    try:
+        token = Tokens.objects.get(user=user)
+        token.points += points
+        token.save()
+    except Tokens.DoesNotExist:
+        pass
+
 
 
 class Department_NameApiViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
@@ -25,7 +35,6 @@ class Equipment_NameApiViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
     serializer_class = EquipmentNameSerializer
     http_method_names = ['get', 'post', 'put', 'patch', 'head', 'options']
     filter_backends = [filters.SearchFilter]
-    search_fields = ['name']
 
 
 class DepartmentApiViewSet(viewsets.ModelViewSet):
@@ -71,8 +80,7 @@ class DoctorApiViewSet(viewsets.ModelViewSet):
             serializer = self.get_serializer(data=request.data)
             serializer.is_valid(raise_exception=True)
             doctor = serializer.save()
-        print(f"{request.data['department']}")
-        print(f"{doctor = }")
+            add_points(request.user, settings.add_doctor_point)
 
         try:
             working_times = self.request.data["working_time"]
@@ -84,7 +92,8 @@ class DoctorApiViewSet(viewsets.ModelViewSet):
                 working_time_obj, _ = WorkingTime.objects.get_or_create(day=data["working_time"].get("day"),
                                                                         starting_time=data["working_time"].get(
                                                                             "starting_time"),
-                                                                        ending_time=data["working_time"].get("ending_time"))
+                                                                        ending_time=data["working_time"].get(
+                                                                            "ending_time"))
                 print(working_time_obj)
                 hs = Markers.objects.get(id=hospital)
                 HospitalWorkingTime.objects.get_or_create(working_time=working_time_obj,
@@ -104,23 +113,27 @@ class DoctorReviewViewSet(viewsets.ModelViewSet):
         user = self.request.user
         doctor = self.request.data["doctor"]
         rev = DoctorReviews.objects.filter(created_by=user, doctor=doctor).exists()
-        print(rev)
+        add_points(self.request.user,settings.add_feedback_point)
         if rev:
             raise serializer.ValidationError({"detail": "Only One Review Allowed Per Doctor"})
         serializer.save(created_by=user)
-# {
-#   "name": "sunith",
-#   "phone_number": "9961693831",
-#   "department": [
-#     4  ],
-#   "working_time": [
-#     {
-#       "working_time": {
-#         "day": 1,
-#         "starting_time": "06:00:00",
-#         "ending_time": "12:00:00"
-#       },
-#       "hospital": 45351
-#     }
-#   ]
-# }
+
+
+class ProfilePictureViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    queryset = ProfileImage.objects.all()
+    serializer_class = ProfilePictureSerializer
+    http_method_names = ['get', 'post', 'put', 'delete']
+
+    def get_queryset(self):
+        return ProfileImage.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        user = self.request.user
+        profile = ProfileImage.objects.filter(user=user).exists()
+        if profile:
+            print("not created yet")
+            return Response(
+                {"detail": "Only one profile picture is allowed you can edit the existing one"}, status=300
+            )
+        serializer.save(user=user)

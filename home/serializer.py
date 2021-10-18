@@ -2,6 +2,8 @@ from rest_framework import serializers
 
 from internals.serializers import GetImageSerializer, GetBuildingSerializer, DoctorSerializer,GetDepartmentSerializer
 from .models import Markers, Reviews, SuspiciousMarking, Patient, Tokens, gender
+from internals.models import ProfileImage
+from maps.settings import DEPLOYMENT_URL
 
 
 class GetMarkerSerializer(serializers.ModelSerializer):
@@ -40,6 +42,7 @@ class GetMarkerSerializer(serializers.ModelSerializer):
 class GetReviewSerializer(serializers.ModelSerializer):
     images = GetImageSerializer(many=True, required=False)
     written_by_name = serializers.SerializerMethodField(read_only=True)
+    written_by_profile = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Reviews
@@ -47,7 +50,17 @@ class GetReviewSerializer(serializers.ModelSerializer):
             'id', 'marker', 'financial_rating','total_rating','avg_cost', 'covid_rating', 'care_rating', 'oxygen_rating',
             'beds_available', 'size', 'ventilator_availability', 'oxygen_availability',
             'icu_availability', 'comment', 'written_by', 'images', 'written_by_name', 'datef',
+            'written_by_profile'
         ]
+
+
+    def get_written_by_profile(self, obj):
+        # Use a try - except block if needed
+        try:
+            img = DEPLOYMENT_URL + ProfileImage.objects.get(user_id=obj.written_by).image.url
+        except ProfileImage.DoesNotExist:
+            img = ''
+        return img
 
     def get_written_by_name(self, review):
         return review.written_by.username

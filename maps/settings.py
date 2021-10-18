@@ -32,7 +32,7 @@ if not DEBUG:
     DEPLOYMENT_URL = 'https://needmedi.com'
 
 else:
-    DEPLOYMENT_URL = 'http://127.0.0.1:8000'
+    DEPLOYMENT_URL = 'http://10.147.19.91:8080'
     # DEPLOYMENT_URL = 'https://needmedi.com'
 
 # Application definition
@@ -314,3 +314,14 @@ LOGGING = {
         },
     }
 }
+
+
+# points to be added to user for following actions
+add_hospital_point = 10
+add_doctor_point = 5
+add_friend_point = 5
+add_diagnostic_lab_point = 5
+add_pharmacy_point = 5
+add_blood_bank_point = 5
+add_ambulance_point = 4
+add_feedback_point = 2

@@ -5,7 +5,7 @@ from django.contrib import admin
 from django.utils.html import format_html
 
 from internals.models import Images, Department, Department_Name, Equipment_Name, Equipment, Floors, Building, Doctor, \
-    HospitalWorkingTime, WorkingTime
+    HospitalWorkingTime, WorkingTime,ProfileImage
 
 
 @admin.register(Images)
@@ -49,6 +49,7 @@ class DoctorAdmin(admin.ModelAdmin):
     inlines = (HospitalWorkingTimeAdmin,)
 
 
+admin.site.register(ProfileImage, )
 admin.site.register(Department_Name, )
 admin.site.register(Equipment, )
 admin.site.register(Equipment_Name, )

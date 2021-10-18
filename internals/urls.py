@@ -11,5 +11,5 @@ router.register(r'equipment_names', Equipment_NameApiViewSet)
 router.register(r'equipments', EquipmentApiViewSet)
 router.register(r'floors', FloorApiViewSet)
 router.register(r'buildings', BuildingApiViewSet)
-
+router.register(r'profile', ProfilePictureViewSet)
 urlpatterns = [path(r'', include(router.urls))]

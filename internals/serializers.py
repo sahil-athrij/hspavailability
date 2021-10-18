@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from internals.models import Department, Department_Name, Doctor, Equipment_Name,\
-    Floors, Building, Images, Equipment, DoctorReviews, WorkingTime, HospitalWorkingTime
+    Floors, Building, Images, Equipment, DoctorReviews, WorkingTime, HospitalWorkingTime,ProfileImage
 
 
 class GetImageSerializer(serializers.ModelSerializer):
@@ -31,6 +31,14 @@ class DepartmentNameSerializer(serializers.ModelSerializer):
         model = Department_Name
         fields = ['id', 'name', "icon"]
 
+
+class ProfilePictureSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProfileImage
+        fields = ['user', 'image']
+        extra_kwargs = {
+            'user': {'read_only': True},
+        }
 
 class EquipmentNameSerializer(serializers.ModelSerializer):
     class Meta:

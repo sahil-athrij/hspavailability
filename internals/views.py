@@ -115,7 +115,7 @@ class DoctorReviewViewSet(viewsets.ModelViewSet):
         rev = DoctorReviews.objects.filter(created_by=user, doctor=doctor).exists()
         add_points(self.request.user,settings.add_feedback_point)
         if rev:
-            raise serializer.ValidationError({"detail": "Only One Review Allowed Per Doctor"})
+            raise serializers.ValidationError({"detail": "Only One Review Allowed Per Doctor"})
         serializer.save(created_by=user)
 
 
@@ -137,3 +137,46 @@ class ProfilePictureViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
                 {"detail": "Only one profile picture is allowed you can edit the existing one"}, status=300
             )
         serializer.save(user=user)
+
+
+class NurseApiViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    queryset = Nurse.objects.all()
+    serializer_class = NurseSerializer
+    http_method_names = ['get', 'post', 'put', 'patch', 'head', 'options','delete']
+
+    def perform_create(self, serializer):
+        user = self.request.user
+        add_points(user, settings.add_nurse_point)
+        serializer.save()
+
+class NurseReviewViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    queryset = NurseReviews.objects.all()
+    serializer_class = GetNurseReviewSerializer
+    http_method_names = ['get', 'post', 'head', 'options']
+
+    def perform_create(self, serializer):
+        user = self.request.user
+        nurse = self.request.data["nurse"]
+        rev = NurseReviews.objects.filter(created_by=user, nurse=nurse).exists()
+        add_points(self.request.user,settings.add_feedback_point)
+        if rev:
+            raise serializers.ValidationError({"detail": "Only One Review Allowed Per Nurse"})
+        serializer.save(created_by=user)
+
+
+
+
+
+class AmbulanceApiViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    queryset = Ambulance.objects.all()
+    serializer_class = AmbulanceSerializer
+    http_method_names = ['get', 'post', 'put', 'patch', 'head', 'options','delete']
+
+    def perform_create(self, serializer):
+
+        user = self.request.user
+        add_points(user, settings.add_ambulance_point)
+        serializer.save()

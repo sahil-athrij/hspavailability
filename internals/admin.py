@@ -4,8 +4,7 @@ from django.contrib import admin
 # Register your models here.
 from django.utils.html import format_html
 
-from internals.models import Images, Department, Department_Name, Equipment_Name, Equipment, Floors, Building, Doctor, \
-    HospitalWorkingTime, WorkingTime,ProfileImage
+from internals.models import *
 
 
 @admin.register(Images)
@@ -54,3 +53,7 @@ admin.site.register(Department_Name, )
 admin.site.register(Equipment, )
 admin.site.register(Equipment_Name, )
 admin.site.register(Floors, )
+admin.site.register(Nurse, )
+admin.site.register(NurseReviews, )
+admin.site.register(DoctorReviews, )
+admin.site.register(Ambulance, )

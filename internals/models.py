@@ -6,6 +6,15 @@ from home.models import Markers, Reviews
 from datetime import timedelta
 
 
+gender = [
+    ('M', 'male'),
+    ('F', 'female'),
+    ('NB', 'Non Binary'),
+    ('NP', 'Prefer Not to Say')
+]
+
+
+
 class Equipment_Name(models.Model):
     name = models.CharField(max_length=200)
 
@@ -66,11 +75,20 @@ class HospitalWorkingTime(models.Model):
 
 
 class Doctor(models.Model):
+
+
+
+    lan=(('english', 'english'),('hindi','hindi'))
     choices = ((1, 1), (2, 2), (3, 3), (4, 4), (5, 5))
     name = models.CharField(max_length=200)
     phone_number = models.CharField(max_length=14)
-    hospital = models.ManyToManyField(Markers, related_name='doctors', through=HospitalWorkingTime, )
-    department = models.ManyToManyField(Department, related_name='doctors')
+
+    whatsapp_number = models.CharField(max_length=14,null=True,blank=True)
+    email_id = models.EmailField(max_length=254,blank=True,null=True)
+    language = models.CharField(choices=lan, max_length=25,blank=True,null=True)
+
+    hospital = models.ManyToManyField(Markers, related_name='doctors', through=HospitalWorkingTime )
+    department = models.ManyToManyField(Department, related_name='doctors', blank=True, null=True)
     user = models.OneToOneField(User, related_name='doctor', on_delete=models.PROTECT, default=None, null=True,
                                 blank=True)
     about = models.TextField(blank=True, null=True, max_length=1000)
@@ -85,9 +103,12 @@ class Doctor(models.Model):
 
 
 class DoctorReviews(models.Model):
+    choices = ((1, 1), (2, 2), (3, 3), (4, 4), (5, 5))
+
     content = models.TextField(max_length=3000)
     created_by = models.ForeignKey(User, on_delete=models.PROTECT, related_name="doctor_reviews")
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name="reviews")
+    rating = models.IntegerField(choices=choices,default=0)
 
 
 class Images(models.Model):
@@ -106,3 +127,38 @@ class Images(models.Model):
 class ProfileImage(models.Model):
     image = models.ImageField(upload_to="pic", null=True, blank=True)
     user = models.OneToOneField(User, related_name='profile', on_delete=models.CASCADE)
+
+class Nurse(models.Model):
+    name = models.CharField(max_length=30)
+    gender = models.CharField(choices=gender, max_length=2)
+    hospital = models.ForeignKey(Markers, on_delete=models.SET_NULL, blank=True, null=True, related_name='nurse')
+    experience = models.PositiveIntegerField(default=0)
+    patients = models.PositiveIntegerField(default=0)
+    image = models.ImageField(upload_to="pic", null=True, blank=True)
+    user = models.OneToOneField(User, related_name='nurse', on_delete=models.PROTECT, default=None, null=True,
+                                blank=True)
+    rating = models.FloatField(default=0)
+    home_care = models.BooleanField(default=False)
+    about = models.TextField(blank=True, null=True, max_length=1000)
+    phone_number = models.CharField(max_length=14)
+    review = models.ForeignKey(Reviews, default=None, null=True, blank=True, related_name='nurse',
+                               on_delete=models.PROTECT)
+
+
+class NurseReviews(models.Model):
+    choices = ((1, 1), (2, 2), (3, 3), (4, 4), (5, 5))
+
+
+    content = models.TextField(max_length=3000)
+    created_by = models.ForeignKey(User, on_delete=models.PROTECT, related_name="nurse_reviews")
+    nurse = models.ForeignKey(Nurse, on_delete=models.CASCADE, related_name="reviews")
+    rating = models.IntegerField(choices=choices, default=1)
+
+
+
+
+class Ambulance(models.Model):
+    name = models.CharField(max_length=30, blank=True, null=True)
+    driver_name = models.CharField(max_length=30)
+    hospital = models.ForeignKey(Markers, on_delete=models.SET_NULL, blank=True, null=True, related_name='ambulance')
+    phone_number = models.CharField(max_length=14)

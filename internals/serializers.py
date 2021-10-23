@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from internals.models import Department, Department_Name, Doctor, Equipment_Name,\
-    Floors, Building, Images, Equipment, DoctorReviews, WorkingTime, HospitalWorkingTime,ProfileImage
+    Floors, Building, Images, Equipment, DoctorReviews, WorkingTime, HospitalWorkingTime, Nurse, Ambulance, ProfileImage, NurseReviews
 
 
 class GetImageSerializer(serializers.ModelSerializer):
@@ -51,7 +51,7 @@ class GetDoctorReviewSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = DoctorReviews
-        fields = ["content", "created_by", "doctor"]
+        fields = ["content", "created_by", "doctor", "rating"]
 
 
 class DoctorSerializer(serializers.ModelSerializer):
@@ -61,7 +61,7 @@ class DoctorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Doctor
         fields = ["id", 'name', 'phone_number', 'hospital', 'department', 'user', 'working_time',
-                  'rating', 'patients', 'experience', 'specialization', "about", "reviews", "image"]
+                  'rating', 'patients', 'experience', 'specialization', "about", "reviews", "image","whatsapp_number","email_id", "language"]
         extra_kwargs = {
             'hospital': {'read_only': True},
             'user': {'required': False},
@@ -107,3 +107,26 @@ class GetBuildingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Building
         fields = ['name', 'floor_plan', 'floors']
+
+class NurseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Nurse
+        fields = [
+            'id','name', 'gender', 'hospital', 'experience', 'patients', 'image', 'user','rating','home_care','about','phone_number','review'
+        ]
+
+
+class GetNurseReviewSerializer(serializers.ModelSerializer):
+    created_by = serializers.ReadOnlyField(source="name")
+
+    class Meta:
+        model = NurseReviews
+        fields = ["content", "created_by", "nurse", "rating"]
+
+class AmbulanceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Ambulance
+        fields = [
+            'id','name', 'driver_name', 'hospital','phone_number'
+        ]
+

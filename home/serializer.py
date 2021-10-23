@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from internals.serializers import GetImageSerializer, GetBuildingSerializer, DoctorSerializer,GetDepartmentSerializer
-from .models import Markers, Reviews, SuspiciousMarking, Patient, Tokens, gender
+from .models import Markers, Reviews, SuspiciousMarking, Patient, Tokens
 from internals.models import ProfileImage
 from maps.settings import DEPLOYMENT_URL
 
@@ -49,8 +49,8 @@ class GetReviewSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'marker', 'financial_rating','total_rating','avg_cost', 'covid_rating', 'care_rating', 'oxygen_rating',
             'beds_available', 'size', 'ventilator_availability', 'oxygen_availability',
-            'icu_availability', 'comment', 'written_by', 'images', 'written_by_name', 'datef',
-            'written_by_profile'
+            'icu_availability', 'comment', 'written_by', 'images', 'written_by_name', 'datef','written_by_profile'
+
         ]
 
 
@@ -104,3 +104,4 @@ class GetTokensSerializer(serializers.ModelSerializer):
         fields = [
             'user', 'private_token', 'invite_token', 'invited', 'points', 'reviews', 'reports'
         ]
+

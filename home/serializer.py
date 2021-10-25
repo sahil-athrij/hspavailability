@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from internals.serializers import GetImageSerializer, GetBuildingSerializer, DoctorSerializer,GetDepartmentSerializer
-from .models import Markers, Reviews, SuspiciousMarking, Patient, Tokens
+from .models import Markers, Reviews, SuspiciousMarking, Patient, Tokens, Spoken_Language, Language
 from internals.models import ProfileImage
 from maps.settings import DEPLOYMENT_URL
 
@@ -77,13 +77,13 @@ class GetSusSerializer(serializers.ModelSerializer):
 class GetPatientSerializer(serializers.ModelSerializer):
     gender_name = serializers.CharField(source='get_gender_display', read_only=True)
     bedtype_name = serializers.CharField(source='get_bedtype_display', read_only=True)
-
+    helped_by_name = serializers.CharField(source='get_helped_by_display', read_only=True)
     class Meta:
         model = Patient
         fields = [
             'id', 'Name', 'age', 'gender', 'address', 'symptoms', 'symdays', 'spo2', 'oxy_bed', 'covidresult',
             'hospitalpref', 'attendername', 'attenderphone', 'relation', 'srfid', 'bunum', 'blood', 'bedtype', 'ct',
-            'ctscore', 'category', 'ownership', 'gender_name', 'bedtype_name'
+            'ctscore', 'category', 'ownership', 'gender_name', 'bedtype_name' ,'helped_by_name','helped_by'
 
         ]
 
@@ -105,3 +105,21 @@ class GetTokensSerializer(serializers.ModelSerializer):
             'user', 'private_token', 'invite_token', 'invited', 'points', 'reviews', 'reports'
         ]
 
+
+class Language_Serializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Language
+        fields = [
+            'name'
+        ]
+
+
+class SpokenLanguages_Serializers(serializers.ModelSerializer):
+
+    # language = Language_Serializer(many=True)
+    class Meta:
+        model = Spoken_Language
+        fields = [
+            'language'
+        ]

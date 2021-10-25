@@ -80,8 +80,13 @@ department = [
     'Homeopathy'
 ]
 
+medicine = [
+    ('Ay','Ayurveda'),('Al','Allopathy'),('Ho','Homeopathy')
+]
 
 class Markers(models.Model):
+
+
     name = models.CharField(max_length=500)
     Phone = models.CharField(max_length=100)
     size = models.IntegerField(choices=sizes, default=0)
@@ -109,7 +114,7 @@ class Markers(models.Model):
     pending_approval = models.BooleanField(default=False)
     video_call = models.CharField(max_length=1000, null=True, blank=True)
     about = models.TextField(default="")
-
+    medicine= models.CharField(choices=medicine ,max_length=50,default="Allopathy")
     def __str__(self):
         return self.name
 
@@ -175,6 +180,7 @@ class Patient(models.Model):
 
     user = models.ForeignKey(User, default=1, on_delete=models.CASCADE)
 
+    helped_by = models.ForeignKey(User, blank=True, null=True, related_name='helping', on_delete=models.SET_NULL)
 
 def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
@@ -199,3 +205,20 @@ class Tokens(models.Model):
     reports = models.IntegerField(default=0)
     images = models.IntegerField(default=0)
     invite_token = models.CharField(max_length=10, blank=True, null=True)
+
+
+class Language(models.Model):
+
+    name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
+
+class Spoken_Language(models.Model):
+    language = models.ManyToManyField(Language, related_name='spoken_language')
+    user = models.OneToOneField(User, related_name='spoken_language', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.user.username
+
+

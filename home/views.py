@@ -100,7 +100,7 @@ class MarkerApiViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
                         'oxygen_availability': ['gte', 'lte', 'exact'], 'icu_availability': ['gte', 'lte', 'exact'],
                         'avg_cost': ['gte', 'lte', 'exact'],
                         'care_rating': ['gte', 'lte', 'exact'], 'covid_rating': ['gte', 'lte', 'exact'],
-                        'beds_available': ['gte', 'lte', 'exact']}
+                        'beds_available': ['gte', 'lte', 'exact'], 'category':['exact'],'type':['exact'],'ownership':['exact'], 'medicine':['exact']}
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -267,3 +267,21 @@ class ImageViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
         user = self.request.user
         give_points(user.tokens.private_token, 'image')
         serializer.save(user=user)
+
+class LanguageApiViewSet(viewsets.ModelViewSet):
+
+    pass
+    queryset = Spoken_Language.objects.all()
+
+    serializer_class = SpokenLanguages_Serializers
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    http_method_names = ['get', 'post']
+
+    def get_queryset(self):
+        try:
+            return Spoken_Language.objects.filter(user=self.request.user)
+        except Exception as e:
+            return Spoken_Language.objects.none()
+
+    # def perform_create(self, serializer):
+

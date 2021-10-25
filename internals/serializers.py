@@ -1,7 +1,8 @@
 from rest_framework import serializers
 
 from internals.models import Department, Department_Name, Doctor, Equipment_Name,\
-    Floors, Building, Images, Equipment, DoctorReviews, WorkingTime, HospitalWorkingTime, Nurse, Ambulance, ProfileImage, NurseReviews
+    Floors, Building, Images, Equipment, DoctorReviews, WorkingTime, HospitalWorkingTime, \
+    Nurse, Ambulance, ProfileImage, NurseReviews, AmbulanceReviews, Blood_bank
 
 
 class GetImageSerializer(serializers.ModelSerializer):
@@ -54,14 +55,14 @@ class GetDoctorReviewSerializer(serializers.ModelSerializer):
         fields = ["content", "created_by", "doctor", "rating"]
 
 
+
 class DoctorSerializer(serializers.ModelSerializer):
     reviews = GetDoctorReviewSerializer(many=True, required=False, read_only=True)
     working_time = HospitalWorkingTimeSerializer(many=True,read_only=True)
-
     class Meta:
         model = Doctor
         fields = ["id", 'name', 'phone_number', 'hospital', 'department', 'user', 'working_time',
-                  'rating', 'patients', 'experience', 'specialization', "about", "reviews", "image","whatsapp_number","email_id", "language"]
+                  'rating', 'patients', 'experience', 'specialization', "about", "reviews", "image","whatsapp_number","email_id", ]
         extra_kwargs = {
             'hospital': {'read_only': True},
             'user': {'required': False},
@@ -128,5 +129,21 @@ class AmbulanceSerializer(serializers.ModelSerializer):
         model = Ambulance
         fields = [
             'id','name', 'driver_name', 'hospital','phone_number'
+        ]
+
+class GetAmbulanceReviewSerializer(serializers.ModelSerializer):
+    created_by = serializers.ReadOnlyField(source="name")
+
+    class Meta:
+        model = AmbulanceReviews
+        fields = ["content", "created_by", "ambulance", "rating"]
+
+class Blood_typeSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Blood_bank
+        fields = [
+            'name', 'phone_no','blood_avail_Bpos','blood_avail_Apos','blood_avail_ABpos','blood_avail_Opos',
+            'blood_avail_Bneg','blood_avail_Aneg', 'blood_avail_Oneg','blood_avail_ABneg'
         ]
 

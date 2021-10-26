@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.utils.html import format_html
-from home.models import Markers, Reviews, SuspiciousMarking, Patient, Tokens, Language, Spoken_Language
+from home.models import Markers, Reviews, SuspiciousMarking, Patient, Tokens, Language
 from django.conf import settings
 
 
@@ -50,7 +50,6 @@ admin.site.register(Tokens)
 
 
 admin.site.register(Language)
-admin.site.register(Spoken_Language)
 
 
 

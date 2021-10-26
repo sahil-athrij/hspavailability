@@ -125,9 +125,7 @@ class Images(models.Model):
     user = models.ForeignKey(User, on_delete=models.PROTECT, related_name='uploaded_images', blank=True, null=True)
 
 
-class ProfileImage(models.Model):
-    image = models.ImageField(upload_to="pic", null=True, blank=True)
-    user = models.OneToOneField(User, related_name='profile', on_delete=models.CASCADE)
+
 
 class Nurse(models.Model):
     name = models.CharField(max_length=30)

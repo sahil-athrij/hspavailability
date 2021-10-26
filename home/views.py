@@ -257,6 +257,23 @@ class PatientViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
 
         return Response(serializer.data)
 
+    @action(detail=True, methods=["post"], url_path='help')
+    def help(self, request, pk):
+
+
+        user = request.user
+        patient = Patient.objects.get(pk=pk)
+
+        if patient.helped_by:
+            serializers.ValidationError(detail='Thank you!')
+            return Response({'detail':'This patient got treatment ! '}, status=403)
+        patient.helped_by = user
+        patient.save()
+
+
+        serializer = self.get_serializer(patient, many=False)
+
+        return Response(serializer.data, status=201)
 
 class ImageViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
     queryset = Images.objects.all()
@@ -268,20 +285,5 @@ class ImageViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
         give_points(user.tokens.private_token, 'image')
         serializer.save(user=user)
 
-class LanguageApiViewSet(viewsets.ModelViewSet):
 
-    pass
-    queryset = Spoken_Language.objects.all()
-
-    serializer_class = SpokenLanguages_Serializers
-    permission_classes = [IsAuthenticatedOrReadOnly]
-    http_method_names = ['get', 'post']
-
-    def get_queryset(self):
-        try:
-            return Spoken_Language.objects.filter(user=self.request.user)
-        except Exception as e:
-            return Spoken_Language.objects.none()
-
-    # def perform_create(self, serializer):
 

@@ -196,6 +196,14 @@ def create_new_id():
     return str(unique_id)
 
 
+class Language(models.Model):
+
+    name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
+
+
 class Tokens(models.Model):
     user = models.OneToOneField(User, related_name='tokens', on_delete=models.CASCADE)
     private_token = models.CharField(max_length=10, unique=True, default=create_new_id)
@@ -205,20 +213,10 @@ class Tokens(models.Model):
     reports = models.IntegerField(default=0)
     images = models.IntegerField(default=0)
     invite_token = models.CharField(max_length=10, blank=True, null=True)
-
-
-class Language(models.Model):
-
-    name = models.CharField(max_length=50)
-
-    def __str__(self):
-        return self.name
-
-class Spoken_Language(models.Model):
     language = models.ManyToManyField(Language, related_name='spoken_language')
-    user = models.OneToOneField(User, related_name='spoken_language', on_delete=models.CASCADE)
+    profile = models.ImageField(upload_to="pic", null=True, blank=True)
 
-    def __str__(self):
-        return self.user.username
+
+
 
 

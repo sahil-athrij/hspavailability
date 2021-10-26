@@ -123,24 +123,7 @@ class DoctorReviewViewSet(viewsets.ModelViewSet):
 		serializer.save(created_by=user)
 
 
-class ProfilePictureViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
-	permission_classes = [IsAuthenticatedOrReadOnly]
-	queryset = ProfileImage.objects.all()
-	serializer_class = ProfilePictureSerializer
-	http_method_names = ['get', 'post', 'put', 'delete']
 
-	def get_queryset(self):
-		return ProfileImage.objects.filter(user=self.request.user)
-
-	def perform_create(self, serializer):
-		user = self.request.user
-		profile = ProfileImage.objects.filter(user=user).exists()
-		if profile:
-			print("not created yet")
-			return Response(
-				{"detail": "Only one profile picture is allowed you can edit the existing one"}, status=300
-			)
-		serializer.save(user=user)
 
 
 class NurseApiViewSet(viewsets.ModelViewSet):

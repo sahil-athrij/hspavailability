@@ -1,8 +1,7 @@
 from rest_framework import serializers
 
 from internals.serializers import GetImageSerializer, GetBuildingSerializer, DoctorSerializer,GetDepartmentSerializer
-from .models import Markers, Reviews, SuspiciousMarking, Patient, Tokens, Spoken_Language, Language
-from internals.models import ProfileImage
+from .models import Markers, Reviews, SuspiciousMarking, Patient, Tokens, Language
 from maps.settings import DEPLOYMENT_URL
 
 
@@ -42,25 +41,17 @@ class GetMarkerSerializer(serializers.ModelSerializer):
 class GetReviewSerializer(serializers.ModelSerializer):
     images = GetImageSerializer(many=True, required=False)
     written_by_name = serializers.SerializerMethodField(read_only=True)
-    written_by_profile = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Reviews
         fields = [
             'id', 'marker', 'financial_rating','total_rating','avg_cost', 'covid_rating', 'care_rating', 'oxygen_rating',
             'beds_available', 'size', 'ventilator_availability', 'oxygen_availability',
-            'icu_availability', 'comment', 'written_by', 'images', 'written_by_name', 'datef','written_by_profile'
+            'icu_availability', 'comment', 'written_by', 'images', 'written_by_name', 'datef'
 
         ]
 
 
-    def get_written_by_profile(self, obj):
-        # Use a try - except block if needed
-        try:
-            img = DEPLOYMENT_URL + ProfileImage.objects.get(user_id=obj.written_by).image.url
-        except ProfileImage.DoesNotExist:
-            img = ''
-        return img
 
     def get_written_by_name(self, review):
         return review.written_by.username
@@ -78,6 +69,7 @@ class GetPatientSerializer(serializers.ModelSerializer):
     gender_name = serializers.CharField(source='get_gender_display', read_only=True)
     bedtype_name = serializers.CharField(source='get_bedtype_display', read_only=True)
     helped_by_name = serializers.CharField(source='get_helped_by_display', read_only=True)
+
     class Meta:
         model = Patient
         fields = [
@@ -86,6 +78,7 @@ class GetPatientSerializer(serializers.ModelSerializer):
             'ctscore', 'category', 'ownership', 'gender_name', 'bedtype_name' ,'helped_by_name','helped_by'
 
         ]
+
 
 
 class DetailMarkerSerializer(GetMarkerSerializer):
@@ -97,15 +90,6 @@ class DetailMarkerSerializer(GetMarkerSerializer):
     class Meta(GetMarkerSerializer.Meta):
         fields = GetMarkerSerializer.Meta.fields + ['comment', 'buildings', 'doctors',"departments"]
 
-
-class GetTokensSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Tokens
-        fields = [
-            'user', 'private_token', 'invite_token', 'invited', 'points', 'reviews', 'reports'
-        ]
-
-
 class Language_Serializer(serializers.ModelSerializer):
 
     class Meta:
@@ -115,11 +99,15 @@ class Language_Serializer(serializers.ModelSerializer):
         ]
 
 
-class SpokenLanguages_Serializers(serializers.ModelSerializer):
 
-    # language = Language_Serializer(many=True)
+class GetTokensSerializer(serializers.ModelSerializer):
+
+    language = Language_Serializer(many=True, required=False, read_only=True)
     class Meta:
-        model = Spoken_Language
+        model = Tokens
         fields = [
-            'language'
+            'user', 'private_token', 'invite_token', 'invited', 'points', 'reviews', 'reports', 'language', 'profile'
         ]
+
+
+

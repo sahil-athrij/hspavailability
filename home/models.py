@@ -108,7 +108,7 @@ class Markers(models.Model):
     address = models.JSONField(blank=True)
     location = models.PointField(srid=4326, verbose_name='Location')
     category = models.CharField(choices=category, default='U', max_length=2)
-    types = models.CharField(choices=types, default='U', max_length=2)
+    type = models.CharField(choices=types, default='U', max_length=2)
     ownership = models.CharField(choices=ownership, default='U', max_length=2)
     pending_approval = models.BooleanField(default=False)
     video_call = models.CharField(max_length=1000, null=True, blank=True)

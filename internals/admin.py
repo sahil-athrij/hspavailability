@@ -44,7 +44,7 @@ class HospitalWorkingTimeAdmin(admin.TabularInline):
 class DoctorAdmin(admin.ModelAdmin):
     fields = ('name', 'phone_number', 'department', 'user', 'image',
 
-              'rating', 'patients', 'experience', 'specialization',)
+              'rating', 'patients', 'experience', 'specialization','ima_number')
     inlines = (HospitalWorkingTimeAdmin,)
 
 

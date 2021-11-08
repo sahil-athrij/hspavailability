@@ -260,18 +260,14 @@ class PatientViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
 
     @action(detail=True, methods=["post"], url_path='help')
     def help(self, request, pk):
-
         user = request.user
         patient = Patient.objects.get(pk=pk)
-
         if patient.helped_by:
             serializers.ValidationError(detail='Thank you!')
             return Response({'detail': 'This patient got treatment ! '}, status=403)
         patient.helped_by = user
         patient.save()
-
         serializer = self.get_serializer(patient, many=False)
-
         return Response(serializer.data, status=201)
 
 
@@ -289,5 +285,7 @@ class ImageViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
 class LanguageApiViewSet(viewsets.ModelViewSet):
     queryset = Language.objects.all()
     serializer_class = Language_Serializer
-    http_method_names = ['get','post']
+    http_method_names = ['get', 'post']
+    filter_backends = [filters.SearchFilter,]
+    search_fields = ['name']
 

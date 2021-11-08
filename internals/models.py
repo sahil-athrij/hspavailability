@@ -50,6 +50,7 @@ class Department(models.Model):
     floor = models.ForeignKey(Floors, null=True, blank=True, related_name='departments', on_delete=models.PROTECT)
 
 
+
 class Equipment(models.Model):
     name = models.ForeignKey(Equipment_Name, on_delete=models.PROTECT)
     department = models.ForeignKey(Department, related_name='equipment', on_delete=models.CASCADE)
@@ -74,30 +75,33 @@ class HospitalWorkingTime(models.Model):
     doctor = models.ForeignKey("Doctor", on_delete=models.CASCADE, related_name="working_time")
 
 
+
+
 class Doctor(models.Model):
 
 
 
-    lan=(('english', 'english'),('hindi','hindi'))
     choices = ((1, 1), (2, 2), (3, 3), (4, 4), (5, 5))
     name = models.CharField(max_length=200)
     phone_number = models.CharField(max_length=14)
 
     whatsapp_number = models.CharField(max_length=14,null=True,blank=True)
     email_id = models.EmailField(max_length=254,blank=True,null=True)
-    language = models.CharField(choices=lan, max_length=25,blank=True,null=True)
 
     hospital = models.ManyToManyField(Markers, related_name='doctors', through=HospitalWorkingTime )
     department = models.ManyToManyField(Department, related_name='doctors', blank=True, null=True)
     user = models.OneToOneField(User, related_name='doctor', on_delete=models.PROTECT, default=None, null=True,
                                 blank=True)
+
+    ima_number= models.PositiveIntegerField(default=0)
+
     about = models.TextField(blank=True, null=True, max_length=1000)
     rating = models.FloatField(default=0)
     patients = models.PositiveIntegerField(default=0)
     experience = models.PositiveIntegerField(default=0)
     specialization = models.CharField(max_length=50, blank=True, null=True)
     image = models.ImageField(upload_to="pic", null=True, blank=True)
-
+    language = models.ForeignKey("home.language",blank=True,null=True,on_delete=models.SET_NULL,related_name='doctors')
     def __str__(self):
         return f"Dr: {self.name}"
 
@@ -124,9 +128,7 @@ class Images(models.Model):
     user = models.ForeignKey(User, on_delete=models.PROTECT, related_name='uploaded_images', blank=True, null=True)
 
 
-class ProfileImage(models.Model):
-    image = models.ImageField(upload_to="pic", null=True, blank=True)
-    user = models.OneToOneField(User, related_name='profile', on_delete=models.CASCADE)
+
 
 class Nurse(models.Model):
     name = models.CharField(max_length=30)
@@ -143,6 +145,10 @@ class Nurse(models.Model):
     phone_number = models.CharField(max_length=14)
     review = models.ForeignKey(Reviews, default=None, null=True, blank=True, related_name='nurse',
                                on_delete=models.PROTECT)
+
+    whats_app = models.IntegerField(max_length=10, blank=True, null=True)
+    services = models.IntegerField(max_length=50, blank=True, null=True)
+    availability = models.BooleanField(default=False)
 
 
 class NurseReviews(models.Model):
@@ -162,3 +168,34 @@ class Ambulance(models.Model):
     driver_name = models.CharField(max_length=30)
     hospital = models.ForeignKey(Markers, on_delete=models.SET_NULL, blank=True, null=True, related_name='ambulance')
     phone_number = models.CharField(max_length=14)
+
+    def __str__(self):
+        return self.name
+
+class AmbulanceReviews(models.Model):
+    choices = ((1, 1), (2, 2), (3, 3), (4, 4), (5, 5))
+
+    content = models.TextField(max_length=3000)
+    created_by = models.ForeignKey(User, on_delete=models.PROTECT, related_name="ambulance_reviews")
+    ambulance = models.ForeignKey(Ambulance, on_delete=models.CASCADE, related_name="reviews")
+    rating = models.IntegerField(choices=choices, default=1)
+
+    def __str__(self):
+        return f'{self.ambulance.name} review by {self.created_by.first_name}'
+
+class Blood_bank(models.Model):
+
+    name = models.CharField(max_length=50, blank=True,null=True)
+    phone_no = models.IntegerField(max_length=10, blank=True,null=True)
+    hospital = models.ForeignKey(Markers, on_delete=models.SET_NULL, blank=True, null=True, related_name='blood_bank')
+
+    blood_avail_Bpos = models.FloatField(blank=True, null=True)
+    blood_avail_Apos = models.FloatField(blank=True, null=True)
+    blood_avail_ABpos = models.FloatField( blank=True, null=True)
+    blood_avail_Opos = models.FloatField( blank=True, null=True)
+    blood_avail_Bneg = models.FloatField( blank=True, null=True)
+    blood_avail_Aneg = models.FloatField( blank=True, null=True)
+    blood_avail_ABneg = models.FloatField( blank=True, null=True)
+    blood_avail_Oneg = models.FloatField( blank=True, null=True)
+
+

@@ -48,7 +48,6 @@ class DoctorAdmin(admin.ModelAdmin):
     inlines = (HospitalWorkingTimeAdmin,)
 
 
-admin.site.register(ProfileImage, )
 admin.site.register(Department_Name, )
 admin.site.register(Equipment, )
 admin.site.register(Equipment_Name, )

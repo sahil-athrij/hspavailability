@@ -41,7 +41,7 @@ category = [
     ('U', 'Uncategorized')
 ]
 
-type = [
+types = [
     ('H', 'Hospital'),
     ('P', 'Pharmacy'),
     ('C', 'Clinic'),
@@ -81,15 +81,13 @@ department = [
 ]
 
 medicine = [
-    ('Ay','Ayurveda'),('Al','Allopathy'),('Ho','Homeopathy')
+    ('Ay', 'Ayurveda'), ('Al', 'Allopathy'), ('Ho', 'Homeopathy')
 ]
 
 
 class Markers(models.Model):
-
-
     name = models.CharField(max_length=500)
-    Phone = models.CharField(max_length=100)
+    Phone = models.CharField(max_length=100, blank=True, null=True)
     size = models.IntegerField(choices=sizes, default=0)
     financial_rating = models.FloatField(default=0)
     avg_cost = models.IntegerField(default=0)
@@ -110,12 +108,12 @@ class Markers(models.Model):
     address = models.JSONField(blank=True)
     location = models.PointField(srid=4326, verbose_name='Location')
     category = models.CharField(choices=category, default='U', max_length=2)
-    type = models.CharField(choices=type, default='U', max_length=2)
+    types = models.CharField(choices=types, default='U', max_length=2)
     ownership = models.CharField(choices=ownership, default='U', max_length=2)
     pending_approval = models.BooleanField(default=False)
     video_call = models.CharField(max_length=1000, null=True, blank=True)
     about = models.TextField(default="")
-    medicine= models.CharField(choices=medicine ,max_length=50,default="Allopathy")
+    medicine = models.CharField(choices=medicine, max_length=50, default="Allopathy")
 
     def __str__(self):
         return self.name
@@ -200,7 +198,6 @@ def create_new_id():
 
 
 class Language(models.Model):
-
     name = models.CharField(max_length=50)
 
     def __str__(self):
@@ -221,7 +218,3 @@ class Tokens(models.Model):
 
     def __str__(self):
         return self.user.username
-
-
-
-

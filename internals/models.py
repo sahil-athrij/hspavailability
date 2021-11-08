@@ -92,6 +92,9 @@ class Doctor(models.Model):
     department = models.ManyToManyField(Department, related_name='doctors', blank=True, null=True)
     user = models.OneToOneField(User, related_name='doctor', on_delete=models.PROTECT, default=None, null=True,
                                 blank=True)
+
+    ima_number= models.PositiveIntegerField(default=0)
+
     about = models.TextField(blank=True, null=True, max_length=1000)
     rating = models.FloatField(default=0)
     patients = models.PositiveIntegerField(default=0)
@@ -142,6 +145,10 @@ class Nurse(models.Model):
     phone_number = models.CharField(max_length=14)
     review = models.ForeignKey(Reviews, default=None, null=True, blank=True, related_name='nurse',
                                on_delete=models.PROTECT)
+
+    whats_app = models.IntegerField(max_length=10, blank=True, null=True)
+    services = models.IntegerField(max_length=50, blank=True, null=True)
+    availability = models.BooleanField(default=False)
 
 
 class NurseReviews(models.Model):

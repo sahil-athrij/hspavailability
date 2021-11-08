@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.db import models
 
 # Create your models here.
-from home.models import Markers, Reviews
+from home.models import Markers, Reviews,Language
 from datetime import timedelta
 
 
@@ -12,7 +12,6 @@ gender = [
     ('NB', 'Non Binary'),
     ('NP', 'Prefer Not to Say')
 ]
-
 
 
 class Equipment_Name(models.Model):
@@ -50,7 +49,6 @@ class Department(models.Model):
     floor = models.ForeignKey(Floors, null=True, blank=True, related_name='departments', on_delete=models.PROTECT)
 
 
-
 class Equipment(models.Model):
     name = models.ForeignKey(Equipment_Name, on_delete=models.PROTECT)
     department = models.ForeignKey(Department, related_name='equipment', on_delete=models.CASCADE)
@@ -62,11 +60,6 @@ class WorkingTime(models.Model):
     day = models.IntegerField(default=1, choices=days)
     starting_time = models.TimeField()
     ending_time = models.TimeField()
-    # time = models.DurationField(null=True, blank=True, validators=[])
-
-    # def save(self, force_insert=False, force_update=False, using=None,
-    #          update_fields=None):
-    #     self.time = timedelta(self.starting_time)
 
 
 class HospitalWorkingTime(models.Model):
@@ -75,11 +68,7 @@ class HospitalWorkingTime(models.Model):
     doctor = models.ForeignKey("Doctor", on_delete=models.CASCADE, related_name="working_time")
 
 
-
-
 class Doctor(models.Model):
-
-
 
     choices = ((1, 1), (2, 2), (3, 3), (4, 4), (5, 5))
     name = models.CharField(max_length=200)
@@ -101,7 +90,8 @@ class Doctor(models.Model):
     experience = models.PositiveIntegerField(default=0)
     specialization = models.CharField(max_length=50, blank=True, null=True)
     image = models.ImageField(upload_to="pic", null=True, blank=True)
-    language = models.ForeignKey("home.language",blank=True,null=True,on_delete=models.SET_NULL,related_name='doctors')
+    language = models.ManyToManyField(Language, related_name='spoken_language')
+
     def __str__(self):
         return f"Dr: {self.name}"
 
@@ -128,8 +118,6 @@ class Images(models.Model):
     user = models.ForeignKey(User, on_delete=models.PROTECT, related_name='uploaded_images', blank=True, null=True)
 
 
-
-
 class Nurse(models.Model):
     name = models.CharField(max_length=30)
     gender = models.CharField(choices=gender, max_length=2)
@@ -154,13 +142,10 @@ class Nurse(models.Model):
 class NurseReviews(models.Model):
     choices = ((1, 1), (2, 2), (3, 3), (4, 4), (5, 5))
 
-
     content = models.TextField(max_length=3000)
     created_by = models.ForeignKey(User, on_delete=models.PROTECT, related_name="nurse_reviews")
     nurse = models.ForeignKey(Nurse, on_delete=models.CASCADE, related_name="reviews")
     rating = models.IntegerField(choices=choices, default=1)
-
-
 
 
 class Ambulance(models.Model):
@@ -172,6 +157,7 @@ class Ambulance(models.Model):
     def __str__(self):
         return self.name
 
+
 class AmbulanceReviews(models.Model):
     choices = ((1, 1), (2, 2), (3, 3), (4, 4), (5, 5))
 
@@ -182,6 +168,7 @@ class AmbulanceReviews(models.Model):
 
     def __str__(self):
         return f'{self.ambulance.name} review by {self.created_by.first_name}'
+
 
 class Blood_bank(models.Model):
 

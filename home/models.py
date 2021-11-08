@@ -84,6 +84,7 @@ medicine = [
     ('Ay','Ayurveda'),('Al','Allopathy'),('Ho','Homeopathy')
 ]
 
+
 class Markers(models.Model):
 
 
@@ -115,6 +116,7 @@ class Markers(models.Model):
     video_call = models.CharField(max_length=1000, null=True, blank=True)
     about = models.TextField(default="")
     medicine= models.CharField(choices=medicine ,max_length=50,default="Allopathy")
+
     def __str__(self):
         return self.name
 
@@ -182,6 +184,7 @@ class Patient(models.Model):
 
     helped_by = models.ForeignKey(User, blank=True, null=True, related_name='helping', on_delete=models.SET_NULL)
 
+
 def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
 
@@ -216,6 +219,8 @@ class Tokens(models.Model):
     language = models.ManyToManyField(Language, related_name='spoken_language')
     profile = models.ImageField(upload_to="pic", null=True, blank=True)
 
+    def __str__(self):
+        return self.user.username
 
 
 

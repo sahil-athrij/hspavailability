@@ -2,7 +2,7 @@ Django==3.2.3
 Pillow==8.2.0
 django-admin-honeypot==1.1.0
 django-braces==1.14.0
-django-cors-headers==3.7.0
+Q==3.7.0
 django-filter==2.4.0
 django-json-widget
 django-log-viewer==1.1.2

@@ -11,6 +11,7 @@ from .permissions import IsOwner
 from .serializer import UserSerializer, GroupSerializer
 from home.models import Language
 
+
 class UserApiViewSet(viewsets.ModelViewSet):
     permission_classes = [IsOwner]
     serializer_class = UserSerializer
@@ -25,6 +26,7 @@ class UserApiViewSet(viewsets.ModelViewSet):
         except User.DoesNotExist:
             return User.objects.none()
         except Exception:
+
             return User.objects.none()
 
     def list(self, request, *args, **kwargs):

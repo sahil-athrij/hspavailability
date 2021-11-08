@@ -52,7 +52,6 @@ class GetReviewSerializer(serializers.ModelSerializer):
         ]
 
 
-
     def get_written_by_name(self, review):
         return review.written_by.username
 
@@ -78,7 +77,6 @@ class GetPatientSerializer(serializers.ModelSerializer):
             'ctscore', 'category', 'ownership', 'gender_name', 'bedtype_name' ,'helped_by_name','helped_by'
 
         ]
-
 
 
 class DetailMarkerSerializer(GetMarkerSerializer):

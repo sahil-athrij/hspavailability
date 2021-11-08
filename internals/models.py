@@ -101,7 +101,7 @@ class Doctor(models.Model):
     experience = models.PositiveIntegerField(default=0)
     specialization = models.CharField(max_length=50, blank=True, null=True)
     image = models.ImageField(upload_to="pic", null=True, blank=True)
-
+    language = models.ForeignKey("home.language",blank=True,null=True,on_delete=models.SET_NULL,related_name='doctors')
     def __str__(self):
         return f"Dr: {self.name}"
 

@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.utils.html import format_html
-from home.models import Markers, Reviews, SuspiciousMarking, Patient, Tokens
+from home.models import Markers, Reviews, SuspiciousMarking, Patient, Tokens, Language
 from django.conf import settings
 
 
@@ -47,3 +47,9 @@ class PatientAdmin(admin.ModelAdmin):
 admin.site.register(SuspiciousMarking)
 
 admin.site.register(Tokens)
+
+
+admin.site.register(Language)
+
+
+

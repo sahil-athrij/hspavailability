@@ -1,4 +1,5 @@
 import json
+import logging
 
 import django_filters
 import requests
@@ -16,6 +17,25 @@ from rest_framework.response import Response
 from internals.models import Images
 from v2.views import give_points
 from .serializer import *
+
+
+def get_client_ip(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    print(x_forwarded_for)
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+
+    return ip
+
+
+def get_loction_python(request):
+    ip = get_client_ip(request)
+    ipsearchurl = f'https://ipapi.co/{ip}/json/'
+    loc_data = requests.get(ipsearchurl, headers={
+        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36'})
+    return json.loads(loc_data.content)
 
 
 def update_marker(id):
@@ -165,8 +185,17 @@ class MarkerApiViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
     def filter_queryset(self, queryset):
         distance = float(self.request.GET.get('distance', 10000000))
         queryset = super(MarkerApiViewSet, self).filter_queryset(queryset)
-        lat = float(self.request.GET.get('lat', 0))
-        lng = float(self.request.GET.get('lng', 0))
+        try:
+            lat = float(self.request.GET.get('lat', 0))
+            lng = float(self.request.GET.get('lng', 0))
+        except ValueError:
+            data = get_loction_python(self.request)
+            try:
+                lat = float(data['latitude'])
+                lng = float(data['longitude'])
+            except Exception as e:
+                logging.exception(e)
+                lat, lng = 0, 0
         if lat and lng:
             loc = Point(lng, lat, srid=4326)
             if queryset.count() > 400:
@@ -286,6 +315,5 @@ class LanguageApiViewSet(viewsets.ModelViewSet):
     queryset = Language.objects.all()
     serializer_class = LanguageSerializer
     http_method_names = ['get', 'post']
-    filter_backends = [filters.SearchFilter,]
+    filter_backends = [filters.SearchFilter, ]
     search_fields = ['name']
-

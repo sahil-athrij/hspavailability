@@ -89,16 +89,16 @@ class DetailMarkerSerializer(GetMarkerSerializer):
         fields = GetMarkerSerializer.Meta.fields + ['comment', 'buildings', 'doctors', "departments"]
 
 
-class Language_Serializer(serializers.ModelSerializer):
+class LanguageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Language
         fields = [
-            'name'
+            'id', 'name'
         ]
 
 
 class GetTokensSerializer(serializers.ModelSerializer):
-    language = Language_Serializer(many=True, required=False, read_only=True)
+    language = LanguageSerializer(many=True, required=False, read_only=True)
 
     class Meta:
         model = Tokens

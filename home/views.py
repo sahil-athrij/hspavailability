@@ -264,7 +264,7 @@ class PatientViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
         patient = Patient.objects.get(pk=pk)
         if patient.helped_by:
             serializers.ValidationError(detail='Thank you!')
-            return Response({'detail': 'This patient got treatment ! '}, status=403)
+            return Response({'details': 'This patient got treatment ! '}, status=403)
         patient.helped_by = user
         patient.save()
         serializer = self.get_serializer(patient, many=False)
@@ -284,7 +284,7 @@ class ImageViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
 
 class LanguageApiViewSet(viewsets.ModelViewSet):
     queryset = Language.objects.all()
-    serializer_class = Language_Serializer
+    serializer_class = LanguageSerializer
     http_method_names = ['get', 'post']
     filter_backends = [filters.SearchFilter,]
     search_fields = ['name']

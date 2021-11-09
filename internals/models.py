@@ -161,7 +161,7 @@ class AmbulanceReviews(models.Model):
 
     content = models.TextField(max_length=3000)
     created_by = models.ForeignKey(User, on_delete=models.PROTECT, related_name="ambulance_reviews")
-    ambulance = models.ForeignKey(Ambulance, on_delete=models.CASCADE, related_name="reviews")
+    ambulance = models.ForeignKey(Ambulance, on_delete=models.CASCADE, related_name="ambulance_reviews")
     rating = models.IntegerField(choices=choices, default=1)
 
     def __str__(self):
@@ -170,7 +170,7 @@ class AmbulanceReviews(models.Model):
 
 class Blood_bank(models.Model):
     name = models.CharField(max_length=50, blank=True, null=True)
-    phone_no = models.IntegerField(max_length=10, blank=True, null=True)
+    phone_no = models.CharField(max_length=15, blank=True, null=True)
     hospital = models.ForeignKey(Markers, on_delete=models.SET_NULL, blank=True, null=True, related_name='blood_bank')
 
     blood_avail_Bpos = models.FloatField(blank=True, null=True)

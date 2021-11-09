@@ -216,8 +216,8 @@ class SusViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
         serializer.save(created_by=user)
 
 
-class PatientViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
-    queryset = Patient.objects.all()
+class PatientViewSet(viewsets.ModelViewSet):
+    queryset = Patient.objects.filter(helped_by=None)
     serializer_class = GetPatientSerializer
     permission_classes = [permissions.IsAuthenticated]
     http_method_names = ['get', 'post', 'head', 'options']

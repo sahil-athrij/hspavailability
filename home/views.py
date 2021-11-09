@@ -17,6 +17,8 @@ from rest_framework.response import Response
 from internals.models import Images
 from v2.views import give_points
 from .serializer import *
+from internals.views import add_points
+import maps.settings as settings
 
 
 def get_client_ip(request):
@@ -141,7 +143,7 @@ class MarkerApiViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
                     srid=4326)  # Point(x,y). x=lng and y=lat
         url = f"https://eu1.locationiq.com/v1/reverse.php?key=pk.959200a41370341f608a91b67be6e8eb&lat={self.request.data['lat']}&lon={self.request.data['lng']}&format=json"
         det = requests.get(url)
-        give_points(user.tokens.private_token, 'review')
+        add_points(self.request.user, settings.add_hospital_point)
         if det.status_code == 200:
             data = json.loads(det.content.decode())
 

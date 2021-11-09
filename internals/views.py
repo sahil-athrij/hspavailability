@@ -77,12 +77,10 @@ class DoctorApiViewSet(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
 
-        doctor = Doctor.objects.filter(ima_number=self.request.data.get("ima_number")).first()
-        if not doctor:
-            serializer = self.get_serializer(data=request.data)
-            serializer.is_valid(raise_exception=True)
-            doctor = serializer.save()
-            add_points(request.user, settings.add_doctor_point)
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        doctor = serializer.save()
+        add_points(request.user, settings.add_doctor_point)
 
         try:
             working_times = self.request.data["working_time"]

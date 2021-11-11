@@ -103,5 +103,6 @@ class GetTokensSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tokens
         fields = [
-            'user', 'private_token', 'invite_token', 'invited', 'points', 'reviews', 'reports', 'language', 'profile'
+            'user', 'private_token', 'invite_token', 'invited', 'points', 'reviews', 'reports',
+            'language', 'profile', 'phone_number'
         ]

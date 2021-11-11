@@ -1,3 +1,5 @@
+import logging
+
 from django.contrib.auth.models import User, Group
 from oauth2_provider.contrib.rest_framework import TokenHasScope, OAuth2Authentication
 from rest_framework import viewsets, generics, permissions
@@ -37,11 +39,14 @@ class UserApiViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=["get", "post","patch"], url_path='me')
     def me(self, request, *args, **kwargs):
+        logging.info(request.data)
         if request.method == "PATCH":
             
             data = request.data
             user = request.user
-            languages = request.data.get('languages')
+            tokens = request.data.get('tokens')
+            languages = tokens.get('languages')
+            phone_number = tokens.get('phone_number')
             token = user.tokens
             try:
                 profile = request.FILES['image']
@@ -52,8 +57,11 @@ class UserApiViewSet(viewsets.ModelViewSet):
             print(languages)
             if languages:
                 for ln in languages:
+                    print(ln)
                     lang_obj,_ = Language.objects.get_or_create(name=ln.lower())
                     token.language.add(lang_obj.id)
+
+            token.phone_number = phone_number
             token.save()
 
             serializer = UserSerializer(user, data=data)

@@ -58,13 +58,15 @@ INSTALLED_APPS = [
     'oidc_provider',
     'rest_framework_swagger',
     'drf_yasg',
+    'channels',
     'admin_honeypot',
     "log_viewer",
     'request_viewer',
     # custom
     'home',
     'v2',
-    'internals'
+    'internals',
+    'chats'
 ]
 
 MIDDLEWARE = [
@@ -101,6 +103,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'maps.wsgi.application'
+ASGI_APPLICATION = 'maps.asgi.application'
 
 OAUTH2_PROVIDER = {
     "OIDC_ENABLED": True,
@@ -194,6 +197,14 @@ DATABASES = {
     }
 }
 
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 

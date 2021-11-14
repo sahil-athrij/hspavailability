@@ -29,7 +29,7 @@ DEBUG = os.getenv('DEBUG', False)
 ALLOWED_HOSTS = ['hospitals.trebuchet.one', 'needmedi.com', '*']
 
 if not DEBUG:
-    DEPLOYMENT_URL = 'https://needmedi.com'
+    DEPLOYMENT_URL = 'https://api.needmedi.com'
 
 else:
     DEPLOYMENT_URL = 'https://dev.needmedi.com'

@@ -14,11 +14,11 @@ from rest_framework.parsers import FileUploadParser
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 
+import maps.settings as settings
 from internals.models import Images
+from internals.views import add_points
 from v2.views import give_points
 from .serializer import *
-from internals.views import add_points
-import maps.settings as settings
 
 
 def get_client_ip(request):
@@ -288,6 +288,12 @@ class PatientViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(self.queryset, many=True)
 
         return Response(serializer.data)
+
+    @action(detail=False, methods=["get", ], url_path='help')
+    def me_helped(self, request, *args, **kwargs):
+        patient = Patient.objects.filter(helped_by=request.user)
+        serializer = self.get_serializer(patient, many=True)
+        return Response(serializer.data, status=201)
 
     @action(detail=True, methods=["post"], url_path='help')
     def help(self, request, pk):

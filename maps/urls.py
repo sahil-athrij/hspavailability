@@ -41,7 +41,7 @@ schema_view = get_schema_view(
 urlpatterns = [
 
     path('admin/', include('admin_honeypot.urls', namespace='admin_honeypot')),
-    path(settings.ADMIN_URL, include('request_viewer.urls')),
+    # path(settings.ADMIN_URL, include('request_viewer.urls')),
     path(settings.ADMIN_URL + 'log_viewer/', include('log_viewer.urls')),
     path(settings.ADMIN_URL, admin.site.urls),
 

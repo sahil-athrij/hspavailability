@@ -27,15 +27,15 @@ ADMIN_URL = os.environ.get('ADMIN_URL')
 application_name = 'needmedi'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DEBUG', False)
+DEBUG = True
 
 ALLOWED_HOSTS = ['hospitals.trebuchet.one', 'needmedi.com', '*']
 
 if not DEBUG:
-    DEPLOYMENT_URL = 'https://needmedi.com'
+    DEPLOYMENT_URL = 'https://api.needmedi.com'
 
 else:
-    DEPLOYMENT_URL = 'https://dev.needmedi.com'
+    DEPLOYMENT_URL = 'https://api.dev.needmedi.com'
     # DEPLOYMENT_URL = 'https://needmedi.com'
 
 # Application definition
@@ -61,7 +61,7 @@ INSTALLED_APPS = [
     'channels',
     'admin_honeypot',
     "log_viewer",
-    'request_viewer',
+    # 'request_viewer',
     # custom
     'home',
     'v2',
@@ -78,7 +78,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'request_viewer.middleware.RequestViewerMiddleware',
+    # 'request_viewer.middleware.RequestViewerMiddleware',
 ]
 
 ROOT_URLCONF = 'maps.urls'

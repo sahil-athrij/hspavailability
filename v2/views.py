@@ -225,6 +225,7 @@ def convert_google_token(token, client_id):
 
     url = settings.DEPLOYMENT_URL + '/auth/social/convert-token/'
     r = requests.post(url, data=data)
+    logger.debug(r.content)
     try:
         logger.info('google auth convert')
         cont = json.loads(r.content.decode())

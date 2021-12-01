@@ -2,7 +2,6 @@ from rest_framework import serializers
 
 from internals.serializers import GetImageSerializer, GetBuildingSerializer, DoctorSerializer, GetDepartmentSerializer
 from .models import Markers, Reviews, SuspiciousMarking, Patient, Tokens, Language
-from maps.settings import DEPLOYMENT_URL
 
 
 class GetMarkerSerializer(serializers.ModelSerializer):
@@ -74,8 +73,8 @@ class GetPatientSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'Name', 'age', 'gender', 'address', 'symptoms', 'symdays', 'spo2', 'oxy_bed', 'covidresult',
             'hospitalpref', 'attendername', 'attenderphone', 'relation', 'srfid', 'bunum', 'blood', 'bedtype', 'ct',
-            'ctscore', 'category', 'ownership', 'gender_name', 'bedtype_name', 'helped_by_name', 'helped_by'
-
+            'ctscore', 'category', 'ownership', 'gender_name', 'bedtype_name', 'helped_by_name', 'helped_by',
+            'requirement'
         ]
 
 

@@ -1,8 +1,9 @@
-from django.urls import path
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 
-from . import views
+from .views import KeyExchangeViewSet
 
-urlpatterns = [
-    path('', views.index, name='index'),
-    path('<str:room_name>/', views.room, name='room'),
-]
+router = DefaultRouter()
+router.register(r'key_exchange', KeyExchangeViewSet)
+
+urlpatterns = [path(r'', include(router.urls))]

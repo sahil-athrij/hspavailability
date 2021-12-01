@@ -181,6 +181,7 @@ class Patient(models.Model):
     user = models.ForeignKey(User, default=1, on_delete=models.CASCADE)
 
     helped_by = models.ForeignKey(User, blank=True, null=True, related_name='helping', on_delete=models.SET_NULL)
+    requirement = models.CharField(max_length=20, blank=True, null=True)
 
 
 def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
@@ -215,7 +216,7 @@ class Tokens(models.Model):
     invite_token = models.CharField(max_length=10, blank=True, null=True)
     language = models.ManyToManyField(Language, related_name='spoken_language')
     profile = models.ImageField(upload_to="pic", null=True, blank=True)
-    phone_number = models.CharField(max_length=15,blank=True,null=True)
+    phone_number = models.CharField(max_length=15, blank=True, null=True)
 
     def __str__(self):
         return self.user.username

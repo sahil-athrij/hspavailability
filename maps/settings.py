@@ -35,7 +35,7 @@ if not DEBUG:
     DEPLOYMENT_URL = 'https://api.needmedi.com'
 
 else:
-    DEPLOYMENT_URL = 'https://api.dev.needmedi.com'
+    DEPLOYMENT_URL = 'https://api.needmedi.com'
     # DEPLOYMENT_URL = 'https://needmedi.com'
 
 # Application definition

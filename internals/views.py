@@ -1,10 +1,9 @@
 import django_filters
-from django.shortcuts import render
-
 # Create your views here.
 from rest_framework import viewsets, generics, filters
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
+
 from home.models import Tokens
 from internals.models import *
 from internals.serializers import *
@@ -187,3 +186,13 @@ class Blood_type_ApiViewSet(viewsets.ModelViewSet):
         user = self.request.user
         add_points(user, settings.add_blood_bank_point)
         serializer.save()
+
+
+class AppointmentViewSet(viewsets.ModelViewSet):
+    serializer_class = AppointmentSerializer
+    http_method_names = ['get', 'post', 'delete']
+    # permission_classes = [IsOwnerOrReadOnly]
+    queryset = Appointment.objects.all()
+
+    def get_queryset(self):
+        return Appointment.objects.filter(patient=self.request.user)

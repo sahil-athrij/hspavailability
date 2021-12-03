@@ -67,11 +67,12 @@ class GetPatientSerializer(serializers.ModelSerializer):
     gender_name = serializers.CharField(source='get_gender_display', read_only=True)
     bedtype_name = serializers.CharField(source='get_bedtype_display', read_only=True)
     helped_by_name = serializers.CharField(source='get_helped_by_display', read_only=True)
+    uid = serializers.ReadOnlyField(source="user.id")
 
     class Meta:
         model = Patient
         fields = [
-            'id', 'Name', 'age', 'gender', 'address', 'symptoms', 'symdays', 'spo2', 'oxy_bed', 'covidresult',
+            'id', 'uid', 'Name', 'age', 'gender', 'address', 'symptoms', 'symdays', 'spo2', 'oxy_bed', 'covidresult',
             'hospitalpref', 'attendername', 'attenderphone', 'relation', 'srfid', 'bunum', 'blood', 'bedtype', 'ct',
             'ctscore', 'category', 'ownership', 'gender_name', 'bedtype_name', 'helped_by_name', 'helped_by',
             'requirement'

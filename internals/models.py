@@ -3,7 +3,6 @@ from django.db import models
 
 # Create your models here.
 from home.models import Markers, Reviews, Language
-from datetime import timedelta
 
 gender = [
     ('M', 'male'),
@@ -67,7 +66,14 @@ class HospitalWorkingTime(models.Model):
     doctor = models.ForeignKey("Doctor", on_delete=models.CASCADE, related_name="working_time")
 
 
+class AvailableSlots(models.Model):
+    date = models.DateField()
+    start = models.TimeField()
+    end = models.TimeField()
+
+
 class Doctor(models.Model):
+    days = []
     choices = ((1, 1), (2, 2), (3, 3), (4, 4), (5, 5))
     name = models.CharField(max_length=200)
     phone_number = models.CharField(max_length=14)
@@ -89,6 +95,7 @@ class Doctor(models.Model):
     specialization = models.CharField(max_length=50, blank=True, null=True)
     image = models.ImageField(upload_to="pic", null=True, blank=True)
     language = models.ManyToManyField(Language, related_name='doctor')
+    slots = models.ManyToManyField(AvailableSlots, related_name="available_slots")
 
     def __str__(self):
         return f"Dr: {self.name}"
@@ -181,3 +188,24 @@ class Blood_bank(models.Model):
     blood_avail_Aneg = models.FloatField(blank=True, null=True)
     blood_avail_ABneg = models.FloatField(blank=True, null=True)
     blood_avail_Oneg = models.FloatField(blank=True, null=True)
+
+
+class Appointment(models.Model):
+    """Contains info about appointment"""
+
+    class Meta:
+        unique_together = ('doctor', 'date',)
+
+    doctor = models.ForeignKey(Doctor, related_name="appointment", on_delete=models.CASCADE)
+    date = models.DateField(help_text="YYYY-MM-DD")
+    approved = models.BooleanField(default=False)
+    patient = models.ForeignKey(User, related_name="appointment_user", on_delete=models.CASCADE)
+    start = models.TimeField()
+    end = models.TimeField()
+
+    # def __str__(self):
+    #     return '{} {} {}. Patient: {}'.format(self.date, self.time, self.doctor, self.patient)
+
+    # @property
+    # def time(self):
+    #     return self.TIMESLOT_LIST[self.timeslot][1]

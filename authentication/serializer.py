@@ -1,10 +1,11 @@
 from django.contrib.auth.models import User, Group
-from home.serializer import GetTokensSerializer
 from rest_framework import serializers
+
 from home.models import Tokens
+from home.serializer import GetTokensSerializer
+
 
 # first we define the serializers
-from maps.settings import DEPLOYMENT_URL
 #
 #
 # class FriendSerialiser(serializers.ModelSerializer):
@@ -25,10 +26,11 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('username', 'email', "first_name", "last_name", 'tokens', 'friends')
+        fields = ('id', 'username', 'email', "first_name", "last_name", 'tokens', 'friends')
 
     def get_friends(self, user):
-        friends = [{"name": tkn.user.username, "email": tkn.user.email, "profile": get_image(tkn)} for tkn in Tokens.objects.filter(invite_token=user.tokens.private_token)]
+        friends = [{"name": tkn.user.username, "email": tkn.user.email, "profile": get_image(tkn)} for tkn in
+                   Tokens.objects.filter(invite_token=user.tokens.private_token)]
         return friends
 
 

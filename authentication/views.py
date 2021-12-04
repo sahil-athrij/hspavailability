@@ -2,6 +2,7 @@ import logging
 
 from django.contrib.auth.models import User, Group
 from oauth2_provider.contrib.rest_framework import TokenHasScope, OAuth2Authentication
+from rest_framework import status
 from rest_framework import viewsets, generics, permissions
 from rest_framework.decorators import action
 from rest_framework.parsers import FileUploadParser
@@ -12,7 +13,7 @@ from rest_framework_social_oauth2.authentication import SocialAuthentication
 from .authentication import CsrfExemptSessionAuthentication
 from .permissions import IsOwner
 from .serializer import UserSerializer, GroupSerializer
-from django.core.files.base import ContentFile, File
+
 
 class UserApiViewSet(viewsets.ModelViewSet):
     permission_classes = [IsOwner]
@@ -58,8 +59,6 @@ class UserApiViewSet(viewsets.ModelViewSet):
                     print(e)
                     raise e
 
-
-
             languages = tokens.get('languages')
             phone_number = tokens.get('phone_number')
 
@@ -80,6 +79,25 @@ class UserApiViewSet(viewsets.ModelViewSet):
             self.queryset = self.queryset.filter(pk=request.user.pk)
             return viewsets.ModelViewSet.list(self, request, *args, **kwargs)
         return viewsets.ModelViewSet.list(self, request, *args, **kwargs)
+
+    @action(detail=False, methods=["post"], url_path='friend')
+    def friend(self, request, *args, **kwargs):
+        try:
+            tkn = Tokens.objects.get(private_token=request.data.get('token'))
+            user = request.user
+            if tkn:
+                if tkn.user != request.user:
+                    user.tokens.friends.add(tkn.user)
+                    return Response(status=200)
+                return Response({"detail": "you have to choose any user other than you"},
+                                status=status.HTTP_406_NOT_ACCEPTABLE)
+            return Response({"detail": "token is required"},
+                            status=status.HTTP_406_NOT_ACCEPTABLE)
+        except Tokens.DoesNotExist:
+            return  Response({"detail":"user does not exist"},status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            logging.error(e)
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 class GroupList(generics.ListAPIView):

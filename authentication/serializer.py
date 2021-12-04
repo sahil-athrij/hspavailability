@@ -23,14 +23,20 @@ def get_image(token):
 class UserSerializer(serializers.ModelSerializer):
     tokens = GetTokensSerializer(many=False, read_only=True, required=False)
     friends = serializers.SerializerMethodField()
+    invited = serializers.SerializerMethodField()
 
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', "first_name", "last_name", 'tokens', 'friends')
+        fields = ('id', 'username', 'email', "first_name", "last_name", 'tokens', 'friends', 'invited')
 
-    def get_friends(self, user):
+    def get_invited(self, user):
         friends = [{"name": tkn.user.username, "email": tkn.user.email, "profile": get_image(tkn)} for tkn in
                    Tokens.objects.filter(invite_token=user.tokens.private_token)]
+        return friends
+
+    def get_friends(self, user):
+        friends = [{"name": user.username, "email": user.email, "profile": get_image(user.tokens)} for user in
+                   user.tokens.friends.all()]
         return friends
 
 

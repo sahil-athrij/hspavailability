@@ -217,6 +217,7 @@ class Tokens(models.Model):
     language = models.ManyToManyField(Language, related_name='spoken_language')
     profile = models.ImageField(upload_to="pic", null=True, blank=True)
     phone_number = models.CharField(max_length=15, blank=True, null=True)
+    friends = models.ManyToManyField(User, null=True, blank=True, related_name='friends')
 
     def __str__(self):
         return self.user.username

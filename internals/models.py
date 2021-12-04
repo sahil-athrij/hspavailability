@@ -100,6 +100,14 @@ class Doctor(models.Model):
     def __str__(self):
         return f"Dr: {self.name}"
 
+    def get_slot_range(self):
+        days = sorted(list(set([slot.date for slot in self.slots.all()])))
+        if len(days):
+            day = days[0]
+            for i in range(1, len(days)):
+                if abs(day.day - days[i].day) > 2:
+                    pass
+
 
 class DoctorReviews(models.Model):
     choices = ((1, 1), (2, 2), (3, 3), (4, 4), (5, 5))
@@ -154,10 +162,13 @@ class NurseReviews(models.Model):
 
 
 class Ambulance(models.Model):
+    choices = ((1, 1), (2, 2), (3, 3), (4, 4), (5, 5))
     name = models.CharField(max_length=30, blank=True, null=True)
     driver_name = models.CharField(max_length=30)
     hospital = models.ForeignKey(Markers, on_delete=models.SET_NULL, blank=True, null=True, related_name='ambulance')
     phone_number = models.CharField(max_length=14)
+    image = models.ImageField(upload_to="pic", null=True, blank=True)
+    rating = models.PositiveIntegerField(choices=choices, default=0)
 
     def __str__(self):
         return self.name

@@ -115,6 +115,7 @@ class MarkerApiViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
     page_size = 100
     max_page_size = 100
     max_limit = 100
+
     filter_backends = [filters.SearchFilter, django_filters.rest_framework.DjangoFilterBackend]
     search_fields = ['name']
     filterset_fields = {'financial_rating': ['gte', 'lte', 'exact'],
@@ -331,4 +332,3 @@ class LanguageApiViewSet(viewsets.ModelViewSet):
     http_method_names = ['get', 'post']
     filter_backends = [filters.SearchFilter, ]
     search_fields = ['name']
-

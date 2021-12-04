@@ -229,7 +229,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 if DEBUG:
-    MEDIA_ROOT = BASE_DIR / 'media'
+    MEDIA_ROOT ='/var/www/html/media'
 else:
     MEDIA_ROOT = '/var/www/html/media'
 

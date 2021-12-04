@@ -44,7 +44,10 @@ class HospitalWorkingTimeAdmin(admin.TabularInline):
 class DoctorAdmin(admin.ModelAdmin):
 
     inlines = (HospitalWorkingTimeAdmin,)
+@admin.register(Ambulance)
+class DepartmentAdmin(admin.ModelAdmin):
 
+    raw_id_fields = ('hospital',)
 
 admin.site.register(Department_Name, )
 admin.site.register(Equipment, )
@@ -53,5 +56,4 @@ admin.site.register(Floors, )
 admin.site.register(Nurse, )
 admin.site.register(NurseReviews, )
 admin.site.register(DoctorReviews, )
-admin.site.register(Ambulance, )
 admin.site.register(AvailableSlots, )

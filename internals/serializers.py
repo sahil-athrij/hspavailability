@@ -76,15 +76,12 @@ class DoctorSerializer(serializers.ModelSerializer):
         print(days)
         if len(days):
             temp = days[0]
-
             for i in range(1, len(days)):
-
                 print(temp, days[i], temp.day - days[i].day)
                 if temp.day - days[i].day < -2:
                     print({"start": temp, "end": days[i - 1]})
                     ranges.append({"start": temp, "end": days[i - 1]})
                     temp = days[i]
-                    print(f"{temp = }")
 
         return ranges
 
@@ -148,10 +145,12 @@ class GetNurseReviewSerializer(serializers.ModelSerializer):
 
 
 class AmbulanceSerializer(serializers.ModelSerializer):
+    hospital = serializers.ReadOnlyField(source="hospital.name")
+
     class Meta:
         model = Ambulance
         fields = [
-            'id', 'name', 'driver_name', 'hospital', 'phone_number'
+            'id', 'name', 'driver_name', 'hospital', 'phone_number', 'image', 'rating'
         ]
 
 

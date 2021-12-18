@@ -10,6 +10,7 @@ gender = [
     ('NB', 'Non Binary'),
     ('NP', 'Prefer Not to Say')
 ]
+choices = ((1, 1), (2, 2), (3, 3), (4, 4), (5, 5))
 
 
 class Equipment_Name(models.Model):
@@ -70,11 +71,11 @@ class AvailableSlots(models.Model):
     date = models.DateField()
     start = models.TimeField()
     end = models.TimeField()
+    booked = models.BooleanField(default=False)
 
 
 class Doctor(models.Model):
     days = []
-    choices = ((1, 1), (2, 2), (3, 3), (4, 4), (5, 5))
     name = models.CharField(max_length=200)
     phone_number = models.CharField(max_length=14)
 
@@ -110,8 +111,6 @@ class Doctor(models.Model):
 
 
 class DoctorReviews(models.Model):
-    choices = ((1, 1), (2, 2), (3, 3), (4, 4), (5, 5))
-
     content = models.TextField(max_length=3000)
     created_by = models.ForeignKey(User, on_delete=models.PROTECT, related_name="doctor_reviews")
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name="reviews")
@@ -153,8 +152,6 @@ class Nurse(models.Model):
 
 
 class NurseReviews(models.Model):
-    choices = ((1, 1), (2, 2), (3, 3), (4, 4), (5, 5))
-
     content = models.TextField(max_length=3000)
     created_by = models.ForeignKey(User, on_delete=models.PROTECT, related_name="nurse_reviews")
     nurse = models.ForeignKey(Nurse, on_delete=models.CASCADE, related_name="reviews")
@@ -175,8 +172,6 @@ class Ambulance(models.Model):
 
 
 class AmbulanceReviews(models.Model):
-    choices = ((1, 1), (2, 2), (3, 3), (4, 4), (5, 5))
-
     content = models.TextField(max_length=3000)
     created_by = models.ForeignKey(User, on_delete=models.PROTECT, related_name="ambulance_reviews")
     ambulance = models.ForeignKey(Ambulance, on_delete=models.CASCADE, related_name="ambulance_reviews")
@@ -186,11 +181,11 @@ class AmbulanceReviews(models.Model):
         return f'{self.ambulance.name} review by {self.created_by.first_name}'
 
 
-class Blood_bank(models.Model):
+class BloodBank(models.Model):
     name = models.CharField(max_length=50, blank=True, null=True)
     phone_no = models.CharField(max_length=15, blank=True, null=True)
     hospital = models.ForeignKey(Markers, on_delete=models.SET_NULL, blank=True, null=True, related_name='blood_bank')
-
+    rating = models.FloatField()
     blood_avail_Bpos = models.FloatField(blank=True, null=True)
     blood_avail_Apos = models.FloatField(blank=True, null=True)
     blood_avail_ABpos = models.FloatField(blank=True, null=True)

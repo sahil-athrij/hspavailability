@@ -178,7 +178,7 @@ class AmbulanceReviewApiSet(viewsets.ModelViewSet):
 
 class Blood_type_ApiViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticatedOrReadOnly]
-    queryset = Blood_bank.objects.all()
+    queryset = BloodBank.objects.all()
     serializer_class = Blood_typeSerializer
     http_method_names = ['get', 'post', 'put', 'patch', 'head', 'options', 'delete']
 
@@ -196,3 +196,17 @@ class AppointmentViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return Appointment.objects.filter(patient=self.request.user)
+
+    def perform_create(self, serializer):
+        start = self.request.data['start']
+        end = self.request.data['end']
+        date = self.request.data['date']
+        doctor = self.request.data['doctor']
+
+        try:
+            slots = Doctor.objects.get(id=doctor).slots.get(date=date, start=start, end=end, booked=False)
+            slots.booked = True
+            slots.save()
+            serializer.save(start=slots.date, end=slots.end,date=slots.date)
+        except Exception as e:
+            raise e

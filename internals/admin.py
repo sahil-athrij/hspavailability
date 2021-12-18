@@ -1,10 +1,9 @@
-from django.conf import settings
 from django.contrib import admin
 
-# Register your models here.
-from django.utils.html import format_html
-
 from internals.models import *
+
+
+# Register your models here.
 
 
 @admin.register(Images)
@@ -42,16 +41,24 @@ class HospitalWorkingTimeAdmin(admin.TabularInline):
 
 @admin.register(Doctor)
 class DoctorAdmin(admin.ModelAdmin):
-
     inlines = (HospitalWorkingTimeAdmin,)
+
+
 @admin.register(Ambulance)
 class DepartmentAdmin(admin.ModelAdmin):
-
     raw_id_fields = ('hospital',)
+
+
+@admin.register(Appointment)
+class AppointmentAdmin(admin.ModelAdmin):
+    pass
+
 
 admin.site.register(Department_Name, )
 admin.site.register(Equipment, )
+
 admin.site.register(Equipment_Name, )
+
 admin.site.register(Floors, )
 admin.site.register(Nurse, )
 admin.site.register(NurseReviews, )

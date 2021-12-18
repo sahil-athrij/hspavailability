@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 from internals.models import Department, Department_Name, Doctor, Equipment_Name, \
     Floors, Building, Images, Equipment, DoctorReviews, WorkingTime, HospitalWorkingTime, \
-    Nurse, Ambulance, NurseReviews, AmbulanceReviews, Blood_bank, Appointment, AvailableSlots
+    Nurse, Ambulance, NurseReviews, AmbulanceReviews, BloodBank, Appointment, AvailableSlots
 
 
 class GetImageSerializer(serializers.ModelSerializer):
@@ -71,7 +71,7 @@ class DoctorSerializer(serializers.ModelSerializer):
         }
 
     def get_ranges(self, doctor):
-        days = sorted(list(set([slot.date for slot in doctor.slots.all()])))
+        days = sorted(list(set([slot.date for slot in doctor.slots.filter(booked=False)])))
         ranges = []
         print(days)
         if len(days):
@@ -163,11 +163,13 @@ class GetAmbulanceReviewSerializer(serializers.ModelSerializer):
 
 
 class Blood_typeSerializer(serializers.ModelSerializer):
+    hospital = serializers.ReadOnlyField(source="hospital.name")
+
     class Meta:
-        model = Blood_bank
+        model = BloodBank
         fields = [
             'name', 'phone_no', 'blood_avail_Bpos', 'blood_avail_Apos', 'blood_avail_ABpos', 'blood_avail_Opos',
-            'blood_avail_Bneg', 'blood_avail_Aneg', 'blood_avail_Oneg', 'blood_avail_ABneg'
+            'blood_avail_Bneg', 'blood_avail_Aneg', 'blood_avail_Oneg', 'blood_avail_ABneg', 'hospital'
         ]
 
 

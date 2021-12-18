@@ -61,12 +61,11 @@ class UserApiViewSet(viewsets.ModelViewSet):
 
             languages = tokens.get('languages')
             phone_number = tokens.get('phone_number')
-
-            if languages:
-                for ln in languages:
-                    print(ln)
-                    lang_obj, _ = Language.objects.get_or_create(name=ln.lower())
-                    token.language.add(lang_obj.id)
+            print(f"{languages = }")
+            token.language.all().delete()
+            for ln in languages:
+                l, _ = Language.objects.get_or_create(name=ln['name'])
+                token.language.add(l.id)
 
             token.phone_number = phone_number
             token.save()
@@ -94,7 +93,7 @@ class UserApiViewSet(viewsets.ModelViewSet):
             return Response({"detail": "token is required"},
                             status=status.HTTP_406_NOT_ACCEPTABLE)
         except Tokens.DoesNotExist:
-            return  Response({"detail":"user does not exist"},status=status.HTTP_400_BAD_REQUEST)
+            return Response({"detail": "user does not exist"}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             logging.error(e)
             return Response(status=status.HTTP_400_BAD_REQUEST)

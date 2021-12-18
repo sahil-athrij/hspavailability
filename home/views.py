@@ -240,7 +240,6 @@ class ReviewViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
 class SusViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
     queryset = SuspiciousMarking.objects.all()
     serializer_class = GetSusSerializer
-
     http_method_names = ['get', 'post', 'head', 'options']
 
     def perform_create(self, serializer):

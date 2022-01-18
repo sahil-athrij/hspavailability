@@ -78,7 +78,6 @@ class GetPatientSerializer(serializers.ModelSerializer):
             'requirement'
         ]
 
-
 class DetailMarkerSerializer(GetMarkerSerializer):
     comment = GetReviewSerializer(read_only=True, required=False, many=True)
     buildings = GetBuildingSerializer(read_only=True, required=False, many=True)

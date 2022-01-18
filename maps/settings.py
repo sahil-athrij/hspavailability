@@ -29,7 +29,7 @@ application_name = 'needmedi'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['hospitals.trebuchet.one', 'needmedi.com', '*']
+ALLOWED_HOSTS = ['*']
 
 if not DEBUG:
     DEPLOYMENT_URL = 'https://api.dev.needmedi.com'

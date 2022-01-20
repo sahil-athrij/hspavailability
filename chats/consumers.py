@@ -41,7 +41,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             user = await self.get_user(message["username"])
             self.username = user.id
             websockets[self.username] = [*(websockets[self.username] if self.username in websockets else []), self]
-            devs = await  self.get_devices(self.username)
+            devs = await self.get_devices(self.username)
             if devs:
                 devs = devs.data
             else:
@@ -59,7 +59,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 await self.send(text_data=json.dumps({
                     'type': 'devices',
                     'devices': dev.data,
-                    'username': self.username,
+                    'username': dev.username,
                 }))
 
         elif msg_type == 'bundle':
@@ -85,23 +85,19 @@ class ChatConsumer(AsyncWebsocketConsumer):
             bundle = await self.get_bundle(message['deviceId'])
             # print(bundle)
             print('sending bundle')
-            await self.send(json.dumps({
-                "type": "bundle",
-                "deviceId": bundle.deviceId,
-                "bundle": bundle.data,
+            if bundle:
+                await self.send(json.dumps({
+                    "type": "bundle",
+                    "deviceId": bundle.deviceId,
+                    "bundle": bundle.data,
 
-            }))
+                }))
 
         elif msg_type == 'message':
             print(f'{message = }')
             if message["to"] not in websockets:
                 return print(message["to"], "Not found")
-            ids = []
-            for i in message['encrypted']['header']['keys']:
-                if i['rid'] != message['encrypted']['header']['sid']:
-                    ids.append(i)
-            # message['encrypted']['header']['keys'] = ids
-            print(f'{message = }')
+
             for socket in websockets[message["to"]]:
                 await socket.send(json.dumps(message))
 
@@ -115,11 +111,17 @@ class ChatConsumer(AsyncWebsocketConsumer):
     @database_sync_to_async
     def set_bundle(self, user, data, device_id):
         print('setting bundle')
-        Bundle.objects.create(user=user, data=data, deviceId=device_id)
+        bundle, _ = Bundle.objects.get_or_create(user=user, deviceId=device_id)
+        bundle.data = data
+        bundle.save()
 
     @database_sync_to_async
     def create_devices(self, username, message):
-        return Devices.objects.create(username=username, data=message)
+        device, _ = Devices.objects.get_or_create(username=username)
+        device.data = message
+        device.save()
+
+        return device
 
     @database_sync_to_async
     def get_devices(self, username):

@@ -35,7 +35,8 @@ class UserSerializer(serializers.ModelSerializer):
         return friends
 
     def get_friends(self, user):
-        friends = [{"name": user.username, "email": user.email, "profile": get_image(user.tokens)} for user in
+        friends = [{"name": user.username, "email": user.email, 'token': user.tokens.private_token,
+                    "profile": get_image(user.tokens)} for user in
                    user.tokens.friends.all()]
         return friends
 

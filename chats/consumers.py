@@ -34,8 +34,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     async def receive(self, text_data=None, bytes_data=None):
         message = json.loads(text_data)
-        # user = self.scope['user']
-        # print(user)
+        user = self.scope['user']
+        print(user)
         # print(f"{self.user = }")
         msg_type = message['type']
         if msg_type == 'register':
@@ -44,8 +44,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             self.username = user.id
             websockets[self.username] = [*(websockets[self.username] if self.username in websockets else []), self]
             devs = devices[self.username] if self.username in devices else []
-            print(f'{devices = }')
-            print(f"{message = }")
+
 
             await self.send(text_data=json.dumps({
                 'type': 'registered',

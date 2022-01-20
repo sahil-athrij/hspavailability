@@ -3,11 +3,9 @@ import json
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 
-from .models import ChatUser
+from .models import ChatUser, Bundle, Devices
 
 websockets = {}
-bundles = {}
-devices = {}
 
 
 class ChatConsumer(AsyncWebsocketConsumer):
@@ -28,14 +26,14 @@ class ChatConsumer(AsyncWebsocketConsumer):
             except KeyError:
                 print(f"{self.username} not found on websockets")
             try:
-                devices.pop(self.username)
+                await self.delete_user_device(self.username)
             except KeyError:
                 print(f"{self.username} not found on device")
 
     async def receive(self, text_data=None, bytes_data=None):
         message = json.loads(text_data)
-        user = self.scope['user']
-        print(user)
+        # user = self.scope['user']
+        # print(user)
         # print(f"{self.user = }")
         msg_type = message['type']
         if msg_type == 'register':
@@ -43,8 +41,11 @@ class ChatConsumer(AsyncWebsocketConsumer):
             user = await self.get_user(message["username"])
             self.username = user.id
             websockets[self.username] = [*(websockets[self.username] if self.username in websockets else []), self]
-            devs = devices[self.username] if self.username in devices else []
-
+            devs = await  self.get_devices(self.username)
+            if devs:
+                devs = devs.data
+            else:
+                devs = []
 
             await self.send(text_data=json.dumps({
                 'type': 'registered',
@@ -52,33 +53,44 @@ class ChatConsumer(AsyncWebsocketConsumer):
             }))
             print("send the devs")
 
-            for dev in set(devices) - {message['username']}:
+            devices = await self.get_all_devices_except_mine(self.username)
+            for dev in devices:
+                print(f"{dev = }")
                 await self.send(text_data=json.dumps({
                     'type': 'devices',
-                    'devices': devices[dev],
-                    'username': message['username'],
+                    'devices': dev.data,
+                    'username': self.username,
                 }))
 
         elif msg_type == 'bundle':
-            # Bundle.objects.create(data=message['bundle'])
-            bundles[message["deviceId"]] = message['bundle']
+            print('sending bundle')
+            print(f'{message = }')
+            user = await self.get_user(message["username"])
+            b = await self.set_bundle(user, message['bundle'], message['deviceId'])
+            print(b)
+            print('set bundle called')
 
         elif msg_type == 'devices':
-            # Devices.objects.create(data=message['devices'])
-            devices[message["username"]] = message['devices']
+            print('got req to devices')
+            await self.create_devices(message['username'], message['devices'])
 
             for user in websockets:
-                if user != message["username"]:
+                if user != self.username:
                     for socket in websockets[user]:
                         await socket.send(text_data=json.dumps(message))
 
         elif msg_type == 'getBundle':
-            if message["deviceId"] in bundles:
-                await self.send(json.dumps({
-                    "type": "bundle",
-                    "deviceId": message["deviceId"],
-                    "bundle": bundles[message["deviceId"]]
-                }))
+            print('get bundle')
+            print(message)
+            bundle = await self.get_bundle(message['deviceId'])
+            # print(bundle)
+            print('sending bundle')
+            await self.send(json.dumps({
+                "type": "bundle",
+                "deviceId": bundle.deviceId,
+                "bundle": bundle.data,
+
+            }))
 
         elif msg_type == 'message':
             print(f'{message = }')
@@ -99,3 +111,28 @@ class ChatConsumer(AsyncWebsocketConsumer):
     @database_sync_to_async
     def get_user(self, uid):
         return ChatUser.objects.get(id=uid)
+
+    @database_sync_to_async
+    def set_bundle(self, user, data, device_id):
+        print('setting bundle')
+        Bundle.objects.create(user=user, data=data, deviceId=device_id)
+
+    @database_sync_to_async
+    def create_devices(self, username, message):
+        return Devices.objects.create(username=username, data=message)
+
+    @database_sync_to_async
+    def get_devices(self, username):
+        return Devices.objects.filter(username=username).first()
+
+    @database_sync_to_async
+    def get_bundle(self, device_id):
+        return Bundle.objects.filter(deviceId=device_id).first()
+
+    @database_sync_to_async
+    def delete_user_device(self, username):
+        Devices.objects.filter(username=username).delete()
+
+    @database_sync_to_async
+    def get_all_devices_except_mine(self, username):
+        return list(Devices.objects.all().exclude(username=username))

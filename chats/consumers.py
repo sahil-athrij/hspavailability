@@ -25,16 +25,15 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 websockets.pop(self.username)
             except KeyError:
                 print(f"{self.username} not found on websockets")
-            try:
-                await self.delete_user_device(self.username)
-            except KeyError:
-                print(f"{self.username} not found on device")
+            # try:
+            #     await self.delete_user_device(self.username)
+            # except KeyError:
+            #     print(f"{self.username} not found on device")
 
     async def receive(self, text_data=None, bytes_data=None):
         message = json.loads(text_data)
-        # user = self.scope['user']
-        # print(user)
-        # print(f"{self.user = }")
+        user = self.scope['user']
+        print(user)
         msg_type = message['type']
         if msg_type == 'register':
 

@@ -5,6 +5,8 @@ from django.contrib.auth.models import User
 from django.contrib.gis.db import models
 from django.contrib.postgres.fields import ArrayField
 
+from home.models import Tokens
+
 
 class Message(models.Model):
     data = models.JSONField(blank=True, null=True)
@@ -16,10 +18,11 @@ class Bundle(models.Model):
     data = models.JSONField(blank=True, null=True)
     user = models.ForeignKey('ChatUser', on_delete=models.CASCADE, related_name='bundle')
     deviceId = models.CharField(max_length=20)
+    # token = models.OneToOneField(Tokens, on_delete=models.CASCADE, related_name='bundle', blank=True, null=True)
 
     def __str__(self):
         return f'{self.user.user} {self.deviceId}'
-#
+
 
 class Devices(models.Model):
     data = models.JSONField(blank=True, null=True)

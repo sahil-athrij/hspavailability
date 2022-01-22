@@ -13,6 +13,7 @@ from django.shortcuts import render
 from django.views.decorators.csrf import ensure_csrf_cookie
 from oauth2_provider.models import AccessToken, Application
 
+from chats.models import ChatUser
 from home.models import Tokens
 
 logger = logging.getLogger('v2')
@@ -155,7 +156,9 @@ def signup(request):
                     give_points(inv, 'invite')
                     user = User.objects.create_user(email=email, password=password, username=username,
                                                     first_name=firstname, last_name=lastname)
-                    Tokens.objects.get_or_create(user=user, invite_token=inv)
+
+                    tkn, _ = Tokens.objects.get_or_create(user=user, invite_token=inv)
+                    ChatUser.objects.get_or_create(user=user, id=tkn.private_token)
                     login(request, user, backend='django.contrib.auth.backends.ModelBackend')
                     redirect_location = request.GET.get('next', '/') + '?' + request.META['QUERY_STRING']
                     return HttpResponseRedirect(redirect_location)

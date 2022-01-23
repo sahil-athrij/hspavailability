@@ -27,12 +27,12 @@ ADMIN_URL = os.environ.get('ADMIN_URL')
 application_name = 'needmedi'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
 if not DEBUG:
-    DEPLOYMENT_URL = 'https://api.dev.needmedi.com'
+    DEPLOYMENT_URL = 'https://api.needmedi.com'
 
 else:
     DEPLOYMENT_URL = 'https://api.dev.needmedi.com'

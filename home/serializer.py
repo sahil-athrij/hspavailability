@@ -1,8 +1,7 @@
 from rest_framework import serializers
 
-from internals.serializers import GetImageSerializer, GetBuildingSerializer, DoctorSerializer,GetDepartmentSerializer
+from internals.serializers import GetImageSerializer, GetBuildingSerializer, DoctorSerializer, GetDepartmentSerializer
 from .models import Markers, Reviews, SuspiciousMarking, Patient, Tokens, Language
-from maps.settings import DEPLOYMENT_URL
 
 
 class GetMarkerSerializer(serializers.ModelSerializer):
@@ -45,13 +44,12 @@ class GetReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Reviews
         fields = [
-            'id', 'marker', 'financial_rating','total_rating','avg_cost', 'covid_rating', 'care_rating', 'oxygen_rating',
+            'id', 'marker', 'financial_rating', 'total_rating', 'avg_cost', 'covid_rating', 'care_rating',
+            'oxygen_rating',
             'beds_available', 'size', 'ventilator_availability', 'oxygen_availability',
             'icu_availability', 'comment', 'written_by', 'images', 'written_by_name', 'datef'
 
         ]
-
-
 
     def get_written_by_name(self, review):
         return review.written_by.username
@@ -69,45 +67,42 @@ class GetPatientSerializer(serializers.ModelSerializer):
     gender_name = serializers.CharField(source='get_gender_display', read_only=True)
     bedtype_name = serializers.CharField(source='get_bedtype_display', read_only=True)
     helped_by_name = serializers.CharField(source='get_helped_by_display', read_only=True)
+    uid = serializers.ReadOnlyField(source="user.id")
 
     class Meta:
         model = Patient
         fields = [
-            'id', 'Name', 'age', 'gender', 'address', 'symptoms', 'symdays', 'spo2', 'oxy_bed', 'covidresult',
+            'id', 'uid', 'Name', 'age', 'gender', 'address', 'symptoms', 'symdays', 'spo2', 'oxy_bed', 'covidresult',
             'hospitalpref', 'attendername', 'attenderphone', 'relation', 'srfid', 'bunum', 'blood', 'bedtype', 'ct',
-            'ctscore', 'category', 'ownership', 'gender_name', 'bedtype_name' ,'helped_by_name','helped_by'
-
+            'ctscore', 'category', 'ownership', 'gender_name', 'bedtype_name', 'helped_by_name', 'helped_by',
+            'requirement'
         ]
-
 
 
 class DetailMarkerSerializer(GetMarkerSerializer):
     comment = GetReviewSerializer(read_only=True, required=False, many=True)
     buildings = GetBuildingSerializer(read_only=True, required=False, many=True)
-    doctors = DoctorSerializer(read_only=True, required=False, many=True,)
+    doctors = DoctorSerializer(read_only=True, required=False, many=True, )
     departments = GetDepartmentSerializer(many=True, read_only=True)
 
     class Meta(GetMarkerSerializer.Meta):
-        fields = GetMarkerSerializer.Meta.fields + ['comment', 'buildings', 'doctors',"departments"]
+        fields = GetMarkerSerializer.Meta.fields + ['comment', 'buildings', 'doctors', "departments"]
 
-class Language_Serializer(serializers.ModelSerializer):
 
+class LanguageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Language
         fields = [
-            'name'
+            'id', 'name'
         ]
-
 
 
 class GetTokensSerializer(serializers.ModelSerializer):
+    language = LanguageSerializer(many=True, required=False, read_only=True)
 
-    language = Language_Serializer(many=True, required=False, read_only=True)
     class Meta:
         model = Tokens
         fields = [
-            'user', 'private_token', 'invite_token', 'invited', 'points', 'reviews', 'reports', 'language', 'profile'
+            'user', 'private_token', 'invite_token', 'invited', 'points', 'reviews', 'reports',
+            'language', 'profile', 'phone_number'
         ]
-
-
-

@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 import os
 from pathlib import Path
+
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -22,23 +23,24 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv("SECRET_KEY", 'django-insecure-tr#83t$_--71h1yzg^@w6n^w292lb#$1p2256)5k2-!^f^x9^d')
+ADMIN_URL = os.environ.get('ADMIN_URL')
+application_name = 'needmedi'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DEBUG', False)
+DEBUG = False
 
-ALLOWED_HOSTS = ['hospitals.trebuchet.one', 'needmedi.com', '*']
+ALLOWED_HOSTS = ['*']
 
 if not DEBUG:
-    DEPLOYMENT_URL = 'https://needmedi.com'
+    DEPLOYMENT_URL = 'https://api.needmedi.com'
 
 else:
-    DEPLOYMENT_URL = 'https://dev.needmedi.com'
-    # DEPLOYMENT_URL = 'https://needmedi.com'
+    DEPLOYMENT_URL = 'https://api.dev.needmedi.com'
 
 # Application definition
 
 INSTALLED_APPS = [
-
+    'jazzmin',
     'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -55,12 +57,15 @@ INSTALLED_APPS = [
     'oidc_provider',
     'rest_framework_swagger',
     'drf_yasg',
+    'channels',
     'admin_honeypot',
     "log_viewer",
+    # 'request_viewer',
     # custom
     'home',
     'v2',
-    'internals'
+    'internals',
+    'chats'
 ]
 
 MIDDLEWARE = [
@@ -69,10 +74,10 @@ MIDDLEWARE = [
     'oauth2_provider.middleware.OAuth2TokenMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # 'request_viewer.middleware.RequestViewerMiddleware',
 ]
 
 ROOT_URLCONF = 'maps.urls'
@@ -97,6 +102,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'maps.wsgi.application'
+ASGI_APPLICATION = 'maps.asgi.application'
 
 OAUTH2_PROVIDER = {
     "OIDC_ENABLED": True,
@@ -190,6 +196,14 @@ DATABASES = {
     }
 }
 
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 
@@ -214,7 +228,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 if DEBUG:
-    MEDIA_ROOT = BASE_DIR / 'media'
+    MEDIA_ROOT ='/var/www/html/media'
 else:
     MEDIA_ROOT = '/var/www/html/media'
 
@@ -315,7 +329,6 @@ LOGGING = {
     }
 }
 
-
 # points to be added to user for following actions
 add_hospital_point = 10
 add_doctor_point = 5
@@ -326,3 +339,140 @@ add_blood_bank_point = 5
 add_ambulance_point = 5
 add_feedback_point = 2
 add_nurse_point = 5
+
+JAZZMIN_SETTINGS = {
+    # title of the window (Will default to current_admin_site.site_title if absent or None)
+    "site_title": application_name,
+
+    # Title on the login screen (19 chars max) (defaults to current_admin_site.site_header if absent or None)
+    "site_header": 'Dashboard',
+
+    # Title on the brand (19 chars max) (defaults to current_admin_site.site_header if absent or None)
+    "site_brand": application_name.title(),
+
+    # Logo to use for your site, must be present in static files, used for brand on top left
+    "site_logo": "img/logo.png",
+
+    # CSS classes that are applied to the logo above
+    "site_logo_classes": "img-circle",
+
+    # Relative path to a favicon for your site, will default to site_logo if absent (ideally 32x32 px)
+    "site_icon": None,
+
+    # Welcome text on the login screen
+    "welcome_sign": f"Welcome to {application_name.title()}",
+
+    # Copyright on the footer
+    # "copyright": f"all rights reserved to {application_name}",
+
+    # The model admin to search from the search bar, search bar omitted if excluded
+    "search_model": "auth.User",
+
+    # Field name on user model that contains avatar ImageField/URLField/Charfield or a callable that receives the user
+    "user_avatar": None,
+
+    ############
+    # Top Menu #
+    ############
+
+    # Links to put along the top menu
+    "topmenu_links": [
+
+        # Url that gets reversed (Permissions can be added)
+        {"name": "Dashboard", "url": "admin:index", "permissions": ["auth.view_user"]},
+
+        # external url that opens in a new window (Permissions can be added)
+        # model admin to link to (Permissions checked against model)
+        {"model": "auth.User"},
+        {"name": "logs", "url": f"/{ADMIN_URL}log_viewer/"},
+        {"name": "requests", "url": f"/{ADMIN_URL}request-viewer/"},
+        # App with dropdown menu to all its models pages (Permissions checked against models)
+        {"app": "home"},
+    ],
+
+    #############
+    # User Menu #
+    #############
+
+    # # Additional links to include in the user menu on the top right ("app" url type is not allowed)
+    "usermenu_links": [
+        {"name": "logs", "url": f"/{ADMIN_URL}log_viewer/",
+         "icon": "fas fa-comments", },
+        {"name": "requests", "url": f"/{ADMIN_URL}request-viewer/",
+         "icon": "fas fa-comments", },
+        {"model": "auth.user"}
+    ],
+
+    #############
+    # Side Menu #
+    #############
+
+    # Whether to display the side menu
+    "show_sidebar": True,
+
+    # Whether to aut expand the menu
+    "navigation_expanded": True,
+
+    # Hide these apps when generating side menu e.g (auth)
+    "hide_apps": [],
+
+    # Hide these models when generating side menu (e.g auth.user)
+    "hide_models": [],
+
+    # List of apps (and/or models) to base side menu ordering off of (does not need to contain all apps/models)
+    # "order_with_respect_to": ["auth", "books", "books.author", "books.book"],
+
+    # Custom links to append to app groups, keyed on app name
+    # "custom_links": {
+    #     "books": [{
+    #         "name": "Make Messages",
+    #         "url": "make_messages",
+    #         "icon": "fas fa-comments",
+    #         "permissions": ["books.view_book"]
+    #     }]
+    # },
+
+    # for the full list of 5.13.0 free icon classes
+    "icons": {
+        "auth": "fas fa-users-cog",
+        "auth.user": "fas fa-user",
+        "auth.Group": "fas fa-users",
+    },
+    # Icons that are used when one is not manually specified
+    "default_icon_parents": "fas fa-chevron-circle-right",
+    "default_icon_children": "fas fa-circle",
+
+    #################
+    # Related Modal #
+    #################
+    # Use modals instead of popups
+    "related_modal_active": False,
+
+    #############
+    # UI Tweaks #
+    #############
+    # Relative paths to custom CSS/JS scripts (must be present in static files)
+    "custom_css": None,
+    "custom_js": None,
+    # Whether to show the UI customizer on the sidebar
+    "show_ui_builder": False,
+
+    ###############
+    # Change view #
+    ###############
+    # Render out the change view as a single form, or in tabs, current options are
+    # - single
+    # - horizontal_tabs (default)
+    # - vertical_tabs
+    # - collapsible
+    # - carousel
+    "changeform_format": "horizontal_tabs",
+    # override change forms on a per modeladmin basis
+    "changeform_format_overrides": {"auth.user": "collapsible", "auth.group": "vertical_tabs"},
+    # Add a language dropdown into the admin
+    # "language_chooser": True,
+}
+
+JAZZMIN_UI_TWEAKS = {
+    "theme": "solar",
+}

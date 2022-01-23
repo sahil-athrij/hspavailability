@@ -13,13 +13,14 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-import os
 
 from django.contrib import admin
 from django.urls import path, include, re_path
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from rest_framework import permissions, authentication
+
+from . import settings
 
 ...
 
@@ -34,16 +35,19 @@ schema_view = get_schema_view(
         license=openapi.License(name="BSD License"),
     ),
     public=True,
-    permission_classes=[permissions.IsAdminUser],
-    authentication_classes=[authentication.SessionAuthentication]
+    permission_classes=(permissions.IsAdminUser,),
+    authentication_classes=(authentication.SessionAuthentication,)
 )
 urlpatterns = [
 
     path('admin/', include('admin_honeypot.urls', namespace='admin_honeypot')),
-    path(os.environ.get('ADMIN_URL') + 'log_viewer/', include('log_viewer.urls')),
-    path(os.environ.get('ADMIN_URL'), admin.site.urls),
+    # path(settings.ADMIN_URL, include('request_viewer.urls')),
+    path(settings.ADMIN_URL + 'log_viewer/', include('log_viewer.urls')),
+    path(settings.ADMIN_URL, admin.site.urls),
+
     path('api/', include('home.urls')),
     path('internals/', include('internals.urls')),
+    path('chat/', include('chats.urls')),
     path('', include('v2.urls')),
     path('auth/', include('authentication.urls')),
     path('openid/', include('oidc_provider.urls', namespace='oidc_provider')),

@@ -41,7 +41,7 @@ category = [
     ('U', 'Uncategorized')
 ]
 
-type = [
+types = [
     ('H', 'Hospital'),
     ('P', 'Pharmacy'),
     ('C', 'Clinic'),
@@ -81,14 +81,13 @@ department = [
 ]
 
 medicine = [
-    ('Ay','Ayurveda'),('Al','Allopathy'),('Ho','Homeopathy')
+    ('Ay', 'Ayurveda'), ('Al', 'Allopathy'), ('Ho', 'Homeopathy')
 ]
 
+
 class Markers(models.Model):
-
-
     name = models.CharField(max_length=500)
-    Phone = models.CharField(max_length=100)
+    Phone = models.CharField(max_length=100, blank=True, null=True)
     size = models.IntegerField(choices=sizes, default=0)
     financial_rating = models.FloatField(default=0)
     avg_cost = models.IntegerField(default=0)
@@ -109,12 +108,13 @@ class Markers(models.Model):
     address = models.JSONField(blank=True)
     location = models.PointField(srid=4326, verbose_name='Location')
     category = models.CharField(choices=category, default='U', max_length=2)
-    type = models.CharField(choices=type, default='U', max_length=2)
+    type = models.CharField(choices=types, default='U', max_length=2)
     ownership = models.CharField(choices=ownership, default='U', max_length=2)
     pending_approval = models.BooleanField(default=False)
     video_call = models.CharField(max_length=1000, null=True, blank=True)
     about = models.TextField(default="")
-    medicine= models.CharField(choices=medicine ,max_length=50,default="Allopathy")
+    medicine = models.CharField(choices=medicine, max_length=50, default="Allopathy")
+
     def __str__(self):
         return self.name
 
@@ -181,6 +181,8 @@ class Patient(models.Model):
     user = models.ForeignKey(User, default=1, on_delete=models.CASCADE)
 
     helped_by = models.ForeignKey(User, blank=True, null=True, related_name='helping', on_delete=models.SET_NULL)
+    requirement = models.CharField(max_length=20, blank=True, null=True)
+
 
 def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
@@ -197,7 +199,6 @@ def create_new_id():
 
 
 class Language(models.Model):
-
     name = models.CharField(max_length=50)
 
     def __str__(self):
@@ -215,8 +216,14 @@ class Tokens(models.Model):
     invite_token = models.CharField(max_length=10, blank=True, null=True)
     language = models.ManyToManyField(Language, related_name='spoken_language')
     profile = models.ImageField(upload_to="pic", null=True, blank=True)
+    phone_number = models.CharField(max_length=15, blank=True, null=True)
+    friends = models.ManyToManyField(User, null=True, blank=True, related_name='friends')
 
+    def __str__(self):
+        return self.user.username
 
-
-
-
+    def add_friend(self, user: User):
+        if user not in self.friends:
+            self.friends.add(user)
+        if self.user not in user.tokens.friends:
+            user.tokens.friends.add(self.user)

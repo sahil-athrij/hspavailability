@@ -1,4 +1,5 @@
 import json
+import logging
 
 import django_filters
 import requests
@@ -13,9 +14,30 @@ from rest_framework.parsers import FileUploadParser
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 
+import maps.settings as settings
 from internals.models import Images
+from internals.views import add_points
 from v2.views import give_points
 from .serializer import *
+
+
+def get_client_ip(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    print(x_forwarded_for)
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+
+    return ip
+
+
+def get_loction_python(request):
+    ip = get_client_ip(request)
+    ipsearchurl = f'https://ipapi.co/{ip}/json/'
+    loc_data = requests.get(ipsearchurl, headers={
+        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36'})
+    return json.loads(loc_data.content)
 
 
 def update_marker(id):
@@ -93,6 +115,7 @@ class MarkerApiViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
     page_size = 100
     max_page_size = 100
     max_limit = 100
+
     filter_backends = [filters.SearchFilter, django_filters.rest_framework.DjangoFilterBackend]
     search_fields = ['name']
     filterset_fields = {'financial_rating': ['gte', 'lte', 'exact'],
@@ -100,7 +123,8 @@ class MarkerApiViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
                         'oxygen_availability': ['gte', 'lte', 'exact'], 'icu_availability': ['gte', 'lte', 'exact'],
                         'avg_cost': ['gte', 'lte', 'exact'],
                         'care_rating': ['gte', 'lte', 'exact'], 'covid_rating': ['gte', 'lte', 'exact'],
-                        'beds_available': ['gte', 'lte', 'exact'], 'category':['exact'],'type':['exact'],'ownership':['exact'], 'medicine':['exact']}
+                        'beds_available': ['gte', 'lte', 'exact'], 'category': ['exact'], 'type': ['exact'],
+                        'ownership': ['exact'], 'medicine': ['exact']}
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -120,7 +144,7 @@ class MarkerApiViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
                     srid=4326)  # Point(x,y). x=lng and y=lat
         url = f"https://eu1.locationiq.com/v1/reverse.php?key=pk.959200a41370341f608a91b67be6e8eb&lat={self.request.data['lat']}&lon={self.request.data['lng']}&format=json"
         det = requests.get(url)
-        give_points(user.tokens.private_token, 'review')
+        add_points(self.request.user, settings.add_hospital_point)
         if det.status_code == 200:
             data = json.loads(det.content.decode())
 
@@ -164,8 +188,17 @@ class MarkerApiViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
     def filter_queryset(self, queryset):
         distance = float(self.request.GET.get('distance', 10000000))
         queryset = super(MarkerApiViewSet, self).filter_queryset(queryset)
-        lat = float(self.request.GET.get('lat', 0))
-        lng = float(self.request.GET.get('lng', 0))
+        try:
+            lat = float(self.request.GET.get('lat', 0))
+            lng = float(self.request.GET.get('lng', 0))
+        except ValueError:
+            data = get_loction_python(self.request)
+            try:
+                lat = float(data['latitude'])
+                lng = float(data['longitude'])
+            except Exception as e:
+                logging.exception(e)
+                lat, lng = 0, 0
         if lat and lng:
             loc = Point(lng, lat, srid=4326)
             if queryset.count() > 400:
@@ -207,7 +240,6 @@ class ReviewViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
 class SusViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
     queryset = SuspiciousMarking.objects.all()
     serializer_class = GetSusSerializer
-
     http_method_names = ['get', 'post', 'head', 'options']
 
     def perform_create(self, serializer):
@@ -215,8 +247,8 @@ class SusViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
         serializer.save(created_by=user)
 
 
-class PatientViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
-    queryset = Patient.objects.all()
+class PatientViewSet(viewsets.ModelViewSet):
+    queryset = Patient.objects.filter(helped_by=None)
     serializer_class = GetPatientSerializer
     permission_classes = [permissions.IsAuthenticated]
     http_method_names = ['get', 'post', 'head', 'options']
@@ -229,6 +261,7 @@ class PatientViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
         user = self.request.user
         queryset = super(PatientViewSet, self).filter_queryset(queryset)
         return queryset.filter(user=user.id)
+
 
     @action(detail=False, methods=["get", "post"], url_path='friends')
     def friends(self, request, *args, **kwargs):
@@ -257,23 +290,30 @@ class PatientViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
 
         return Response(serializer.data)
 
+    @action(detail=False, methods=["get", ], url_path='help')
+    def me_helped(self, request, *args, **kwargs):
+        patient = Patient.objects.filter(helped_by=request.user)
+
+        page = self.paginate_queryset(patient)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+        serializer = self.get_serializer(patient, many=True)
+
+        return Response(serializer.data)
+
     @action(detail=True, methods=["post"], url_path='help')
     def help(self, request, pk):
-
-
         user = request.user
         patient = Patient.objects.get(pk=pk)
-
         if patient.helped_by:
             serializers.ValidationError(detail='Thank you!')
-            return Response({'detail':'This patient got treatment ! '}, status=403)
+            return Response({'details': 'This patient got treatment ! '}, status=403)
         patient.helped_by = user
         patient.save()
-
-
         serializer = self.get_serializer(patient, many=False)
-
         return Response(serializer.data, status=201)
+
 
 class ImageViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
     queryset = Images.objects.all()
@@ -286,4 +326,9 @@ class ImageViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
         serializer.save(user=user)
 
 
-
+class LanguageApiViewSet(viewsets.ModelViewSet):
+    queryset = Language.objects.all()
+    serializer_class = LanguageSerializer
+    http_method_names = ['get', 'post']
+    filter_backends = [filters.SearchFilter, ]
+    search_fields = ['name']

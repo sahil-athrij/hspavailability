@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     'drf_yasg',
     'channels',
     'admin_honeypot',
+    'rest_framework.authtoken',
     "log_viewer",
     # 'request_viewer',
     # custom
@@ -228,7 +229,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 if DEBUG:
-    MEDIA_ROOT ='/var/www/html/media'
+    MEDIA_ROOT = '/var/www/html/media'
 else:
     MEDIA_ROOT = '/var/www/html/media'
 

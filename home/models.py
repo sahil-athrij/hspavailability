@@ -222,8 +222,6 @@ class Tokens(models.Model):
     def __str__(self):
         return self.user.username
 
-    def add_friend(self, user: User):
-        if user not in self.friends:
-            self.friends.add(user)
-        if self.user not in user.tokens.friends:
-            user.tokens.friends.add(self.user)
+    def add_friend(self, user):
+        self.friends.add(user)
+        user.tokens.friends.add(self.user)

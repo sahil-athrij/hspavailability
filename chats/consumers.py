@@ -2,6 +2,7 @@ import json
 
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
+from django.contrib.auth.models import AnonymousUser
 
 from .models import ChatUser, Bundle, Devices, Message
 
@@ -11,10 +12,13 @@ websockets = {}
 class ChatConsumer(AsyncWebsocketConsumer):
     def __init__(self):
         self.username = ''
+        self.user = AnonymousUser()
 
         super().__init__()
 
     async def connect(self):
+        self.user = self.scope['user']
+        # if self.user.is_authenticated:
         await self.accept()
 
     async def disconnect(self, code):
@@ -32,8 +36,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     async def receive(self, text_data=None, bytes_data=None):
         message = json.loads(text_data)
-        user = self.scope['user']
-        print(user)
+        # user = self.scope['user']
+        # print(user)
         msg_type = message['type']
         if msg_type == 'register':
 
@@ -60,13 +64,19 @@ class ChatConsumer(AsyncWebsocketConsumer):
                     'devices': dev.data,
                     'username': dev.username,
                 }))
+            msgs = await self.get_msgs(self.username)
+            print(f"{msgs = }")
+            for msg in msgs:
+                print(f'sending msg {msg.data}')
+                await self.send(json.dumps(msg.data))
+            await self.delete_msgs(self.username)
 
         elif msg_type == 'bundle':
-            print('sending bundle')
-            print(f'{message = }')
+            # print('sending bundle')
+            # print(f'{message = }')
             user = await self.get_user(message["username"])
             b = await self.set_bundle(user, message['bundle'], message['deviceId'])
-            print(b)
+            # print(b)
             print('set bundle called')
 
         elif msg_type == 'devices':
@@ -79,11 +89,11 @@ class ChatConsumer(AsyncWebsocketConsumer):
                         await socket.send(text_data=json.dumps(message))
 
         elif msg_type == 'getBundle':
-            print('get bundle')
-            print(message)
+            # print('get bundle')
+            # print(message)
             bundle = await self.get_bundle(message['deviceId'])
             # print(bundle)
-            print('sending bundle')
+            # print('sending bundle')
             if bundle:
                 await self.send(json.dumps({
                     "type": "bundle",
@@ -93,14 +103,18 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 }))
 
         elif msg_type == 'message':
-
+            print(f"trying to send message to {message['to']} from {self.username}")
             if message["to"] not in websockets:
-                Message.objects.create(data=message, to_user_id=message['to'], )
-                return print(message["to"], "Not found")
-
-            for socket in websockets[message["to"]]:
-                await socket.send(json.dumps(message))
-
+                await  self.create_msgs(message, message['to'])
+                print(message["to"], "Not found in websockets")
+            else:
+                try:
+                    for socket in websockets[message["to"]]:
+                        await socket.send(json.dumps(message))
+                except Exception as e:
+                    print(e)
+                    await  self.create_msgs(message, message['to'])
+                    print(message["to"], f" websocket error {e}")
         else:
             print("Unknown message type", message)
 
@@ -122,6 +136,21 @@ class ChatConsumer(AsyncWebsocketConsumer):
         device.save()
 
         return device
+
+    @database_sync_to_async
+    def create_msgs(self, data, to_user_id):
+        msg = Message.objects.create(data=data, to_user_id=to_user_id, )
+        return msg
+
+    @database_sync_to_async
+    def get_msgs(self, to_user_id):
+        msg = list(Message.objects.filter(to_user_id=to_user_id, ))
+        return msg
+
+    @database_sync_to_async
+    def delete_msgs(self, to_user_id):
+        Message.objects.filter(to_user_id=to_user_id).filter().delete()
+        print('deleting mss')
 
     @database_sync_to_async
     def get_devices(self, username):

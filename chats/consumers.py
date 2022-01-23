@@ -3,7 +3,7 @@ import json
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 
-from .models import ChatUser, Bundle, Devices
+from .models import ChatUser, Bundle, Devices, Message
 
 websockets = {}
 
@@ -93,8 +93,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 }))
 
         elif msg_type == 'message':
-            print(f'{message = }')
+
             if message["to"] not in websockets:
+                Message.objects.create(data=message, to_user_id=message['to'], )
                 return print(message["to"], "Not found")
 
             for socket in websockets[message["to"]]:

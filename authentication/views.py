@@ -73,7 +73,6 @@ class UserApiViewSet(viewsets.ModelViewSet):
             serializer = UserSerializer(user, data=data)
             serializer.is_valid(raise_exception=True)
             serializer.save()
-
         else:
             self.queryset = self.queryset.filter(pk=request.user.pk)
             return viewsets.ModelViewSet.list(self, request, *args, **kwargs)
@@ -84,10 +83,13 @@ class UserApiViewSet(viewsets.ModelViewSet):
         try:
             tkn = Tokens.objects.get(private_token=request.data.get('token'))
             user = request.user
+            print('adding friend called')
             if tkn:
                 if tkn.user != request.user:
-                    user.tokens.friends.add(tkn.user)
-                    return Response(status=200)
+                    print(tkn.user)
+                    print('adding friend fn called')
+                    user.tokens.add_friend(tkn.user)
+                    return Response({'detail': "friend added"}, status=200)
                 return Response({"detail": "you have to choose any user other than you"},
                                 status=status.HTTP_406_NOT_ACCEPTABLE)
             return Response({"detail": "token is required"},

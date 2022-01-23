@@ -15,6 +15,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
         super().__init__()
 
     async def connect(self):
+        user = self.scope['user']
+        print(user)
+
         await self.accept()
 
     async def disconnect(self, code):
@@ -32,8 +35,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     async def receive(self, text_data=None, bytes_data=None):
         message = json.loads(text_data)
-        user = self.scope['user']
-        print(user)
+        # user = self.scope['user']
+        # print(user)
         msg_type = message['type']
         if msg_type == 'register':
 
@@ -60,6 +63,10 @@ class ChatConsumer(AsyncWebsocketConsumer):
                     'devices': dev.data,
                     'username': dev.username,
                 }))
+            msgs = await self.get_msgs(self.username)
+            for msg in msgs:
+                for socket in websockets[msg.to_user.id]:
+                    await socket.send(json.dumps(msg.data))
 
         elif msg_type == 'bundle':
             print('sending bundle')
@@ -93,14 +100,18 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 }))
 
         elif msg_type == 'message':
-
+            print(f"trying to send message to {message['to']} from {self.username}")
             if message["to"] not in websockets:
-                Message.objects.create(data=message, to_user_id=message['to'], )
-                return print(message["to"], "Not found")
-
-            for socket in websockets[message["to"]]:
-                await socket.send(json.dumps(message))
-
+                await  self.create_msgs(message, message['to'])
+                print(message["to"], "Not found in websockets")
+            else:
+                try:
+                    for socket in websockets[message["to"]]:
+                        await socket.send(json.dumps(message))
+                except Exception as e:
+                    print(e)
+                    await  self.create_msgs(message, message['to'])
+                    print(message["to"], f" websocket error {e}")
         else:
             print("Unknown message type", message)
 
@@ -122,6 +133,20 @@ class ChatConsumer(AsyncWebsocketConsumer):
         device.save()
 
         return device
+
+    @database_sync_to_async
+    def create_msgs(self, data, to_user_id):
+        msg = Message.objects.create(data=data, to_user_id=to_user_id, )
+        return msg
+
+    @database_sync_to_async
+    def get_msgs(self, to_user_id):
+        msg = list(Message.objects.filter(to_user_id=to_user_id, ))
+        return msg
+
+    @database_sync_to_async
+    def delete_msgs(self, to_user_id):
+        Message.objects.filter(to_user_id=to_user_id).filter().delete()
 
     @database_sync_to_async
     def get_devices(self, username):

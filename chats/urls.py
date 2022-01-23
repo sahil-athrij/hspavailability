@@ -1,10 +1,9 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
-from .views import KeyExchangeViewSet, index
+from .views import ChatUserApiViewSet
 
 router = DefaultRouter()
-router.register(r'key_exchange', KeyExchangeViewSet)
+router.register(r'user', ChatUserApiViewSet)
 
-urlpatterns = [path(r'', include(router.urls)),
-               path(r'chat', index)]
+urlpatterns = [path(r'', include(router.urls))]

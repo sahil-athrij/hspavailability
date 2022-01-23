@@ -35,8 +35,8 @@ schema_view = get_schema_view(
         license=openapi.License(name="BSD License"),
     ),
     public=True,
-    permission_classes=[permissions.IsAdminUser],
-    authentication_classes=[authentication.SessionAuthentication]
+    permission_classes=(permissions.IsAdminUser,),
+    authentication_classes=(authentication.SessionAuthentication,)
 )
 urlpatterns = [
 
@@ -47,9 +47,9 @@ urlpatterns = [
 
     path('api/', include('home.urls')),
     path('internals/', include('internals.urls')),
+    path('chat/', include('chats.urls')),
     path('', include('v2.urls')),
     path('auth/', include('authentication.urls')),
-    path('chat/', include('chats.urls')),
     path('openid/', include('oidc_provider.urls', namespace='oidc_provider')),
     re_path(r'swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     path(r'swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),

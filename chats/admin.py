@@ -1,6 +1,7 @@
 from django.contrib import admin
+from . import models
 
-# Register your models here.
-from chats.models import KeyExchange
-
-admin.site.register(KeyExchange)
+admin.site.register(models.ChatUser)
+admin.site.register(models.Bundle)
+admin.site.register(models.Message)
+admin.site.register(models.Devices)

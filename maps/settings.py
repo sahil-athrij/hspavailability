@@ -27,7 +27,7 @@ ADMIN_URL = os.environ.get('ADMIN_URL')
 application_name = 'needmedi'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -254,7 +254,7 @@ SWAGGER_SETTINGS = {
     }
 }
 
-LOG_VIEWER_FILES = ['v2.log', 'home.log', 'default.log']
+LOG_VIEWER_FILES = ['v2.log', 'home.log', 'default.log', 'chat.log']
 LOG_VIEWER_FILES_PATTERN = '*'
 LOG_VIEWER_FILES_DIR = os.path.join(BASE_DIR, 'logs')
 LOG_VIEWER_MAX_READ_LINES = 1000  # total log lines will be read
@@ -295,6 +295,14 @@ LOGGING = {
             'backupCount': 0,
             'formatter': 'standard',
         },
+        'chat': {
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(LOGGING_ROOT, 'default.log'),
+            'maxBytes': 1024 * 1024 * 15,  # 5MB
+            'backupCount': 0,
+            'formatter': 'standard',
+        },
         'request_handler': {
             'level': 'DEBUG',
             'class': 'logging.handlers.RotatingFileHandler',
@@ -319,6 +327,11 @@ LOGGING = {
         },
         'v2': {
             'handlers': ['console', 'v2'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'chat': {
+            'handlers': ['chat', ],
             'level': 'INFO',
             'propagate': False,
         },

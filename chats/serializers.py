@@ -6,7 +6,7 @@ from .models import ChatUser
 class ChatUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = ChatUser
-        fields = ("id", 'device_ids', 'user')
+        fields = ("id", 'device_ids', 'user', 'last_seen')
         extra_kwargs = {
             'id': {'read_only': True},
             'device_ids': {'read_only': True},

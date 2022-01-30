@@ -1,4 +1,5 @@
 import json
+from datetime import datetime
 from logging import getLogger
 
 from channels.db import database_sync_to_async
@@ -9,7 +10,7 @@ from .models import ChatUser, Bundle, Devices, Message
 
 websockets = {}
 
-logger = getLogger('chat')
+logger = getLogger('home')
 
 
 class ChatConsumer(AsyncWebsocketConsumer):
@@ -142,6 +143,12 @@ class ChatConsumer(AsyncWebsocketConsumer):
     @database_sync_to_async
     def get_user(self, uid):
         return ChatUser.objects.get(id=uid)
+
+    @database_sync_to_async
+    def set_last_seen(self, uid):
+        user = ChatUser.objects.get(id=uid)
+        user.last_seen = datetime.now()
+        user.save()
 
     @database_sync_to_async
     def set_bundle(self, user, data, device_id):

@@ -18,6 +18,7 @@ class Bundle(models.Model):
     data = models.JSONField(blank=True, null=True)
     user = models.ForeignKey('ChatUser', on_delete=models.CASCADE, related_name='bundle')
     deviceId = models.CharField(max_length=20)
+
     # token = models.OneToOneField(Tokens, on_delete=models.CASCADE, related_name='bundle', blank=True, null=True)
 
     def __str__(self):
@@ -48,8 +49,9 @@ def create_user_id():
 
 class ChatUser(models.Model):
     id = models.CharField(default=create_user_id, primary_key=True, max_length=10)
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='chat_user')
     device_ids = ArrayField(models.PositiveIntegerField(), blank=True, null=True)
+    last_seen = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 
     def __str__(self):
         return f"{self.id} {self.user.username}"

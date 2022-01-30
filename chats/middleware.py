@@ -29,7 +29,6 @@ class TokenAuthMiddleware(BaseMiddleware):
             # token_key = None
             token_key = (dict((x.split('=') for x in scope['query_string'].decode().split("&")))).get('token', None)
             print(f"{token_key = }")
-            print(f"{token_key = }")
         except ValueError:
             token_key = None
         scope['user'] = AnonymousUser()  # if token_key is None else await get_user(token_key)

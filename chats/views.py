@@ -13,7 +13,7 @@ class ChatUserApiViewSet(viewsets.ModelViewSet):
     http_method_names = ['get', 'post', 'options']
 
     def get_queryset(self):
-        return ChatUser.objects.filter(user=self.request.user)
+        return ChatUser.objects.all()
 
     def create(self, request, *args, **kwargs):
         user, _ = ChatUser.objects.get_or_create(user=request.user)

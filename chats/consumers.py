@@ -33,14 +33,10 @@ class ChatConsumer(AsyncWebsocketConsumer):
         if self.username:
 
             try:
-                logger.info(f'popping {self.username} from websockets')
-                websockets.pop(self.username)
+                logger.info(f'removing {self.username} from websockets')
+                websockets[self.username].remove(self)
             except KeyError:
                 logger.info(f"{self.username} not found on websockets")
-            # try:
-            #     await self.delete_user_device(self.username)
-            # except KeyError:
-            #     logger.info(f"{self.username} not found on device")
 
     async def receive(self, text_data=None, bytes_data=None):
         logger.info('received data from websocket ')
@@ -85,12 +81,12 @@ class ChatConsumer(AsyncWebsocketConsumer):
             logger.info(f'devices sent')
             logger.info(f'getting msgs to {self.username}')
             msgs = await self.get_msgs(self.username)
-            if msgs:
-                logger.info('msgs ')
-                logger.info(f"{msgs = }")
-            for msg in msgs:
-                logger.info(f'sending msg {msg.data}')
-                await self.send(json.dumps(msg.data))
+            logger.info('msgs ')
+            logger.info(f"{msgs = }")
+            for socket in websockets[self.username]:
+                for msg in msgs:
+                    logger.info(f'sending msg {msg.data}')
+                    await socket.send(json.dumps(msg.data))
             await self.delete_msgs(self.username)
 
         elif msg_type == 'bundle':
@@ -112,11 +108,10 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
         elif msg_type == 'getBundle':
             logger.info('get bundle called')
-            logger.info(message)
-            bundle = await self.get_bundle(message['deviceId'])
-            logger.info(bundle)
-            logger.info('sending bundle')
+            logger.info(f'{message =}')
+            bundle = await self.get_bundle(message['deviceId'], message['username'])
             if bundle:
+                logger.info('sending bundle')
                 await self.send(json.dumps({
                     "type": "bundle",
                     "deviceId": bundle.deviceId,
@@ -125,6 +120,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 }))
 
         elif msg_type == 'message':
+
             logger.info(f"trying to send message to {message['to']} from {self.username}")
             if message["to"] not in websockets:
                 await self.create_msgs(message, message['to'])
@@ -185,8 +181,10 @@ class ChatConsumer(AsyncWebsocketConsumer):
         return Devices.objects.filter(username=username).first()
 
     @database_sync_to_async
-    def get_bundle(self, device_id):
-        return Bundle.objects.filter(deviceId=device_id).first()
+    def get_bundle(self, device_id, username):
+        return Bundle.objects.filter(deviceId=device_id, user__id=username).first() if Bundle.objects.filter(
+            deviceId=device_id, user__id=username).exists() else Bundle.objects.filter(deviceId=device_id,
+                                                                                       user__id=self.username).first()
 
     @database_sync_to_async
     def delete_user_device(self, username):

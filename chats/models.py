@@ -51,7 +51,11 @@ class ChatUser(models.Model):
     id = models.CharField(default=create_user_id, primary_key=True, max_length=10)
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='chat_user')
     device_ids = ArrayField(models.PositiveIntegerField(), blank=True, null=True)
-    last_seen = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    last_seen = models.DateTimeField(blank=True, null=True)
+
+    # @property
+    # def id(self):
+    #     return self.user.tokens.private_token
 
     def __str__(self):
         return f"{self.id} {self.user.username}"

@@ -1,10 +1,12 @@
 import json
 from datetime import datetime
 from logging import getLogger
+from typing import List
 
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 from django.contrib.auth.models import AnonymousUser
+from django.db.models import Q
 
 from .models import ChatUser, Bundle, Devices, Message
 
@@ -16,6 +18,7 @@ logger = getLogger('home')
 class ChatConsumer(AsyncWebsocketConsumer):
     def __init__(self):
         self.username = ''
+        self.device_id = ''
         self.user = AnonymousUser()
         logger.info('chat consumer initialisation')
         super().__init__()
@@ -46,6 +49,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         logger.info(user)
         msg_type = message['type']
         logger.info(f"{msg_type = }")
+
         if msg_type == 'register':
             user = await self.get_user(message["username"])
             self.username = user.id
@@ -79,15 +83,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
                     'username': dev.username,
                 }))
             logger.info(f'devices sent')
-            logger.info(f'getting msgs to {self.username}')
-            msgs = await self.get_msgs(self.username)
-            logger.info('msgs ')
-            logger.info(f"{msgs = }")
-            for socket in websockets[self.username]:
-                for msg in msgs:
-                    logger.info(f'sending msg {msg.data}')
-                    await socket.send(json.dumps(msg.data))
-            await self.delete_msgs(self.username)
+
+
 
         elif msg_type == 'bundle':
             logger.info('sending bundle')
@@ -99,12 +96,25 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
         elif msg_type == 'devices':
             logger.info('got req to devices')
+            self.device_id = message['ownDeviceId']
             await self.create_devices(message['username'], message['devices'])
-
             for user in websockets:
                 if user != self.username:
                     for socket in websockets[user]:
                         await socket.send(text_data=json.dumps(message))
+
+            logger.info(f'getting msgs to {self.username}')
+            msgs = await self.get_msgs(self.username)
+            logger.info('msgs ')
+            # logger.info(f"{msgs = }")
+            for msg in msgs:
+                for thing in msg.to_send:
+                    key = (thing[0], thing[1])
+                    socket = websockets[key]
+                    await socket.send(json.dumps(msg.data))
+                    self.append_seen_to_msg(msg, socket.device_id)
+
+            # await self.delete_msgs(self.username)
 
         elif msg_type == 'getBundle':
             logger.info('get bundle called')
@@ -122,17 +132,33 @@ class ChatConsumer(AsyncWebsocketConsumer):
         elif msg_type == 'message':
 
             logger.info(f"trying to send message to {message['to']} from {self.username}")
-            if message["to"] not in websockets:
-                await self.create_msgs(message, message['to'])
-                logger.info(message["to"], "Not found in websockets")
-            else:
-                try:
-                    for socket in websockets[message["to"]]:
+
+            msg = await self.create_msgs(message, message['to'])
+
+            try:
+                for socket in websockets[message["to"]]:
+                    try:
                         await socket.send(json.dumps(message))
-                except Exception as e:
-                    logger.exception(e)
-                    await self.create_msgs(message, message['to'])
-                    logger.info(f'(message["to"], f" websocket error {e}"')
+                        self.append_seen_to_msg(msg, socket.device_id)
+                    except Exception as e:
+                        logger.exception(e)
+            except Exception as e:
+                logger.exception(e)
+            try:
+                for socket in websockets[self.username]:
+                    logger.info('trying to send msgs to own devices')
+                    print(self.device_id, socket.device_id)
+                    if socket.device_id != self.device_id:
+                        try:
+                            logger.info(f'sending msg to own devices {socket.device_id}')
+                            await socket.send(json.dumps(message))
+                            self.append_seen_to_msg(msg, socket.device_id)
+                            logger.info('send successfully')
+                        except Exception as e:
+                            logger.exception(e)
+            except Exception as e:
+                logger.exception(e)
+                logger.info(f'(message["to"], f" websocket error {e}"')
         else:
             logger.info("Unknown message type", message)
 
@@ -163,13 +189,27 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     @database_sync_to_async
     def create_msgs(self, data, to_user_id):
-        msg = Message.objects.create(data=data, to_user_id=to_user_id, )
+        msg = Message.objects.create(data=data, to_user_id=to_user_id,
+                                     to_send=[d["rid"] for d in data["encrypted"]["header"]["keys"]])
         return msg
 
     @database_sync_to_async
-    def get_msgs(self, to_user_id):
+    def get_msgs(self, to_user_id) -> List[Message]:
         msg = list(Message.objects.filter(to_user_id=to_user_id, ))
         return msg
+
+    @database_sync_to_async
+    def get_msgs_to_send(self, ):
+        msg = list(Message.objects.filter(Q(to_user_id=self.username) | Q(from_user_id=self.username)))
+        return msg
+
+    @database_sync_to_async
+    def append_seen_to_msg(self, msg: Message, device_id: str):
+        msg.seen_devices.append(device_id)
+
+    @database_sync_to_async
+    def remove_seen_to_msg(self, msg: Message, device_id: str):
+        msg.seen_devices.remove(device_id)
 
     @database_sync_to_async
     def delete_msgs(self, to_user_id):

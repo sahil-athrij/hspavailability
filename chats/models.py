@@ -9,9 +9,12 @@ from home.models import Tokens
 
 
 class Message(models.Model):
+    from_user = models.ForeignKey('ChatUser', related_name='msg_frm', on_delete=models.CASCADE, blank=True, null=True)
     data = models.JSONField(blank=True, null=True)
     to_user = models.ForeignKey('ChatUser', related_name='messages', on_delete=models.CASCADE)
     read = models.BooleanField(default=False)
+    seen_devices = ArrayField(models.CharField(max_length=10), default=[])
+    to_send = ArrayField(ArrayField(models.CharField(max_length=10)), default=[[]])
 
 
 class Bundle(models.Model):

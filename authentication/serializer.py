@@ -6,10 +6,8 @@ from home.models import Tokens
 from home.serializer import GetTokensSerializer
 
 
-def get_image(token):
-    if token.profile:
-        return token.profile.url
-    return ""
+def get_image(token: Tokens):
+    return token.profile.url if token.profile else ""
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -28,23 +26,31 @@ class UserSerializer(serializers.ModelSerializer):
                    Tokens.objects.filter(invite_token=user.tokens.private_token)]
         return friends
 
-    @classmethod
-    def get_friends(cls, user):
+
+    def get_friends(self,user):
         friends = [{"name": user.username, "email": user.email, 'token': user.tokens.private_token,
                     "profile": get_image(user.tokens)} for user in
                    user.tokens.friends.all()]
         return friends
 
-    @classmethod
-    def get_chat_friends(cls, user):
-        friends = [{"name": user.username, "email": user.email, 'token': user.chat_user.id,
-                    'last_seen': user.chat_user.last_seen,
-                    "profile": get_image(user.tokens)} for
-                   user in
-                   user.tokens.friends.all() if Bundle.objects.filter(
-                user__user__tokens=user.tokens).exists()]
 
+    def get_chat_friends(self, user):
+        friends = [{"name": user.username, "email": user.email, 'token': user.tokens.private_token,
+                    "profile": get_image(user.tokens),'last_seen':user.tokens.last_seen} for user in
+                   user.tokens.friends.all() if Bundle.objects.filter(user=user).exists()]
         return friends
+
+
+    # @classmethod
+    # def get_chat_friends(cls, user):
+    #     friends = [{"name": user.username, "email": user.email, 'token': user.chat_user.id,
+    #                 'last_seen': user.chat_user.last_seen,
+    #                 "profile": get_image(user.tokens)} for
+    #                user in
+    #                user.tokens.friends.all() if Bundle.objects.filter(
+    #             user__user__tokens=user.tokens).exists()]
+    #
+    #     return friends
 
 
 class GroupSerializer(serializers.ModelSerializer):

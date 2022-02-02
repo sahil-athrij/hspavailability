@@ -26,21 +26,17 @@ class UserSerializer(serializers.ModelSerializer):
                    Tokens.objects.filter(invite_token=user.tokens.private_token)]
         return friends
 
-
-    def get_friends(self,user):
+    @classmethod
+    def get_friends(cls, user):
         friends = [{"name": user.username, "email": user.email, 'token': user.tokens.private_token,
                     "profile": get_image(user.tokens)} for user in
                    user.tokens.friends.all()]
         return friends
 
-
-    def get_chat_friends(self, user):
-        friends = [{"name": user.username, "email": user.email, 'token': user.tokens.private_token,
-                    "profile": get_image(user.tokens),'last_seen':user.tokens.last_seen} for user in
-                   user.tokens.friends.all() if Bundle.objects.filter(user=user).exists()]
-        return friends
-
-
+    @classmethod
+    def get_chat_friends(cls, user):
+        return filter(lambda friend: Bundle.objects.filter(user__tokens__private_token=friend["token"]).exists(),
+                      cls.get_friends(user))
     # @classmethod
     # def get_chat_friends(cls, user):
     #     friends = [{"name": user.username, "email": user.email, 'token': user.chat_user.id,

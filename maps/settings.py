@@ -490,3 +490,6 @@ JAZZMIN_SETTINGS = {
 JAZZMIN_UI_TWEAKS = {
     "theme": "solar",
 }
+
+REDIS_HOST = '127.0.0.1'
+REDIS_PORT = 6379

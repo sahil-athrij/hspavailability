@@ -1,164 +1,162 @@
 import json
+from datetime import datetime
+from logging import getLogger
 
+import redis
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
-from django.contrib.auth.models import AnonymousUser
+from django.contrib.auth.models import AnonymousUser, User
 
-from .models import ChatUser, Bundle, Devices, Message
+from maps import settings
+from .models import Bundle, Devices
 
 websockets = {}
+
+logger = getLogger('home')
+db = redis.Redis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=0, decode_responses=True)
 
 
 class ChatConsumer(AsyncWebsocketConsumer):
     def __init__(self):
         self.username = ''
+        self.device_id = ''
         self.user = AnonymousUser()
-
+        logger.info('chat consumer initialisation')
         super().__init__()
 
     async def connect(self):
         self.user = self.scope['user']
+        logger.info('connecting')
         # if self.user.is_authenticated:
+        logger.info('accepting')
         await self.accept()
 
     async def disconnect(self, code):
-        print('Disconnect from', self.username, code)
+        logger.info(f'websocket Disconnect from {self.username = } , {code = }')
+        (self.username, self.device_id) in websockets and websockets.pop((self.username, self.device_id))
 
-        if self.username:
+    async def register(self, message):
+        self.username = message["username"]
+        devs = await self.get_devices(self.username)
+
+        await self.send(text_data=json.dumps({
+            'type': 'registered',
+            'devices': devs.data if devs else [],
+        }))
+
+        devices = await self.get_all_devices_except_mine(self.username)
+
+        for dev in devices:
+            logger.info(f"{dev = }")
+            await self.send(text_data=json.dumps({
+                'type': 'devices',
+                'devices': dev.data,
+                'username': dev.username,
+            }))
+
+    async def devices(self, message):
+        self.device_id = message['ownDeviceId']
+        await self.create_devices(message['username'], message['devices'])
+
+        logger.debug(f"Letting the world know {self.device_id} has joined the party!")
+        for key in websockets:  # TODO Don't do this
+            await websockets[key].send(text_data=json.dumps(message))
+
+        websockets[(self.username, self.device_id)] = self
+
+        msgs = db.smembers(str((self.username, self.device_id)))
+        logger.debug(f"Sending {len(msgs)} messages")
+
+        for msg in msgs:
             try:
-                websockets.pop(self.username)
-            except KeyError:
-                print(f"{self.username} not found on websockets")
-            # try:
-            #     await self.delete_user_device(self.username)
-            # except KeyError:
-            #     print(f"{self.username} not found on device")
+                await self.send(msg)
+                db.srem(msg)
+            except Exception as e:
+                logger.exception(e)
+
+        logger.debug("All previous message sent to device. Redis should be cleared")
+
+    async def bundle(self, message):
+        await self.set_bundle(message["username"], message['bundle'], message['deviceId'])
+
+    async def get_bundle(self, message):
+        bundle = await self.get_bundle_from_db(message['deviceId'], message['username'])
+        if bundle:
+            logger.debug(f"Sending bundle {message['deviceId'], message['username'] =} to {self.username =}")
+            await self.send(json.dumps({
+                "type": "bundle",
+                "deviceId": bundle.deviceId,
+                "bundle": bundle.data,
+
+            }))
+        else:
+            logger.error(f"Bundle for {message['deviceId'], message['username'] =} not found.")
+
+    async def message(self, message):
+        to_send = await self.get_to_send(message)
+        message = json.dumps(message)
+
+        logger.debug(f"Sending message to {to_send}")
+
+        for key in to_send:
+            if key in websockets:
+                await websockets[key].send(message)
+            else:
+                db.sadd(str(key), message)
 
     async def receive(self, text_data=None, bytes_data=None):
         message = json.loads(text_data)
-        # user = self.scope['user']
-        # print(user)
-        msg_type = message['type']
-        if msg_type == 'register':
+        handlers = {"message": self.message, "getBundle": self.get_bundle, "bundle": self.bundle,
+                    "devices": self.devices, "register": self.register}
 
-            user = await self.get_user(message["username"])
-            self.username = user.id
-            websockets[self.username] = [*(websockets[self.username] if self.username in websockets else []), self]
-            devs = await self.get_devices(self.username)
-            if devs:
-                devs = devs.data
-            else:
-                devs = []
-
-            await self.send(text_data=json.dumps({
-                'type': 'registered',
-                'devices': devs,
-            }))
-            print("send the devs")
-
-            devices = await self.get_all_devices_except_mine(self.username)
-            for dev in devices:
-                print(f"{dev = }")
-                await self.send(text_data=json.dumps({
-                    'type': 'devices',
-                    'devices': dev.data,
-                    'username': dev.username,
-                }))
-            msgs = await self.get_msgs(self.username)
-            print(f"{msgs = }")
-            for msg in msgs:
-                print(f'sending msg {msg.data}')
-                await self.send(json.dumps(msg.data))
-            await self.delete_msgs(self.username)
-
-        elif msg_type == 'bundle':
-            # print('sending bundle')
-            # print(f'{message = }')
-            user = await self.get_user(message["username"])
-            b = await self.set_bundle(user, message['bundle'], message['deviceId'])
-            # print(b)
-            print('set bundle called')
-
-        elif msg_type == 'devices':
-            print('got req to devices')
-            await self.create_devices(message['username'], message['devices'])
-
-            for user in websockets:
-                if user != self.username:
-                    for socket in websockets[user]:
-                        await socket.send(text_data=json.dumps(message))
-
-        elif msg_type == 'getBundle':
-            # print('get bundle')
-            # print(message)
-            bundle = await self.get_bundle(message['deviceId'])
-            # print(bundle)
-            # print('sending bundle')
-            if bundle:
-                await self.send(json.dumps({
-                    "type": "bundle",
-                    "deviceId": bundle.deviceId,
-                    "bundle": bundle.data,
-
-                }))
-
-        elif msg_type == 'message':
-            print(f"trying to send message to {message['to']} from {self.username}")
-            if message["to"] not in websockets:
-                await  self.create_msgs(message, message['to'])
-                print(message["to"], "Not found in websockets")
-            else:
-                try:
-                    for socket in websockets[message["to"]]:
-                        await socket.send(json.dumps(message))
-                except Exception as e:
-                    print(e)
-                    await  self.create_msgs(message, message['to'])
-                    print(message["to"], f" websocket error {e}")
+        if message['type'] in handlers:
+            logger.info(f"Processing message of type {message['type']}")
+            await handlers[message['type']](message)
         else:
-            print("Unknown message type", message)
+            logger.error(f"Unknown request type {message['type'] = }")
 
     @database_sync_to_async
-    def get_user(self, uid):
-        return ChatUser.objects.get(id=uid)
+    def set_last_seen(self, uid):
+        user = User.objects.get(tokens__private_token=uid)
+        user.tokens.last_seen = datetime.now()
+        user.save()
 
     @database_sync_to_async
-    def set_bundle(self, user, data, device_id):
-        print('setting bundle')
-        bundle, _ = Bundle.objects.get_or_create(user=user, deviceId=device_id)
+    def set_bundle(self, token, data, device_id):
+        bundle, _ = Bundle.objects.get_or_create(user=User.objects.get(tokens__private_token=token), deviceId=device_id)
         bundle.data = data
         bundle.save()
 
     @database_sync_to_async
-    def create_devices(self, username, message):
+    def create_devices(self, username, devs):
         device, _ = Devices.objects.get_or_create(username=username)
-        device.data = message
-        device.save()
+        logger.info(f"Existing devices, {device.data}")
+        if device.data != devs:
+            logger.info(f"New device registered, device id = {set(devs)-set(device.data or [])}")
+            device.data = devs
+            device.save()
 
         return device
 
     @database_sync_to_async
-    def create_msgs(self, data, to_user_id):
-        msg = Message.objects.create(data=data, to_user_id=to_user_id, )
-        return msg
+    def get_to_send(self, data):
+        to_devs = Devices.objects.get(username=data["to"]).data
+        to_send = []
 
-    @database_sync_to_async
-    def get_msgs(self, to_user_id):
-        msg = list(Message.objects.filter(to_user_id=to_user_id, ))
-        return msg
+        for d in data["encrypted"]["header"]["keys"]:
+            user = data["to"] if d["rid"] in to_devs else self.username
+            to_send.append((user, d["rid"]))
 
-    @database_sync_to_async
-    def delete_msgs(self, to_user_id):
-        Message.objects.filter(to_user_id=to_user_id).filter().delete()
-        print('deleting mss')
+        return to_send
 
     @database_sync_to_async
     def get_devices(self, username):
         return Devices.objects.filter(username=username).first()
 
     @database_sync_to_async
-    def get_bundle(self, device_id):
-        return Bundle.objects.filter(deviceId=device_id).first()
+    def get_bundle_from_db(self, device_id, username):
+        bundle = Bundle.objects.filter(deviceId=device_id, user__tokens__private_token=username).first()
+        return bundle or Bundle.objects.filter(deviceId=device_id, user__tokens__private_token=self.username).first()
 
     @database_sync_to_async
     def delete_user_device(self, username):

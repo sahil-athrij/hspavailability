@@ -47,7 +47,6 @@ urlpatterns = [
 
     path('api/', include('home.urls')),
     path('internals/', include('internals.urls')),
-    path('chat/', include('chats.urls')),
     path('', include('v2.urls')),
     path('auth/', include('authentication.urls')),
     path('openid/', include('oidc_provider.urls', namespace='oidc_provider')),

@@ -1,15 +1,13 @@
 from django.contrib.auth.models import User, Group
 from rest_framework import serializers
 
-from chats.models import Bundle, ChatUser
+from chats.models import Bundle
 from home.models import Tokens
 from home.serializer import GetTokensSerializer
 
 
-def get_image(token):
-    if token.profile:
-        return token.profile.url
-    return ""
+def get_image(token: Tokens):
+    return token.profile.url if token.profile else ""
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -22,27 +20,33 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ('id', 'username', 'email', "first_name", "last_name", 'tokens', 'friends', 'invited', 'chat_friends')
 
-    def get_invited(self, user):
+    @classmethod
+    def get_invited(cls, user):
         friends = [{"name": tkn.user.username, "email": tkn.user.email, "profile": get_image(tkn)} for tkn in
                    Tokens.objects.filter(invite_token=user.tokens.private_token)]
         return friends
 
-    def get_friends(self, user):
+    @classmethod
+    def get_friends(cls, user):
         friends = [{"name": user.username, "email": user.email, 'token': user.tokens.private_token,
                     "profile": get_image(user.tokens)} for user in
                    user.tokens.friends.all()]
         return friends
 
-    def get_chat_friends(self, user):
-        friends = [{"name": user.username, "email": user.email, 'token': ChatUser.objects.filter(user=user).first().id,
-                    "profile": get_image(user.tokens)} for
-                   user in
-                   user.tokens.friends.all() if Bundle.objects.filter(
-                user__user__tokens=user.tokens).exists()]
-        print(f"{friends = }")
-
-
-        return friends
+    @classmethod
+    def get_chat_friends(cls, user):
+        return filter(lambda friend: Bundle.objects.filter(user__tokens__private_token=friend["token"]).exists(),
+                      cls.get_friends(user))
+    # @classmethod
+    # def get_chat_friends(cls, user):
+    #     friends = [{"name": user.username, "email": user.email, 'token': user.chat_user.id,
+    #                 'last_seen': user.chat_user.last_seen,
+    #                 "profile": get_image(user.tokens)} for
+    #                user in
+    #                user.tokens.friends.all() if Bundle.objects.filter(
+    #             user__user__tokens=user.tokens).exists()]
+    #
+    #     return friends
 
 
 class GroupSerializer(serializers.ModelSerializer):

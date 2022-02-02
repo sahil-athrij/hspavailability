@@ -206,13 +206,13 @@ class AppointmentViewSet(viewsets.ModelViewSet):
 
         try:
             doc = Doctor.objects.get(id=doctor)
-            slots = doc.slots.get(date=date, start=start, end=end, booked=False)
+            slots = doc.slots.get(dat=date, start=start, end=end, booked=False)
             tkn = Tokens.objects.get(user_id=patient)
             if doc.user:
                 tkn.add_friend(doc.user)
 
             slots.booked = True
             slots.save()
-            serializer.save(start=slots.date, end=slots.end, date=slots.date)
+            serializer.save()
         except Exception as e:
             raise e

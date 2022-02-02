@@ -181,4 +181,7 @@ class AppointmentSerializer(serializers.ModelSerializer):
         ]
         extra_kwargs = {
             'approved': {'read_only': True},
+            # 'start': {'read_only': True},
+            # 'end': {'read_only': True},
+            # 'date': {'read_only': True},
         }

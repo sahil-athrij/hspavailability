@@ -3,6 +3,8 @@ sudo systemctl restart redis.service
 
 . venv/bin/activate
 pip install -r requirements.txt
+python manage.py makemigrations
+python manage.py migrate
 
 sudo cp wsgi.conf asgi.conf /etc/supervisor/conf.d/
 sudo supervisorctl reread

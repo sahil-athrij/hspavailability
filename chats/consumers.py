@@ -70,7 +70,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         for msg in msgs:
             try:
                 await self.send(msg)
-                db.srem(msg)
+                db.srem(str((self.username, self.device_id)), msg)
             except Exception as e:
                 logger.exception(e)
 
@@ -81,16 +81,15 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     async def get_bundle(self, message):
         bundle = await self.get_bundle_from_db(message['deviceId'], message['username'])
-        if bundle:
-            logger.debug(f"Sending bundle {message['deviceId'], message['username'] =} to {self.username =}")
-            await self.send(json.dumps({
-                "type": "bundle",
-                "deviceId": bundle.deviceId,
-                "bundle": bundle.data,
 
-            }))
-        else:
-            logger.error(f"Bundle for {message['deviceId'], message['username'] =} not found.")
+        logger.debug(f"Sending bundle {message['deviceId'], message['username'] =} to {self.username =}")
+
+        await self.send(json.dumps({
+            "type": "bundle",
+            "deviceId": message['deviceId'],
+            "bundle": bundle.data if bundle else None,
+
+        }))
 
     async def message(self, message):
         to_send = await self.get_to_send(message)

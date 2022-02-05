@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from internals.models import Department, Department_Name, Doctor, Equipment_Name, \
+from internals.models import Department, DepartmentName, Doctor, EquipmentName, \
     Floors, Building, Images, Equipment, DoctorReviews, WorkingTime, HospitalWorkingTime, \
     Nurse, Ambulance, NurseReviews, AmbulanceReviews, BloodBank, Appointment, AvailableSlots
 
@@ -29,13 +29,13 @@ class HospitalWorkingTimeSerializer(serializers.ModelSerializer):
 
 class DepartmentNameSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Department_Name
+        model = DepartmentName
         fields = ['id', 'name', "icon"]
 
 
 class EquipmentNameSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Equipment_Name
+        model = EquipmentName
         fields = ['id', 'name']
 
 
@@ -77,7 +77,6 @@ class DoctorSerializer(serializers.ModelSerializer):
         if len(days):
             temp = days[0]
             for i in range(1, len(days)):
-                print(temp, days[i], temp.day - days[i].day)
                 if temp.day - days[i].day < -2:
                     print({"start": temp, "end": days[i - 1]})
                     ranges.append({"start": temp, "end": days[i - 1]})
@@ -98,7 +97,7 @@ class EquipmentSerializer(serializers.ModelSerializer):
 class GetDepartmentSerializer(serializers.ModelSerializer):
     images = GetImageSerializer(many=True, required=False, read_only=True)
     name = DepartmentNameSerializer(many=False, required=False, read_only=True)
-    name_id = serializers.PrimaryKeyRelatedField(queryset=Department_Name.objects.all(), source='name')
+    name_id = serializers.PrimaryKeyRelatedField(queryset=DepartmentName.objects.all(), source='name')
     doctors = DoctorSerializer(many=True, required=False, read_only=True)
 
     class Meta:

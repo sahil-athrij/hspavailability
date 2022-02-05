@@ -1,9 +1,13 @@
 from django.contrib.auth.models import User
 from django.db import models
+from datetime import timedelta
 
 # Create your models here.
 from home.models import Markers, Reviews, Language
 
+days = (
+    (1, "monday"), (2, "tuesday"), (3, "Wednesday"), (4, "Thursday"), (5, "friday"), (6, "saturday"), (7, "sunday")
+)
 gender = [
     ('M', 'male'),
     ('F', 'female'),
@@ -13,14 +17,14 @@ gender = [
 choices = ((1, 1), (2, 2), (3, 3), (4, 4), (5, 5))
 
 
-class Equipment_Name(models.Model):
+class EquipmentName(models.Model):
     name = models.CharField(max_length=200)
 
     def __str__(self):
         return self.name
 
 
-class Department_Name(models.Model):
+class DepartmentName(models.Model):
     name = models.CharField(max_length=200)
     icon = models.ImageField(upload_to="pic", blank=True, null=True)
 
@@ -40,7 +44,7 @@ class Floors(models.Model):
 
 
 class Department(models.Model):
-    name = models.ForeignKey(Department_Name, on_delete=models.PROTECT)
+    name = models.ForeignKey(DepartmentName, on_delete=models.PROTECT)
     rating = models.FloatField(default=0)
     x = models.IntegerField(default=0)
     y = models.IntegerField(default=0)
@@ -49,16 +53,20 @@ class Department(models.Model):
 
 
 class Equipment(models.Model):
-    name = models.ForeignKey(Equipment_Name, on_delete=models.PROTECT)
+    name = models.ForeignKey(EquipmentName, on_delete=models.PROTECT)
     department = models.ForeignKey(Department, related_name='equipment', on_delete=models.CASCADE)
 
 
 class WorkingTime(models.Model):
-    days = (
-        (1, "monday"), (2, "tuesday"), (3, "Wednesday"), (4, "Thursday"), (5, "friday"), (6, "saturday"), (7, "sunday"))
     day = models.IntegerField(default=1, choices=days)
     starting_time = models.TimeField()
     ending_time = models.TimeField()
+    #
+    # def split_time(self):
+    #     groups = []
+    #     start = self.starting_time
+    #     while start > self.ending_time:
+    #         groups.append({'start': start, 'end': start + timedelta(minutes=30)})
 
 
 class HospitalWorkingTime(models.Model):
@@ -68,14 +76,13 @@ class HospitalWorkingTime(models.Model):
 
 
 class AvailableSlots(models.Model):
-    date = models.DateField()
+    day = models.IntegerField(choices=days, default=1)
     start = models.TimeField()
     end = models.TimeField()
     booked = models.BooleanField(default=False)
 
 
 class Doctor(models.Model):
-    days = []
     name = models.CharField(max_length=200)
     phone_number = models.CharField(max_length=14)
 
@@ -215,3 +222,9 @@ class Appointment(models.Model):
     # @property
     # def time(self):
     #     return self.TIMESLOT_LIST[self.timeslot][1]
+
+# class AvailableDate(models.Model):
+#     day = models.CharField(max_length=10, choices=days)
+#     start_time = models.TimeField(auto_now_add=True)
+#     end_time = models.TimeField(auto_now_add=True)
+#     doctor = models.ForeignKey(Doctor)

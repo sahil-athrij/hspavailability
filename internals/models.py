@@ -1,7 +1,5 @@
 from django.contrib.auth.models import User
 from django.db import models
-from datetime import timedelta
-
 # Create your models here.
 from home.models import Markers, Reviews, Language
 
@@ -93,9 +91,7 @@ class Doctor(models.Model):
     department = models.ManyToManyField(Department, related_name='doctors', blank=True, null=True)
     user = models.OneToOneField(User, related_name='doctor', on_delete=models.PROTECT, default=None, null=True,
                                 blank=True)
-
     ima_number = models.CharField(max_length=30, blank=True, null=True)
-
     about = models.TextField(blank=True, null=True, max_length=1000)
     rating = models.FloatField(default=0)
     patients = models.PositiveIntegerField(default=0)
@@ -103,18 +99,30 @@ class Doctor(models.Model):
     specialization = models.CharField(max_length=50, blank=True, null=True)
     image = models.ImageField(upload_to="pic", null=True, blank=True)
     language = models.ManyToManyField(Language, related_name='doctor')
-    slots = models.ManyToManyField(AvailableSlots, related_name="available_slots")
+
+    # slots = models.ManyToManyField(AvailableSlots, related_name="available_slots")
 
     def __str__(self):
         return f"Dr: {self.name}"
 
+    @property
     def get_slot_range(self):
-        days = sorted(list(set([slot.date for slot in self.slots.all()])))
-        if len(days):
-            day = days[0]
-            for i in range(1, len(days)):
-                if abs(day.day - days[i].day) > 2:
-                    pass
+        hosp = {}
+        for working in self.working_time.all():
+            ranges = []
+            hr = working.working_time.starting_time.hour
+            minutes = working.working_time.starting_time.minute
+            while hr < working.working_time.ending_time.hour:
+                ranges.append(
+                    {"start": f"{hr}:{minutes % 60}:00", "end": f"{hr + minutes // 60}:{(minutes + 15) % 15}:00", })
+                minutes = minutes + 15
+                # minutes = minutes % 60
+                hr = hr + minutes // 60
+            if hosp.get(working.hospital.name):
+                hosp[working.hospital.name].append({"day": days[working.working_time.day], 'slots': ranges})
+            else:
+                hosp[working.hospital.name] = [{"day": days[working.working_time.day], 'slots': ranges}]
+        return hosp
 
 
 class DoctorReviews(models.Model):

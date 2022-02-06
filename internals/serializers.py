@@ -56,14 +56,14 @@ class AvailableSlotsSerializer(serializers.ModelSerializer):
 class DoctorSerializer(serializers.ModelSerializer):
     reviews = GetDoctorReviewSerializer(many=True, required=False, read_only=True)
     working_time = HospitalWorkingTimeSerializer(many=True, read_only=True)
-    slots = AvailableSlotsSerializer(many=True, read_only=True)
+    # slots = AvailableSlotsSerializer(many=True, read_only=True)
     ranges = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Doctor
         fields = ["id", 'name', 'phone_number', 'hospital', 'department', 'user', 'working_time',
                   'rating', 'patients', 'experience', 'specialization', "about", "reviews", "image", "whatsapp_number",
-                  "email_id", 'ima_number', 'slots', 'ranges']
+                  "email_id", 'ima_number', 'ranges']
         extra_kwargs = {
             'hospital': {'read_only': True},
             'user': {'required': False},
@@ -71,16 +71,16 @@ class DoctorSerializer(serializers.ModelSerializer):
         }
 
     def get_ranges(self, doctor):
-        days = sorted(list(set([slot.date for slot in doctor.slots.filter(booked=False)])))
+        # days = sorted(list(set([slot.date for slot in doctor.slots.filter(booked=False)])))
         ranges = []
-        print(days)
-        if len(days):
-            temp = days[0]
-            for i in range(1, len(days)):
-                if temp.day - days[i].day < -2:
-                    print({"start": temp, "end": days[i - 1]})
-                    ranges.append({"start": temp, "end": days[i - 1]})
-                    temp = days[i]
+        # print(days)
+        # if len(days):
+        #     temp = days[0]
+        #     for i in range(1, len(days)):
+        #         if temp.day - days[i].day < -2:
+        #             print({"start": temp, "end": days[i - 1]})
+        #             ranges.append({"start": temp, "end": days[i - 1]})
+        #             temp = days[i]
 
         return ranges
 

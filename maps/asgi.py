@@ -10,8 +10,6 @@ django.setup()
 import chats.routing
 from chats.middleware import TokenAuthMiddleware
 
-
-
 application = ProtocolTypeRouter({
     "http": get_asgi_application(),
     "websocket":
@@ -19,5 +17,5 @@ application = ProtocolTypeRouter({
             URLRouter(
                 chats.routing.websocket_urlpatterns
             )
-    ),
+        ),
 })

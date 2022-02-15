@@ -73,11 +73,11 @@ class HospitalWorkingTime(models.Model):
     doctor = models.ForeignKey("Doctor", on_delete=models.CASCADE, related_name="working_time")
 
 
-class AvailableSlots(models.Model):
-    day = models.IntegerField(choices=days, default=1)
-    start = models.TimeField()
-    end = models.TimeField()
-    booked = models.BooleanField(default=False)
+# class AvailableSlots(models.Model):
+#     day = models.IntegerField(choices=days, default=1)
+#     start = models.TimeField()
+#     end = models.TimeField()
+#     booked = models.BooleanField(default=False)
 
 
 class Doctor(models.Model):
@@ -108,21 +108,40 @@ class Doctor(models.Model):
     @property
     def get_slot_range(self):
         hosp = {}
+
         for working in self.working_time.all():
             ranges = []
             hr = working.working_time.starting_time.hour
             minutes = working.working_time.starting_time.minute
             while hr < working.working_time.ending_time.hour:
                 ranges.append(
-                    {"start": f"{hr}:{minutes % 60}:00", "end": f"{hr + minutes // 60}:{(minutes + 15) % 15}:00", })
+                    {"start": f"{hr}:{minutes % 60}:00", "end": f"{hr + minutes // 60}:{(minutes + 15) % 60}:00", })
                 minutes = minutes + 15
-                # minutes = minutes % 60
                 hr = hr + minutes // 60
             if hosp.get(working.hospital.name):
                 hosp[working.hospital.name].append({"day": days[working.working_time.day], 'slots': ranges})
             else:
                 hosp[working.hospital.name] = [{"day": days[working.working_time.day], 'slots': ranges}]
         return hosp
+
+    @property
+    def get_slots(self):
+        hosp = {}
+        for day in days:
+            for working in self.working_time.filter(day=day[0]):
+                ranges = []
+                hr = working.working_time.starting_time.hour
+                minutes = working.working_time.starting_time.minute
+                while hr < working.working_time.ending_time.hour:
+                    ranges.append(
+                        {"start": f"{hr}:{minutes % 60}:00", "end": f"{hr + minutes // 60}:{(minutes + 15) % 60}:00", })
+                    minutes = minutes + 15
+                    hr = hr + minutes // 60
+                if hosp.get(working.hospital.name):
+                    hosp[working.hospital.name].append({"day": days[working.working_time.day], 'slots': ranges})
+                else:
+                    hosp[working.hospital.name] = [{"day": days[working.working_time.day], 'slots': ranges}]
+            return hosp
 
 
 class DoctorReviews(models.Model):

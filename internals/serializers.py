@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 from internals.models import Department, DepartmentName, Doctor, EquipmentName, \
     Floors, Building, Images, Equipment, DoctorReviews, WorkingTime, HospitalWorkingTime, \
-    Nurse, Ambulance, NurseReviews, AmbulanceReviews, BloodBank, Appointment, AvailableSlots
+    Nurse, Ambulance, NurseReviews, AmbulanceReviews, BloodBank, Appointment
 
 
 class GetImageSerializer(serializers.ModelSerializer):
@@ -47,10 +47,10 @@ class GetDoctorReviewSerializer(serializers.ModelSerializer):
         fields = ["content", "created_by", "doctor", "rating"]
 
 
-class AvailableSlotsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = AvailableSlots
-        fields = ["date", "start", "end"]
+# class AvailableSlotsSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = AvailableSlots
+#         fields = ["date", "start", "end"]
 
 
 class DoctorSerializer(serializers.ModelSerializer):
@@ -180,7 +180,4 @@ class AppointmentSerializer(serializers.ModelSerializer):
         ]
         extra_kwargs = {
             'approved': {'read_only': True},
-            # 'start': {'read_only': True},
-            # 'end': {'read_only': True},
-            # 'date': {'read_only': True},
         }

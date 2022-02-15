@@ -1,7 +1,6 @@
 from django.contrib.auth.models import User
 from django.contrib.gis.db import models
 
-from home.models import Tokens
 
 
 class Bundle(models.Model):

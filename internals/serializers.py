@@ -71,16 +71,16 @@ class DoctorSerializer(serializers.ModelSerializer):
         }
 
     def get_ranges(self, doctor):
-        # days = sorted(list(set([slot.date for slot in doctor.slots.filter(booked=False)])))
+        days = sorted(list(set([slot.date for slot in doctor.slots.filter(booked=False)])))
         ranges = []
-        # print(days)
-        # if len(days):
-        #     temp = days[0]
-        #     for i in range(1, len(days)):
-        #         if temp.day - days[i].day < -2:
-        #             print({"start": temp, "end": days[i - 1]})
-        #             ranges.append({"start": temp, "end": days[i - 1]})
-        #             temp = days[i]
+        print(days)
+        if len(days):
+            temp = days[0]
+            for i in range(1, len(days)):
+                if temp.day - days[i].day < -2:
+                    print({"start": temp, "end": days[i - 1]})
+                    ranges.append({"start": temp, "end": days[i - 1]})
+                    temp = days[i]
 
         return ranges
 
@@ -181,3 +181,4 @@ class AppointmentSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'approved': {'read_only': True},
         }
+

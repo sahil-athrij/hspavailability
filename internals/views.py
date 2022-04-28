@@ -217,3 +217,4 @@ class AppointmentViewSet(viewsets.ModelViewSet):
             serializer.save()
         except Exception as e:
             raise e
+

@@ -19,6 +19,7 @@ from internals.models import Images
 from internals.views import add_points
 from v2.views import give_points
 from .serializer import *
+from authentication.permissions import IsOwnerUser
 
 
 def get_client_ip(request):
@@ -262,7 +263,6 @@ class PatientViewSet(viewsets.ModelViewSet):
         queryset = super(PatientViewSet, self).filter_queryset(queryset)
         return queryset.filter(user=user.id)
 
-
     @action(detail=False, methods=["get", "post"], url_path='friends')
     def friends(self, request, *args, **kwargs):
         token = Tokens.objects.get(user_id=self.request.user.id)
@@ -332,3 +332,29 @@ class LanguageApiViewSet(viewsets.ModelViewSet):
     http_method_names = ['get', 'post']
     filter_backends = [filters.SearchFilter, ]
     search_fields = ['name']
+
+
+class NotificationApiViewSet(viewsets.ModelViewSet):
+    queryset = Notification.objects.all()
+    serializer_class = NotificationSerializer
+    permission_classes = [IsOwnerUser]
+    http_method_names = ['get', 'post']
+    filter_backends = [filters.SearchFilter, ]
+    search_fields = ['text']
+
+    def get_queryset(self):
+        return Notification.objects.filter(user=self.request.user, ).exclude(deleted=True)
+
+    @action(detail=False, methods=["get", "post"], url_path='read')
+    def read(self):
+        notifications = Notification.objects.filter(user=self.request.user, seen=False)
+        for notification in notifications:
+            notification.seen = True
+            notification.save()
+
+    @action(detail=False, methods=["get", "post"], url_path='del')
+    def delete(self):
+        notifications = Notification.objects.filter(user=self.request.user, deleted=False)
+        for notification in notifications:
+            notification.deleted = True
+            notification.save()

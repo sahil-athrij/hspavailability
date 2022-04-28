@@ -226,3 +226,11 @@ class Tokens(models.Model):
     def add_friend(self, user):
         self.friends.add(user)
         user.tokens.friends.add(self.user)
+
+
+class Notification(models.Model):
+    user = models.ForeignKey(User, related_name='notification', on_delete=models.CASCADE)
+    text = models.TextField()
+    heading = models.CharField(max_length=30)
+    seen = models.BooleanField(default=False)
+    deleted = models.BooleanField(default=False)

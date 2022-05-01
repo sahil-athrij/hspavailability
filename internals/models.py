@@ -73,11 +73,11 @@ class HospitalWorkingTime(models.Model):
     doctor = models.ForeignKey("Doctor", on_delete=models.CASCADE, related_name="working_time")
 
 
-# class AvailableSlots(models.Model):
-#     day = models.IntegerField(choices=days, default=1)
-#     start = models.TimeField()
-#     end = models.TimeField()
-#     booked = models.BooleanField(default=False)
+class AvailableSlots(models.Model):
+    day = models.IntegerField(choices=days, default=1)
+    start = models.TimeField()
+    end = models.TimeField()
+    booked = models.BooleanField(default=False)
 
 
 class Doctor(models.Model):
@@ -100,7 +100,7 @@ class Doctor(models.Model):
     image = models.ImageField(upload_to="pic", null=True, blank=True)
     language = models.ManyToManyField(Language, related_name='doctor')
 
-    # slots = models.ManyToManyField(AvailableSlots, related_name="available_slots")
+    slots = models.ManyToManyField(AvailableSlots, related_name="available_slots")
 
     def __str__(self):
         return f"Dr: {self.name}"

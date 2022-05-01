@@ -4,6 +4,7 @@ from rest_framework import viewsets, generics, filters
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 
+from authentication.permissions import IsOwnerOrReadOnly
 from home.models import Tokens
 from internals.models import *
 from internals.serializers import *
@@ -21,7 +22,7 @@ def add_points(user, points):
 
 class Department_NameApiViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
-    queryset = Department_Name.objects.all()
+    queryset = DepartmentName.objects.all()
     serializer_class = DepartmentNameSerializer
     http_method_names = ['get', 'post', 'put', 'patch', 'head', 'options']
     filter_backends = [filters.SearchFilter]
@@ -30,7 +31,7 @@ class Department_NameApiViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
 
 class Equipment_NameApiViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
-    queryset = Equipment_Name.objects.all()
+    queryset = EquipmentName.objects.all()
     serializer_class = EquipmentNameSerializer
     http_method_names = ['get', 'post', 'put', 'patch', 'head', 'options']
     filter_backends = [filters.SearchFilter]
@@ -176,7 +177,7 @@ class AmbulanceReviewApiSet(viewsets.ModelViewSet):
         serializer.save(created_by=user)
 
 
-class Blood_type_ApiViewSet(viewsets.ModelViewSet):
+class BloodTypeApiViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticatedOrReadOnly]
     queryset = BloodBank.objects.all()
     serializer_class = Blood_typeSerializer
@@ -190,8 +191,8 @@ class Blood_type_ApiViewSet(viewsets.ModelViewSet):
 
 class AppointmentViewSet(viewsets.ModelViewSet):
     serializer_class = AppointmentSerializer
-    http_method_names = ['get', 'post', 'delete']
-    # permission_classes = [IsOwnerOrReadOnly]
+    http_method_names = ['get', 'post', ]
+    permission_classes = [IsAuthenticatedOrReadOnly]
     queryset = Appointment.objects.all()
 
     def get_queryset(self):
@@ -203,16 +204,17 @@ class AppointmentViewSet(viewsets.ModelViewSet):
         date = self.request.data['date']
         doctor = self.request.data['doctor']
         patient = self.request.data['patient']
-
         try:
+            print('hi')
             doc = Doctor.objects.get(id=doctor)
-            slots = doc.slots.get(dat=date, start=start, end=end, booked=False)
+            print(doc.slots.all())
+            slots = AvailableSlots.objects.get(date=date, start=start, end=end)
             tkn = Tokens.objects.get(user_id=patient)
             if doc.user:
                 tkn.add_friend(doc.user)
-
             slots.booked = True
             slots.save()
             serializer.save()
         except Exception as e:
             raise e
+

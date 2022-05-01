@@ -1,8 +1,8 @@
 from rest_framework import serializers
 
-from internals.models import Department, Department_Name, Doctor, Equipment_Name, \
+from internals.models import Department, DepartmentName, Doctor, EquipmentName, \
     Floors, Building, Images, Equipment, DoctorReviews, WorkingTime, HospitalWorkingTime, \
-    Nurse, Ambulance, NurseReviews, AmbulanceReviews, BloodBank, Appointment, AvailableSlots
+    Nurse, Ambulance, NurseReviews, AmbulanceReviews, BloodBank, Appointment
 
 
 class GetImageSerializer(serializers.ModelSerializer):
@@ -29,13 +29,13 @@ class HospitalWorkingTimeSerializer(serializers.ModelSerializer):
 
 class DepartmentNameSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Department_Name
+        model = DepartmentName
         fields = ['id', 'name', "icon"]
 
 
 class EquipmentNameSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Equipment_Name
+        model = EquipmentName
         fields = ['id', 'name']
 
 
@@ -56,14 +56,14 @@ class AvailableSlotsSerializer(serializers.ModelSerializer):
 class DoctorSerializer(serializers.ModelSerializer):
     reviews = GetDoctorReviewSerializer(many=True, required=False, read_only=True)
     working_time = HospitalWorkingTimeSerializer(many=True, read_only=True)
-    slots = AvailableSlotsSerializer(many=True, read_only=True)
+    # slots = AvailableSlotsSerializer(many=True, read_only=True)
     ranges = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Doctor
         fields = ["id", 'name', 'phone_number', 'hospital', 'department', 'user', 'working_time',
                   'rating', 'patients', 'experience', 'specialization', "about", "reviews", "image", "whatsapp_number",
-                  "email_id", 'ima_number', 'slots', 'ranges']
+                  "email_id", 'ima_number', 'ranges']
         extra_kwargs = {
             'hospital': {'read_only': True},
             'user': {'required': False},
@@ -71,17 +71,20 @@ class DoctorSerializer(serializers.ModelSerializer):
         }
 
     def get_ranges(self, doctor):
-        days = sorted(list(set([slot.date for slot in doctor.slots.filter(booked=False)])))
+        days = sorted(list(set([slot.date for slot in doctor.slots.all()])))
         ranges = []
         print(days)
         if len(days):
             temp = days[0]
+
             for i in range(1, len(days)):
+
                 print(temp, days[i], temp.day - days[i].day)
                 if temp.day - days[i].day < -2:
                     print({"start": temp, "end": days[i - 1]})
                     ranges.append({"start": temp, "end": days[i - 1]})
                     temp = days[i]
+                    print(f"{temp = }")
 
         return ranges
 
@@ -98,7 +101,7 @@ class EquipmentSerializer(serializers.ModelSerializer):
 class GetDepartmentSerializer(serializers.ModelSerializer):
     images = GetImageSerializer(many=True, required=False, read_only=True)
     name = DepartmentNameSerializer(many=False, required=False, read_only=True)
-    name_id = serializers.PrimaryKeyRelatedField(queryset=Department_Name.objects.all(), source='name')
+    name_id = serializers.PrimaryKeyRelatedField(queryset=DepartmentName.objects.all(), source='name')
     doctors = DoctorSerializer(many=True, required=False, read_only=True)
 
     class Meta:
@@ -181,7 +184,4 @@ class AppointmentSerializer(serializers.ModelSerializer):
         ]
         extra_kwargs = {
             'approved': {'read_only': True},
-            # 'start': {'read_only': True},
-            # 'end': {'read_only': True},
-            # 'date': {'read_only': True},
         }

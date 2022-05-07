@@ -40,7 +40,6 @@ class UserApiViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=["get", "post", "patch"], url_path='me')
     def me(self, request, *args, **kwargs):
-        logging.info(request.data)
         if request.method == "PATCH":
             data = request.data
             user = request.user
@@ -73,6 +72,7 @@ class UserApiViewSet(viewsets.ModelViewSet):
             serializer.is_valid(raise_exception=True)
             serializer.save()
         else:
+
             self.queryset = self.queryset.filter(pk=request.user.pk)
             return viewsets.ModelViewSet.list(self, request, *args, **kwargs)
         return viewsets.ModelViewSet.list(self, request, *args, **kwargs)

@@ -42,7 +42,6 @@ class UserApiViewSet(viewsets.ModelViewSet):
     def me(self, request, *args, **kwargs):
         logging.info(request.data)
         if request.method == "PATCH":
-
             data = request.data
             user = request.user
             token = Tokens.objects.get(private_token=user.tokens.private_token)

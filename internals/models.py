@@ -1,11 +1,9 @@
 from django.contrib.auth.models import User
 from django.db import models
+
 # Create your models here.
 from home.models import Markers, Reviews, Language
 
-days = (
-    (1, "monday"), (2, "tuesday"), (3, "Wednesday"), (4, "Thursday"), (5, "friday"), (6, "saturday"), (7, "sunday")
-)
 gender = [
     ('M', 'male'),
     ('F', 'female'),
@@ -56,15 +54,11 @@ class Equipment(models.Model):
 
 
 class WorkingTime(models.Model):
+    days = (
+        (1, "monday"), (2, "tuesday"), (3, "Wednesday"), (4, "Thursday"), (5, "friday"), (6, "saturday"), (7, "sunday"))
     day = models.IntegerField(default=1, choices=days)
     starting_time = models.TimeField()
     ending_time = models.TimeField()
-    #
-    # def split_time(self):
-    #     groups = []
-    #     start = self.starting_time
-    #     while start > self.ending_time:
-    #         groups.append({'start': start, 'end': start + timedelta(minutes=30)})
 
 
 class HospitalWorkingTime(models.Model):
@@ -74,13 +68,14 @@ class HospitalWorkingTime(models.Model):
 
 
 class AvailableSlots(models.Model):
-    day = models.IntegerField(choices=days, default=1)
-    start = models.TimeField()
-    end = models.TimeField()
+    date = models.DateField(blank=True, null=True)
+    start = models.TimeField(blank=True, null=True)
+    end = models.TimeField(blank=True, null=True)
     booked = models.BooleanField(default=False)
 
 
 class Doctor(models.Model):
+    days = []
     name = models.CharField(max_length=200)
     phone_number = models.CharField(max_length=14)
 
@@ -91,7 +86,9 @@ class Doctor(models.Model):
     department = models.ManyToManyField(Department, related_name='doctors', blank=True, null=True)
     user = models.OneToOneField(User, related_name='doctor', on_delete=models.PROTECT, default=None, null=True,
                                 blank=True)
+
     ima_number = models.CharField(max_length=30, blank=True, null=True)
+
     about = models.TextField(blank=True, null=True, max_length=1000)
     rating = models.FloatField(default=0)
     patients = models.PositiveIntegerField(default=0)
@@ -99,49 +96,18 @@ class Doctor(models.Model):
     specialization = models.CharField(max_length=50, blank=True, null=True)
     image = models.ImageField(upload_to="pic", null=True, blank=True)
     language = models.ManyToManyField(Language, related_name='doctor')
-
     slots = models.ManyToManyField(AvailableSlots, related_name="available_slots")
 
     def __str__(self):
         return f"Dr: {self.name}"
 
-    @property
     def get_slot_range(self):
-        hosp = {}
-
-        for working in self.working_time.all():
-            ranges = []
-            hr = working.working_time.starting_time.hour
-            minutes = working.working_time.starting_time.minute
-            while hr < working.working_time.ending_time.hour:
-                ranges.append(
-                    {"start": f"{hr}:{minutes % 60}:00", "end": f"{hr + minutes // 60}:{(minutes + 15) % 60}:00", })
-                minutes = minutes + 15
-                hr = hr + minutes // 60
-            if hosp.get(working.hospital.name):
-                hosp[working.hospital.name].append({"day": days[working.working_time.day], 'slots': ranges})
-            else:
-                hosp[working.hospital.name] = [{"day": days[working.working_time.day], 'slots': ranges}]
-        return hosp
-
-    @property
-    def get_slots(self):
-        hosp = {}
-        for day in days:
-            for working in self.working_time.filter(day=day[0]):
-                ranges = []
-                hr = working.working_time.starting_time.hour
-                minutes = working.working_time.starting_time.minute
-                while hr < working.working_time.ending_time.hour:
-                    ranges.append(
-                        {"start": f"{hr}:{minutes % 60}:00", "end": f"{hr + minutes // 60}:{(minutes + 15) % 60}:00", })
-                    minutes = minutes + 15
-                    hr = hr + minutes // 60
-                if hosp.get(working.hospital.name):
-                    hosp[working.hospital.name].append({"day": days[working.working_time.day], 'slots': ranges})
-                else:
-                    hosp[working.hospital.name] = [{"day": days[working.working_time.day], 'slots': ranges}]
-            return hosp
+        days = sorted(list(set([slot.date for slot in self.slots.all()])))
+        if len(days):
+            day = days[0]
+            for i in range(1, len(days)):
+                if abs(day.day - days[i].day) > 2:
+                    pass
 
 
 class DoctorReviews(models.Model):
@@ -249,9 +215,3 @@ class Appointment(models.Model):
     # @property
     # def time(self):
     #     return self.TIMESLOT_LIST[self.timeslot][1]
-
-# class AvailableDate(models.Model):
-#     day = models.CharField(max_length=10, choices=days)
-#     start_time = models.TimeField(auto_now_add=True)
-#     end_time = models.TimeField(auto_now_add=True)
-#     doctor = models.ForeignKey(Doctor)

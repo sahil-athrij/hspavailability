@@ -157,6 +157,7 @@ def signup(request):
                                                     first_name=firstname, last_name=lastname)
 
                     tkn, _ = Tokens.objects.get_or_create(user=user, invite_token=inv)
+                    tkn.add_friend(user)
                     login(request, user, backend='django.contrib.auth.backends.ModelBackend')
                     redirect_location = request.GET.get('next', '/') + '?' + request.META['QUERY_STRING']
                     return HttpResponseRedirect(redirect_location)

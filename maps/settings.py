@@ -32,7 +32,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-if not DEBUG:
+if  DEBUG:
     DEPLOYMENT_URL = 'https://api.needmedi.com'
 
 else:

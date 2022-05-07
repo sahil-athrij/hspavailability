@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 from internals.models import Department, DepartmentName, Doctor, EquipmentName, \
     Floors, Building, Images, Equipment, DoctorReviews, WorkingTime, HospitalWorkingTime, \
-    Nurse, Ambulance, NurseReviews, AmbulanceReviews, BloodBank, Appointment
+    Nurse, Ambulance, NurseReviews, AmbulanceReviews, BloodBank, Appointment, AvailableSlots
 
 
 class GetImageSerializer(serializers.ModelSerializer):

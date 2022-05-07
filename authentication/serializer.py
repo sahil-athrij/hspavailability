@@ -18,19 +18,17 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', "first_name", "last_name", 'tokens', 'friends', 'invited', 'chat_friends')
-
-    @classmethod
-    def get_invited(cls, user):
-        friends = [{"name": tkn.user.username, "email": tkn.user.email, "profile": get_image(tkn)} for tkn in
-                   Tokens.objects.filter(invite_token=user.tokens.private_token)]
-        return friends
+        fields = ('id', 'username', 'email', "first_name", "last_name", 'tokens', 'friends', 'chat_friends')
 
     @classmethod
     def get_friends(cls, user):
-        friends = [{"name": user.username, "email": user.email, 'token': user.tokens.private_token,
-                    "profile": get_image(user.tokens)} for user in
-                   user.tokens.friends.all()]
+        friends = list(set(
+            [{"name": tkn.user.username, "email": tkn.user.email, "profile": get_image(tkn), "invited": True} for
+             tkn in
+             Tokens.objects.filter(invite_token=user.tokens.private_token)]).union(set([
+                {"name": user.username, "email": user.email,
+                 "profile": get_image(user.tokens), "invited": False} for user in
+                user.tokens.friends.all()])))
         return friends
 
     @classmethod

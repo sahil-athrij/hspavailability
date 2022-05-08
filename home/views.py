@@ -261,7 +261,7 @@ class PatientViewSet(viewsets.ModelViewSet):
     def filter_queryset(self, queryset):
         user = self.request.user
         queryset = super(PatientViewSet, self).filter_queryset(queryset)
-        return queryset.filter(user=user.id)
+        return list(set(queryset.filter(user=user.id) + queryset.filter(public=True)))
 
     @action(detail=False, methods=["get", "post"], url_path='friends')
     def friends(self, request, *args, **kwargs):

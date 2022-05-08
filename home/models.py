@@ -182,6 +182,7 @@ class Patient(models.Model):
 
     helped_by = models.ForeignKey(User, blank=True, null=True, related_name='helping', on_delete=models.SET_NULL)
     requirement = models.CharField(max_length=20, blank=True, null=True)
+    public = models.BooleanField(default=False)
 
 
 def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
@@ -226,6 +227,11 @@ class Tokens(models.Model):
     def add_friend(self, user):
         self.friends.add(user)
         user.tokens.friends.add(self.user)
+
+    @property
+    def two_layer_friends(self):
+        return User.objects.filter(tokens__private_token=self.invite_token) \
+               | User.objects.filter(tokens__invite_token=self.private_token)
 
 
 class Notification(models.Model):

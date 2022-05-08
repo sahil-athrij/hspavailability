@@ -75,7 +75,7 @@ class GetPatientSerializer(serializers.ModelSerializer):
             'id', 'uid', 'Name', 'age', 'gender', 'address', 'symptoms', 'symdays', 'spo2', 'oxy_bed', 'covidresult',
             'hospitalpref', 'attendername', 'attenderphone', 'relation', 'srfid', 'bunum', 'blood', 'bedtype', 'ct',
             'ctscore', 'category', 'ownership', 'gender_name', 'bedtype_name', 'helped_by_name', 'helped_by',
-            'requirement'
+            'requirement', 'public'
         ]
 
 

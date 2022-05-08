@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User, Group
+from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import serializers
 
 from chats.models import Bundle
@@ -8,6 +9,29 @@ from home.serializer import GetTokensSerializer
 
 def get_image(token: Tokens):
     return token.profile.url if token.profile else ""
+
+
+class UserSearchSerializer(serializers.ModelSerializer):
+    private_token = serializers.SerializerMethodField()
+    profile = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = ('id', 'username', "first_name", "last_name", "private_token", "profile",)
+
+    @staticmethod
+    def get_profile(user):
+        try:
+            return get_image(user.tokens)
+        except ObjectDoesNotExist:
+            return ""
+
+    @staticmethod
+    def get_private_token(user):
+        try:
+            return user.tokens.private_token
+        except ObjectDoesNotExist:
+            return ""
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -30,7 +54,6 @@ class UserSerializer(serializers.ModelSerializer):
                       {"name": user.username, "email": user.email, "token": user.tokens.private_token,
                        "profile": get_image(user.tokens), "invited": False} for user in
                       user.tokens.friends.all()]
-        print(f"{friends = }")
         return friends
 
     @classmethod

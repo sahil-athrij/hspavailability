@@ -1,8 +1,9 @@
 import logging
 
+import django_filters
 from django.contrib.auth.models import User, Group
 from oauth2_provider.contrib.rest_framework import TokenHasScope, OAuth2Authentication
-from rest_framework import status
+from rest_framework import status, filters
 from rest_framework import viewsets, generics, permissions
 from rest_framework.decorators import action
 from rest_framework.parsers import FileUploadParser
@@ -12,7 +13,7 @@ from home.models import Language, Tokens
 from rest_framework_social_oauth2.authentication import SocialAuthentication
 from .authentication import CsrfExemptSessionAuthentication
 from .permissions import IsOwner
-from .serializer import UserSerializer, GroupSerializer
+from .serializer import UserSerializer, GroupSerializer, UserSearchSerializer
 
 
 class UserApiViewSet(viewsets.ModelViewSet):
@@ -98,6 +99,26 @@ class UserApiViewSet(viewsets.ModelViewSet):
         except Exception as e:
             logging.error(e)
             return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserSearchApiViewSet(viewsets.ModelViewSet):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    serializer_class = UserSearchSerializer
+    queryset = User.objects.all()
+    http_method_names = ['get',"options"]
+    filter_backends = [filters.SearchFilter, django_filters.rest_framework.DjangoFilterBackend]
+    search_fields = ['username', 'first_name', 'last_name']
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
 
 
 class GroupList(generics.ListAPIView):

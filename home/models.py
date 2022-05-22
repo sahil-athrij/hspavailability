@@ -220,7 +220,7 @@ class Tokens(models.Model):
     phone_number = models.CharField(max_length=15, blank=True, null=True)
     friends = models.ManyToManyField(User, null=True, blank=True, related_name='friends')
     last_seen = models.DateTimeField(blank=True, null=True)
-RA    age = models.IntegerField(default=0)
+    age = models.IntegerField(default=0)
     gender = models.CharField(choices=gender, max_length=2, blank=True, null=True)
     address = models.TextField(max_length=2048, default='', blank=True, null=True)
     blood = models.CharField(max_length=4, blank=True, null=True)

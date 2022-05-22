@@ -97,6 +97,7 @@ class Doctor(models.Model):
     image = models.ImageField(upload_to="pic", null=True, blank=True)
     language = models.ManyToManyField(Language, related_name='doctor')
     slots = models.ManyToManyField(AvailableSlots, related_name="available_slots")
+    # qualification =
 
     def __str__(self):
         return f"Dr: {self.name}"

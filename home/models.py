@@ -226,11 +226,15 @@ class Tokens(models.Model):
     blood = models.CharField(max_length=4, blank=True, null=True)
 
     def __str__(self):
-        return self.user.username
+        return self.user.username + self.private_token
 
     def add_friend(self, user):
         self.friends.add(user)
         user.tokens.friends.add(self.user)
+        user.tokens.save()
+        self.points += 5
+        print(self.points)
+        self.save()
 
     def update_details(self, patient: Patient):
         self.address = patient.address

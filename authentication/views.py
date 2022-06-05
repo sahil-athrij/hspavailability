@@ -11,6 +11,7 @@ from rest_framework.response import Response
 
 from home.models import Language, Tokens
 from rest_framework_social_oauth2.authentication import SocialAuthentication
+from v2.views import give_points
 from .authentication import CsrfExemptSessionAuthentication
 from .permissions import IsOwner
 from .serializer import UserSerializer, GroupSerializer, UserSearchSerializer
@@ -105,7 +106,7 @@ class UserSearchApiViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     serializer_class = UserSearchSerializer
     queryset = User.objects.all()
-    http_method_names = ['get',"options"]
+    http_method_names = ['get', "options"]
     filter_backends = [filters.SearchFilter, django_filters.rest_framework.DjangoFilterBackend]
     search_fields = ['username', 'first_name', 'last_name']
 

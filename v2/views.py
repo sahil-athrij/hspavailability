@@ -24,7 +24,7 @@ def give_points(personal_token, option):
     @param personal_token: str
     @type option: str
     """
-
+    print("give points ", personal_token, option)
     if personal_token and personal_token != 'null':
         invited = Tokens.objects.get(private_token=personal_token)
         if option == 'invite':
@@ -39,6 +39,9 @@ def give_points(personal_token, option):
         elif option == 'image':
             invited.images += 1
             invited.points += 5
+        elif option == "add_friend":
+            invited.points += 5
+            print("added 5 points")
         invited.save()
 
 
@@ -256,11 +259,17 @@ def google_login(request):
         if access_token:
             user = AccessToken.objects.get(token=access_token).user
             login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+            # user.tokens.add_friend()
             try:
 
                 token_of_user, _ = Tokens.objects.get_or_create(user=user)
                 if not token_of_user.invite_token:
                     token_of_user.invite_token = invite_token
+                    try:
+                        token_of_invite = Tokens.objects.get(private_token=invite_token)
+                        token_of_user.add_friend(token_of_invite.user)
+                    except Exception as e:
+                        logger.exception(e)
                 token_of_user.save()
             except:
                 logger.exception('failed to create token')

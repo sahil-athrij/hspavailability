@@ -124,8 +124,8 @@ class MarkerApiViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
                         'oxygen_availability': ['gte', 'lte', 'exact'], 'icu_availability': ['gte', 'lte', 'exact'],
                         'avg_cost': ['gte', 'lte', 'exact'],
                         'care_rating': ['gte', 'lte', 'exact'], 'covid_rating': ['gte', 'lte', 'exact'],
-                        'beds_available': ['gte', 'lte', 'exact'], 'category': ['exact'], 'type': ['exact'],
-                        'ownership': ['exact'], 'medicine': ['exact']}
+                        'beds_available': ['gte', 'lte', 'exact'], 'category': ['in'], 'type': ['in'],
+                        'ownership': ['in'], 'medicine': ['in']}
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

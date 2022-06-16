@@ -18,4 +18,5 @@ router.register(r'ambulance', AmbulanceApiViewSet)
 router.register(r'ambulance_reviews', AmbulanceReviewApiSet)
 router.register(r'blood_bank', BloodTypeApiViewSet)
 router.register(r'appointment', AppointmentViewSet)
+router.register(r'doctor_schedule', DoctorScheduleViewSet)
 urlpatterns = [path(r'', include(router.urls))]

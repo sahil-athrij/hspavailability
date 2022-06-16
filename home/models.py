@@ -113,7 +113,7 @@ class Markers(models.Model):
     pending_approval = models.BooleanField(default=False)
     video_call = models.CharField(max_length=1000, null=True, blank=True)
     about = models.TextField(default="")
-    medicine = models.CharField(choices=medicine, max_length=50, default="Allopathy")
+    medicine = models.CharField(choices=medicine, max_length=50, default="Al")
 
     def __str__(self):
         return self.name

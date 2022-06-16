@@ -1,8 +1,12 @@
+import this
 import django_filters
+from django.shortcuts import get_object_or_404
 # Create your views here.
 from rest_framework import viewsets, generics, filters
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticatedOrReadOnly,IsAuthenticated
 from rest_framework.response import Response
+from rest_framework import status
+
 
 from authentication.permissions import IsOwnerOrReadOnly
 from home.models import Tokens
@@ -190,15 +194,32 @@ class BloodTypeApiViewSet(viewsets.ModelViewSet):
 
 
 class AppointmentViewSet(viewsets.ModelViewSet):
-    serializer_class = AppointmentSerializer
-    http_method_names = ['get', 'post', ]
+    serializer_class = PatientAppointmentSlotSerializer
+    http_method_names = ['get', 'post', 'delete' ]
     permission_classes = [IsAuthenticatedOrReadOnly]
-    queryset = Appointment.objects.all()
+    queryset = AppointmentSlots.objects.all()
 
     def get_queryset(self):
-        return Appointment.objects.filter(patient=self.request.user)
+        return AppointmentSlots.objects.filter(booked_by=self.request.user)
 
-    def perform_create(self, serializer):
+    def destroy(self, request, pk=None):
+        slot = get_object_or_404(self.queryset, pk=pk)
+        slot.booked_by = None
+        slot.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def create(self,request):
+        slot = get_object_or_404(self.queryset, pk=self.request.data['id'])
+        print(slot.booked_by)
+        if slot.booked_by:
+            return Response("Already booked", status=status.HTTP_400_BAD_REQUEST)
+        slot.booked_by = self.request.user
+        slot.save()
+        serializer = self.get_serializer(slot)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+"""  def perform_create(self, serializer):
         start = self.request.data['start']
         end = self.request.data['end']
         date = self.request.data['date']
@@ -217,4 +238,17 @@ class AppointmentViewSet(viewsets.ModelViewSet):
             serializer.save()
         except Exception as e:
             raise e
+"""
+class DoctorScheduleViewSet(viewsets.ModelViewSet):
+    serializer_class = DoctorScheduleSerializer
+    http_method_names = ['get', 'post', 'options', 'delete']
+    permission_classes = [IsAuthenticated]
+    queryset = DoctorSchedule.objects.all()
 
+    def list(self, request):
+        response = {'message': 'List function is not offered in this path.'}
+        return Response(response, status=status.HTTP_403_FORBIDDEN)
+          
+    def retrieve(self, request, pk=None):
+        result = self.queryset.filter(doctor=pk)
+        return Response(self.get_serializer(result,many=True).data)

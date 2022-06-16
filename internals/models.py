@@ -67,12 +67,8 @@ class HospitalWorkingTime(models.Model):
     doctor = models.ForeignKey("Doctor", on_delete=models.CASCADE, related_name="working_time")
 
 
-class AvailableSlots(models.Model):
-    date = models.DateField(blank=True, null=True)
-    start = models.TimeField(blank=True, null=True)
-    end = models.TimeField(blank=True, null=True)
-    booked = models.BooleanField(default=False)
 
+type = [("M","Medical"),("B","Blood"), ("F","Food"), ("O","Other")] 
 
 class Doctor(models.Model):
     days = []
@@ -96,7 +92,12 @@ class Doctor(models.Model):
     specialization = models.CharField(max_length=50, blank=True, null=True)
     image = models.ImageField(upload_to="pic", null=True, blank=True)
     language = models.ManyToManyField(Language, related_name='doctor')
-    slots = models.ManyToManyField(AvailableSlots, related_name="available_slots")
+
+    type = models.CharField(choices=type, null=True, blank=True, max_length=10)
+    acc_holder_name = models.CharField(max_length=200,null=True)
+    acc_no = models.CharField(max_length=25, null=True)
+    ifsc_code = models.CharField(max_length=20, null=True)
+    branch_name = models.CharField(max_length=30, null=True)
     # qualification =
 
     def __str__(self):
@@ -109,6 +110,21 @@ class Doctor(models.Model):
             for i in range(1, len(days)):
                 if abs(day.day - days[i].day) > 2:
                     pass
+
+class DoctorSchedule(models.Model):
+    class Meta:
+        unique_together = ('doctor', 'date')
+
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name="doctor")
+    date = models.DateField()
+
+
+
+class AppointmentSlots(models.Model):
+    day = models.ForeignKey(DoctorSchedule, on_delete=models.CASCADE, related_name="slots")
+    start = models.TimeField()
+    end = models.TimeField()
+    booked_by = models.ForeignKey(User, related_name="booked_user", on_delete=models.CASCADE, null=True)
 
 
 class DoctorReviews(models.Model):

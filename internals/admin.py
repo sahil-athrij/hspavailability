@@ -4,6 +4,12 @@ from internals.models import *
 
 
 # Register your models here.
+class SlotInline(admin.StackedInline):
+    model = AppointmentSlots
+
+class DoctorScheduleAdmin(admin.ModelAdmin):
+    inlines = [SlotInline]
+
 
 
 @admin.register(Images)
@@ -63,4 +69,4 @@ admin.site.register(Floors, )
 admin.site.register(Nurse, )
 admin.site.register(NurseReviews, )
 admin.site.register(DoctorReviews, )
-# admin.site.register(AvailableSlots, )
+admin.site.register(DoctorSchedule, DoctorScheduleAdmin )

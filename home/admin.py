@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from home.models import Markers, Reviews, SuspiciousMarking, Patient, Tokens, Language
+from home.models import BannerImage, Markers, Reviews, SuspiciousMarking, Patient, Tokens, Language
 
 
 # Register your models here.
@@ -49,3 +49,5 @@ admin.site.register(SuspiciousMarking)
 admin.site.register(Tokens)
 
 admin.site.register(Language)
+
+admin.site.register(BannerImage)

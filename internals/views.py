@@ -78,6 +78,7 @@ class DoctorApiViewSet(viewsets.ModelViewSet):
     http_method_names = ['get', 'post', 'put', 'patch', 'head', 'options']
     filter_backends = [filters.SearchFilter, django_filters.rest_framework.DjangoFilterBackend]
     search_fields = ['name']
+    filterset_fields = {'rating':['gte'],'experience':['gte'], 'specialization':['exact'],'language':['exact']}
 
     def create(self, request, *args, **kwargs):
 
@@ -198,6 +199,8 @@ class AppointmentViewSet(viewsets.ModelViewSet):
     http_method_names = ['get', 'post', 'delete' ]
     permission_classes = [IsAuthenticatedOrReadOnly]
     queryset = AppointmentSlots.objects.all()
+    filter_backends = [django_filters.rest_framework.DjangoFilterBackend]
+    filterset_fields = {'day__doctor':['exact'],}
 
     def get_queryset(self):
         return AppointmentSlots.objects.filter(booked_by=self.request.user)
@@ -212,8 +215,12 @@ class AppointmentViewSet(viewsets.ModelViewSet):
         slot = get_object_or_404(self.queryset, pk=self.request.data['id'])
         print(slot.booked_by)
         if slot.booked_by:
-            return Response("Already booked", status=status.HTTP_400_BAD_REQUEST)
-        slot.booked_by = self.request.user
+            return Response({"message":"Slot already booked"}, status=status.HTTP_400_BAD_REQUEST)
+        user =  get_object_or_404 (User.objects.all(), pk=self.request.data['patient']) if self.request.data['patient'] else self.request.user
+        user_booked = self.queryset.filter(booked_by=user, day=slot.day).exists()
+        if user_booked:
+            return Response({"message":"Already booked for the day"}, status=status.HTTP_400_BAD_REQUEST)
+        slot.booked_by = user
         slot.save()
         serializer = self.get_serializer(slot)
         headers = self.get_success_headers(serializer.data)
@@ -244,11 +251,6 @@ class DoctorScheduleViewSet(viewsets.ModelViewSet):
     http_method_names = ['get', 'post', 'options', 'delete']
     permission_classes = [IsAuthenticated]
     queryset = DoctorSchedule.objects.all()
+    filter_backends = [django_filters.rest_framework.DjangoFilterBackend]
+    filterset_fields = {'date':['lte','gte'], 'doctor': ['exact']}
 
-    def list(self, request):
-        response = {'message': 'List function is not offered in this path.'}
-        return Response(response, status=status.HTTP_403_FORBIDDEN)
-          
-    def retrieve(self, request, pk=None):
-        result = self.queryset.filter(doctor=pk)
-        return Response(self.get_serializer(result,many=True).data)

@@ -358,3 +358,8 @@ class NotificationApiViewSet(viewsets.ModelViewSet):
         for notification in notifications:
             notification.deleted = True
             notification.save()
+
+class BannerImageViewSet(viewsets.ModelViewSet):
+    queryset = BannerImage.objects.all()
+    serializer_class = BannerImageSerializer
+    http_method_names = ['get', 'post']

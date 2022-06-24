@@ -50,43 +50,6 @@ class GetDoctorReviewSerializer(serializers.ModelSerializer):
 
 
 
-
-
-class DoctorSerializer(serializers.ModelSerializer):
-    reviews = GetDoctorReviewSerializer(many=True, required=False, read_only=True)
-    working_time = HospitalWorkingTimeSerializer(many=True, read_only=True)
-    #ranges = serializers.SerializerMethodField(read_only=True)
-
-    class Meta:
-        model = Doctor
-        fields = ["id", 'name', 'phone_number', 'hospital', 'department', 'user', 'working_time',
-                  'rating', 'patients', 'experience', 'specialization', "about", "reviews", "image", "whatsapp_number",
-                  "email_id", 'ima_number']
-        extra_kwargs = {
-            'hospital': {'read_only': True},
-            'user': {'required': False},
-
-        }
-
-    """def get_ranges(self, doctor):
-        days = sorted(list(set([slot.date for slot in doctor.slots.all()])))
-        ranges = []
-        print(days)
-        if len(days):
-            temp = days[0]
-
-            for i in range(1, len(days)):
-
-                print(temp, days[i], temp.day - days[i].day)
-                if temp.day - days[i].day < -2:
-                    print({"start": temp, "end": days[i - 1]})
-                    ranges.append({"start": temp, "end": days[i - 1]})
-                    temp = days[i]
-                    print(f"{temp = }")
-
-        return ranges
-"""
-
 class AppointmentSlotSerializer(serializers.ModelSerializer):
     booked = serializers.SerializerMethodField()
     class Meta:
@@ -129,7 +92,7 @@ class DoctorScheduleSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = DoctorSchedule
-        fields = ["id","date","slots", "stats"]
+        fields = ["id","date","slots", "stats","doctor"]
         extra_kwargs = {
             'doctor': {'write_only':True}
         }
@@ -139,6 +102,43 @@ class DoctorScheduleSerializer(serializers.ModelSerializer):
         available = appointments.filter(booked_by__isnull=True).count()
         return {"total":total,"available":available} 
 
+
+
+class DoctorSerializer(serializers.ModelSerializer):
+    reviews = GetDoctorReviewSerializer(many=True, required=False, read_only=True)
+    working_time = HospitalWorkingTimeSerializer(many=True, read_only=True)
+    #ranges = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = Doctor
+        fields = ["id", 'name', 'phone_number', 'hospital', 'department', 'user', 'working_time',
+                  'rating', 'patients', 'experience', 'specialization', "about", "reviews", "image", "whatsapp_number",
+                  "email_id", 'ima_number']
+        extra_kwargs = {
+            'hospital': {'read_only': True},
+            'user': {'required': False},
+
+        }
+
+    """def get_ranges(self, doctor):
+        days = sorted(list(set([schedule.date for schedule in DoctorSchedule.objects.filter(doctor=doctor).all()])))
+        ranges = []
+        print(days)
+        days_len = len(days)
+        if days_len:
+            start = days[0]
+
+            for i in range(1, days_len):
+                if ((days[i] - days[i-1]).days == 1):
+                    continue
+                print(start,days[i-1],days[i])
+                ranges.append({"start":start,"end":days[i-1]})
+                start = days[i]
+            
+            ranges.append({"start":start,"end":days[days_len - 1]})
+            
+        return ranges
+    """
 
 
 class EquipmentSerializer(serializers.ModelSerializer):

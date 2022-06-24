@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from internals.serializers import GetImageSerializer, GetBuildingSerializer, DoctorSerializer, GetDepartmentSerializer
-from .models import Markers, Reviews, SuspiciousMarking, Patient, Tokens, Language, Notification
+from .models import Markers, Reviews, SuspiciousMarking, Patient, Tokens, Language, Notification, BannerImage
 
 
 class GetMarkerSerializer(serializers.ModelSerializer):
@@ -117,3 +117,11 @@ class NotificationSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'text': {'read_only': True},
         }
+
+class BannerImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BannerImage
+        fields = [
+            'image'
+        ]
+

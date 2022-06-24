@@ -254,3 +254,8 @@ class Notification(models.Model):
     heading = models.CharField(max_length=30)
     seen = models.BooleanField(default=False)
     deleted = models.BooleanField(default=False)
+
+
+class BannerImage(models.Model):
+    image = models.ImageField(upload_to="pic")
+    description = models.CharField(max_length=50)

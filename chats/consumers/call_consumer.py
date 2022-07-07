@@ -16,6 +16,7 @@ TYPE_ICECANDIDATE = "ICE CANDIDATE"
 TYPE_CALL_REJECT = "REJECT CALL"
 TYPE_REGISTER = "REGISTER"
 TYPE_CALL_END = "END CALL"
+TYPE_DESCRIPTION = "DESCRIPTION"
 
 
 @database_sync_to_async
@@ -37,10 +38,11 @@ class Consumer(AsyncWebsocketConsumer):
         self.user = AnonymousUser()
 
     async def connect(self):
-        self.user = self.scope['user']
-        # if self.user.is_authenticated:
-        logger.info(f"Connected to {self.user.username =}")
+        self.user = await self.scope['user']
+        print(self)
+        #if self.user.is_authenticated:
         await self.accept()
+        #logger.info(f"Connected to {self.user.username =}")
 
     async def disconnect(self, code):
         logger.info(f'websocket Disconnect from {self.token} , {code = }')
@@ -49,27 +51,41 @@ class Consumer(AsyncWebsocketConsumer):
             await websockets[self.to].send_message({
                 "type": TYPE_CALL_END,
                 "data": "Good Bye 👋",
-                "metadata": {"to": self.token}
+                "metadata": {
+                    "to": self.token
+                }
             })
 
     async def send_message(self, message):
-        if message["type"] in [TYPE_OFFER, TYPE_ANSWER, TYPE_ICECANDIDATE, TYPE_CALL_REJECT, TYPE_CALL_END]:
-            await self.send(text_data=json.dumps({
-                "type": message["type"],
-                "data": message["data"],
-                "error": message["error"] if "error" in message else None,
-                "metadata": {
-                    "token": self.token,
-                    "from": message["metadata"]["to"]
-                }
-            }))
+        if message["type"] in [
+                TYPE_OFFER, TYPE_ANSWER, TYPE_ICECANDIDATE, TYPE_CALL_REJECT,
+                TYPE_CALL_END, TYPE_DESCRIPTION
+        ]:
+            print(f"sending to {self.token} data {message}")
+            await self.send(text_data=json.dumps(
+                {
+                    "type": message["type"],
+                    "data": message["data"],
+                    "error": message["error"] if "error" in message else None,
+                    "metadata": {
+                        "token": self.token,
+                        "from": message["metadata"]["to"]
+                    }
+                }))
         else:
-            logger.error(f'Invalid message of type { message["type"]} from {message["metadata"]["to"]}')
+            logger.error(
+                f'Invalid message of type { message["type"]} from {message["metadata"]["to"]}'
+            )
 
     async def receive(self, text_data=None, bytes_data=None):
         message = json.loads(text_data)
+        try:
+            logger.info(
+                f"Received message of type {message['type']} from {self.token} to {self.to}"
+            )
+        except:
+            logger.info(f"Received message of type {message['type']} from {message['metadata']['token']} to {message['metadata']['to']}")
 
-        logger.info(f"Received message of type {message['type']} from {message['metadata']['token']}")
 
         if message["type"] == TYPE_CALL_REJECT:
             message["error"] = message["data"]
@@ -86,12 +102,18 @@ class Consumer(AsyncWebsocketConsumer):
                 messages[self.token] = []
 
         elif self.to in websockets:
+            print(f"connection found")
             await websockets[self.to].send_message(message)
         else:
+            print(f"connections {websockets}")
             if message["type"] == TYPE_OFFER:
-                await send_push_notification(message["metadata"]["token"], message["metadata"]["to"])
+                await send_push_notification(message["metadata"]["token"],
+                                             message["metadata"]["to"])
 
-            messages[self.to] = [*message[self.to], message] if self.to in messages else [message]
+            messages[self.to] = [*messages[self.to], message
+                                 ] if self.to in messages else [message]
+            
+            print(f"messages {messages.keys()}")
 
 
 websockets: Dict[str, Consumer] = {}

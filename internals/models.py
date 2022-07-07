@@ -68,7 +68,6 @@ class HospitalWorkingTime(models.Model):
 
 
 
-type = [("M","Medical"),("B","Blood"), ("F","Food"), ("O","Other")] 
 
 class Doctor(models.Model):
     days = []
@@ -93,11 +92,7 @@ class Doctor(models.Model):
     image = models.ImageField(upload_to="pic", null=True, blank=True)
     language = models.ManyToManyField(Language, related_name='doctor')
 
-    type = models.CharField(choices=type, null=True, blank=True, max_length=10)
-    acc_holder_name = models.CharField(max_length=200,null=True)
-    acc_no = models.CharField(max_length=25, null=True)
-    ifsc_code = models.CharField(max_length=20, null=True)
-    branch_name = models.CharField(max_length=30, null=True)
+
     # qualification =
 
     def __str__(self):

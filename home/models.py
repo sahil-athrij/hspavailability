@@ -84,6 +84,7 @@ medicine = [
     ('Ay', 'Ayurveda'), ('Al', 'Allopathy'), ('Ho', 'Homeopathy')
 ]
 
+type = [("M","Medical"),("B","Blood"), ("F","Food"),("FI", "Financial"), ("O","Other")] 
 
 class Markers(models.Model):
     name = models.CharField(max_length=500)
@@ -153,8 +154,9 @@ class Patient(models.Model):
     age = models.IntegerField(default=0)
     gender = models.CharField(choices=gender, max_length=2)
     address = models.TextField(max_length=2048, default='', blank=True)
+    mobile_number = models.CharField(max_length=15, blank=True, null=True)
 
-    symptoms = models.TextField(max_length=2048)
+    symptoms = models.TextField(max_length=2048, blank=True)
     symdays = models.DateField(blank=True, null=True)
     spo2 = models.IntegerField(default=0)
     oxy_bed = models.BooleanField(default=False)
@@ -184,6 +186,11 @@ class Patient(models.Model):
     requirement = models.CharField(max_length=20, blank=True, null=True)
     public = models.BooleanField(default=False)
 
+    request_type = models.CharField(choices=type, null=True, blank=True, max_length=10)
+    account_holder = models.CharField(max_length=200,null=True)
+    account_no = models.CharField(max_length=25, null=True)
+    ifsc = models.CharField(max_length=20, null=True)
+    bank_name = models.CharField(max_length=30, null=True)
 
 def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))

@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from internals.serializers import GetImageSerializer, GetBuildingSerializer, DoctorSerializer, GetDepartmentSerializer
-from .models import Markers, Reviews, SuspiciousMarking, Patient, Tokens, Language
+from .models import Markers, Reviews, SuspiciousMarking, Patient, Tokens, Language, Notification, BannerImage
 
 
 class GetMarkerSerializer(serializers.ModelSerializer):
@@ -75,7 +75,7 @@ class GetPatientSerializer(serializers.ModelSerializer):
             'id', 'uid', 'Name', 'age', 'gender', 'address', 'symptoms', 'symdays', 'spo2', 'oxy_bed', 'covidresult',
             'hospitalpref', 'attendername', 'attenderphone', 'relation', 'srfid', 'bunum', 'blood', 'bedtype', 'ct',
             'ctscore', 'category', 'ownership', 'gender_name', 'bedtype_name', 'helped_by_name', 'helped_by',
-            'requirement'
+            'requirement', 'public'
         ]
 
 
@@ -106,3 +106,22 @@ class GetTokensSerializer(serializers.ModelSerializer):
             'user', 'private_token', 'invite_token', 'invited', 'points', 'reviews', 'reports',
             'language', 'profile', 'phone_number', 'last_seen'
         ]
+
+
+class NotificationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Notification
+        fields = [
+            'text', 'seen', 'deleted',
+        ]
+        extra_kwargs = {
+            'text': {'read_only': True},
+        }
+
+class BannerImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BannerImage
+        fields = [
+            'image'
+        ]
+

@@ -84,6 +84,7 @@ medicine = [
     ('Ay', 'Ayurveda'), ('Al', 'Allopathy'), ('Ho', 'Homeopathy')
 ]
 
+type = [("M","Medical"),("B","Blood"), ("F","Food"),("FI", "Financial"), ("O","Other")] 
 
 class Markers(models.Model):
     name = models.CharField(max_length=500)
@@ -113,7 +114,7 @@ class Markers(models.Model):
     pending_approval = models.BooleanField(default=False)
     video_call = models.CharField(max_length=1000, null=True, blank=True)
     about = models.TextField(default="")
-    medicine = models.CharField(choices=medicine, max_length=50, default="Allopathy")
+    medicine = models.CharField(choices=medicine, max_length=50, default="Al")
 
     def __str__(self):
         return self.name
@@ -153,8 +154,9 @@ class Patient(models.Model):
     age = models.IntegerField(default=0)
     gender = models.CharField(choices=gender, max_length=2)
     address = models.TextField(max_length=2048, default='', blank=True)
+    mobile_number = models.CharField(max_length=15, blank=True, null=True)
 
-    symptoms = models.TextField(max_length=2048)
+    symptoms = models.TextField(max_length=2048, blank=True)
     symdays = models.DateField(blank=True, null=True)
     spo2 = models.IntegerField(default=0)
     oxy_bed = models.BooleanField(default=False)
@@ -182,7 +184,13 @@ class Patient(models.Model):
 
     helped_by = models.ForeignKey(User, blank=True, null=True, related_name='helping', on_delete=models.SET_NULL)
     requirement = models.CharField(max_length=20, blank=True, null=True)
+    public = models.BooleanField(default=False)
 
+    request_type = models.CharField(choices=type, null=True, blank=True, max_length=10)
+    account_holder = models.CharField(max_length=200,null=True)
+    account_no = models.CharField(max_length=25, null=True)
+    ifsc = models.CharField(max_length=20, null=True)
+    bank_name = models.CharField(max_length=30, null=True)
 
 def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
@@ -219,10 +227,42 @@ class Tokens(models.Model):
     phone_number = models.CharField(max_length=15, blank=True, null=True)
     friends = models.ManyToManyField(User, null=True, blank=True, related_name='friends')
     last_seen = models.DateTimeField(blank=True, null=True)
+    age = models.IntegerField(default=0)
+    gender = models.CharField(choices=gender, max_length=2, blank=True, null=True)
+    address = models.TextField(max_length=2048, default='', blank=True, null=True)
+    blood = models.CharField(max_length=4, blank=True, null=True)
 
     def __str__(self):
-        return self.user.username
+        return self.user.username + self.private_token
 
     def add_friend(self, user):
         self.friends.add(user)
         user.tokens.friends.add(self.user)
+        user.tokens.save()
+        self.points += 5
+        print(self.points)
+        self.save()
+
+    def update_details(self, patient: Patient):
+        self.address = patient.address
+        self.gender = patient.gender
+        self.blood = patient.blood
+        self.save()
+
+    @property
+    def two_layer_friends(self):
+        return User.objects.filter(tokens__private_token=self.invite_token) \
+               | User.objects.filter(tokens__invite_token=self.private_token)
+
+
+class Notification(models.Model):
+    user = models.ForeignKey(User, related_name='notification', on_delete=models.CASCADE)
+    text = models.TextField()
+    heading = models.CharField(max_length=30)
+    seen = models.BooleanField(default=False)
+    deleted = models.BooleanField(default=False)
+
+
+class BannerImage(models.Model):
+    image = models.ImageField(upload_to="pic")
+    description = models.CharField(max_length=50)

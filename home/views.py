@@ -19,6 +19,7 @@ from internals.models import Images
 from internals.views import add_points
 from v2.views import give_points
 from .serializer import *
+from authentication.permissions import IsOwnerUser
 
 
 def get_client_ip(request):
@@ -123,8 +124,8 @@ class MarkerApiViewSet(viewsets.ModelViewSet, generics.GenericAPIView):
                         'oxygen_availability': ['gte', 'lte', 'exact'], 'icu_availability': ['gte', 'lte', 'exact'],
                         'avg_cost': ['gte', 'lte', 'exact'],
                         'care_rating': ['gte', 'lte', 'exact'], 'covid_rating': ['gte', 'lte', 'exact'],
-                        'beds_available': ['gte', 'lte', 'exact'], 'category': ['exact'], 'type': ['exact'],
-                        'ownership': ['exact'], 'medicine': ['exact']}
+                        'beds_available': ['gte', 'lte', 'exact'], 'category': ['in'], 'type': ['in'],
+                        'ownership': ['in'], 'medicine': ['in']}
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -260,8 +261,7 @@ class PatientViewSet(viewsets.ModelViewSet):
     def filter_queryset(self, queryset):
         user = self.request.user
         queryset = super(PatientViewSet, self).filter_queryset(queryset)
-        return queryset.filter(user=user.id)
-
+        return list(set(queryset.filter(user=user.id) + queryset.filter(public=True)))
 
     @action(detail=False, methods=["get", "post"], url_path='friends')
     def friends(self, request, *args, **kwargs):
@@ -332,3 +332,34 @@ class LanguageApiViewSet(viewsets.ModelViewSet):
     http_method_names = ['get', 'post']
     filter_backends = [filters.SearchFilter, ]
     search_fields = ['name']
+
+
+class NotificationApiViewSet(viewsets.ModelViewSet):
+    queryset = Notification.objects.all()
+    serializer_class = NotificationSerializer
+    permission_classes = [IsOwnerUser]
+    http_method_names = ['get', 'post']
+    filter_backends = [filters.SearchFilter, ]
+    search_fields = ['text']
+
+    def get_queryset(self):
+        return Notification.objects.filter(user=self.request.user, ).exclude(deleted=True)
+
+    @action(detail=False, methods=["get", "post"], url_path='read')
+    def read(self):
+        notifications = Notification.objects.filter(user=self.request.user, seen=False)
+        for notification in notifications:
+            notification.seen = True
+            notification.save()
+
+    @action(detail=False, methods=["get", "post"], url_path='del')
+    def delete(self):
+        notifications = Notification.objects.filter(user=self.request.user, deleted=False)
+        for notification in notifications:
+            notification.deleted = True
+            notification.save()
+
+class BannerImageViewSet(viewsets.ModelViewSet):
+    queryset = BannerImage.objects.all()
+    serializer_class = BannerImageSerializer
+    http_method_names = ['get', 'post']

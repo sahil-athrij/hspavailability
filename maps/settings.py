@@ -23,6 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv("SECRET_KEY", 'django-insecure-tr#83t$_--71h1yzg^@w6n^w292lb#$1p2256)5k2-!^f^x9^d')
+NOTIFICATION_KEY = os.getenv("PUSH_PRIVATE_KEY", "")
 ADMIN_URL = os.environ.get('ADMIN_URL')
 application_name = 'needmedi'
 
@@ -31,9 +32,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-if not DEBUG:
+if DEBUG:
     DEPLOYMENT_URL = 'https://api.needmedi.com'
-
 else:
     DEPLOYMENT_URL = 'https://api.dev.needmedi.com'
 

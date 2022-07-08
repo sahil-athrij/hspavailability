@@ -1,10 +1,12 @@
 from rest_framework import serializers
 
-from internals.models import Department, Department_Name, Doctor, Equipment_Name, \
+from internals.models import Department, DepartmentName, Doctor, EquipmentName, \
     Floors, Building, Images, Equipment, DoctorReviews, WorkingTime, HospitalWorkingTime, \
-    Nurse, Ambulance, NurseReviews, AmbulanceReviews, BloodBank, Appointment, AvailableSlots
+    Nurse, Ambulance, NurseReviews, AmbulanceReviews, BloodBank, Appointment, AppointmentSlots, \
+    DoctorSchedule
 
-
+from django.core.exceptions import ValidationError
+from django.db import IntegrityError
 class GetImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Images
@@ -29,13 +31,13 @@ class HospitalWorkingTimeSerializer(serializers.ModelSerializer):
 
 class DepartmentNameSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Department_Name
+        model = DepartmentName
         fields = ['id', 'name', "icon"]
 
 
 class EquipmentNameSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Equipment_Name
+        model = EquipmentName
         fields = ['id', 'name']
 
 
@@ -47,43 +49,96 @@ class GetDoctorReviewSerializer(serializers.ModelSerializer):
         fields = ["content", "created_by", "doctor", "rating"]
 
 
-class AvailableSlotsSerializer(serializers.ModelSerializer):
+
+class AppointmentSlotSerializer(serializers.ModelSerializer):
+    booked = serializers.SerializerMethodField()
     class Meta:
-        model = AvailableSlots
-        fields = ["date", "start", "end"]
+        model = AppointmentSlots
+        fields = ["id","start", "end", "booked"]
+    
+    def get_booked(self, AppointmentSlot):
+        return False if AppointmentSlot.booked_by is None else True
+
+    def validate(self, data):
+        if(data['start'] >= data['end']):
+            raise serializers.ValidationError({'start':"Start shouldn't be greater than end"})
+        return data
+
+class PatientAppointmentSlotSerializer(serializers.ModelSerializer):
+    doctor = serializers.StringRelatedField(source='day.doctor.name',read_only='True')
+    date = serializers.StringRelatedField(source='day.date', read_only='True')
+    class Meta:
+        model = AppointmentSlots
+        fields = ["id","start", "end", "doctor","date"]
+
+class DoctorScheduleSerializer(serializers.ModelSerializer):
+    slots = AppointmentSlotSerializer(many=True)
+    stats = serializers.SerializerMethodField()
+
+    def create(self, validated_data):
+        slots = validated_data.pop('slots')
+        schedule = DoctorSchedule.objects.create(**validated_data) 
+        AppointmentSlots.objects.bulk_create([AppointmentSlots(**slot,day=schedule) for slot in slots])
+        return schedule
+
+    def validate_slots(self, data):
+        slot_len = len(data)
+        for i in range(slot_len-1):
+            for j in range(i+1,slot_len):
+                if(data[i]['start'] > data[j]['end'] or data[i]['end'] < data[j]['start'] ):
+                    continue
+                raise serializers.ValidationError("time intersects")
+        return data
+
+    class Meta:
+        model = DoctorSchedule
+        fields = ["id","date","slots", "stats","doctor"]
+        extra_kwargs = {
+            'doctor': {'write_only':True}
+        }
+    def get_stats(self, doctorSchedule):
+        appointments = AppointmentSlots.objects.filter(day=doctorSchedule.id)
+        total = appointments.count()
+        available = appointments.filter(booked_by__isnull=True).count()
+        return {"total":total,"available":available} 
+
 
 
 class DoctorSerializer(serializers.ModelSerializer):
     reviews = GetDoctorReviewSerializer(many=True, required=False, read_only=True)
     working_time = HospitalWorkingTimeSerializer(many=True, read_only=True)
-    slots = AvailableSlotsSerializer(many=True, read_only=True)
-    ranges = serializers.SerializerMethodField(read_only=True)
+    #ranges = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Doctor
         fields = ["id", 'name', 'phone_number', 'hospital', 'department', 'user', 'working_time',
                   'rating', 'patients', 'experience', 'specialization', "about", "reviews", "image", "whatsapp_number",
-                  "email_id", 'ima_number', 'slots', 'ranges']
+                  "email_id", 'ima_number']
         extra_kwargs = {
             'hospital': {'read_only': True},
             'user': {'required': False},
 
         }
 
-    def get_ranges(self, doctor):
-        days = sorted(list(set([slot.date for slot in doctor.slots.filter(booked=False)])))
+    """def get_ranges(self, doctor):
+        days = sorted(list(set([schedule.date for schedule in DoctorSchedule.objects.filter(doctor=doctor).all()])))
         ranges = []
         print(days)
-        if len(days):
-            temp = days[0]
-            for i in range(1, len(days)):
-                print(temp, days[i], temp.day - days[i].day)
-                if temp.day - days[i].day < -2:
-                    print({"start": temp, "end": days[i - 1]})
-                    ranges.append({"start": temp, "end": days[i - 1]})
-                    temp = days[i]
+        days_len = len(days)
+        if days_len:
+            start = days[0]
 
+            for i in range(1, days_len):
+                if ((days[i] - days[i-1]).days == 1):
+                    continue
+                print(start,days[i-1],days[i])
+                ranges.append({"start":start,"end":days[i-1]})
+                start = days[i]
+            
+            ranges.append({"start":start,"end":days[days_len - 1]})
+            
         return ranges
+    """
 
 
 class EquipmentSerializer(serializers.ModelSerializer):
@@ -98,7 +153,7 @@ class EquipmentSerializer(serializers.ModelSerializer):
 class GetDepartmentSerializer(serializers.ModelSerializer):
     images = GetImageSerializer(many=True, required=False, read_only=True)
     name = DepartmentNameSerializer(many=False, required=False, read_only=True)
-    name_id = serializers.PrimaryKeyRelatedField(queryset=Department_Name.objects.all(), source='name')
+    name_id = serializers.PrimaryKeyRelatedField(queryset=DepartmentName.objects.all(), source='name')
     doctors = DoctorSerializer(many=True, required=False, read_only=True)
 
     class Meta:
@@ -181,7 +236,4 @@ class AppointmentSerializer(serializers.ModelSerializer):
         ]
         extra_kwargs = {
             'approved': {'read_only': True},
-            # 'start': {'read_only': True},
-            # 'end': {'read_only': True},
-            # 'date': {'read_only': True},
         }

@@ -48,7 +48,7 @@ class UserSerializer(serializers.ModelSerializer):
     @classmethod
     def get_friends(cls, user):
         friends = [{"name": tkn.user.username, "email": tkn.user.email,
-                    "token": user.tokens.private_token, "profile": get_image(tkn), "invited": True} for
+                    "token": tkn.private_token, "profile": get_image(tkn), "invited": True} for
                    tkn in
                    Tokens.objects.filter(invite_token=user.tokens.private_token)] + [
                       {"name": user.username, "email": user.email, "token": user.tokens.private_token,

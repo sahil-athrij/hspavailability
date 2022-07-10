@@ -25,10 +25,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv("SECRET_KEY", 'django-insecure-tr#83t$_--71h1yzg^@w6n^w292lb#$1p2256)5k2-!^f^x9^d')
 NOTIFICATION_KEY = os.getenv("PUSH_PRIVATE_KEY", "")
 ADMIN_URL = os.environ.get('ADMIN_URL')
-application_name = 'needmedi'
+application_name = 'Needmedi'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get("DEBUG")
 
 ALLOWED_HOSTS = ['*']
 

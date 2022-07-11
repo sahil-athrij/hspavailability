@@ -429,7 +429,7 @@ JAZZMIN_SETTINGS = {
 
     # Hide these apps when generating side menu e.g (auth)
     "hide_apps": ['oauth2_provider',
-                  'social_django', ],
+                  'social_django', 'oidc_provider', ],
 
     # Hide these models when generating side menu (e.g auth.user)
     "hide_models": [],
@@ -458,7 +458,6 @@ JAZZMIN_SETTINGS = {
     "custom_js": None,
     # Whether to show the UI customizer on the sidebar
     "show_ui_builder": False,
-
 
     "changeform_format": "horizontal_tabs",
     # override change forms on a per modeladmin basis

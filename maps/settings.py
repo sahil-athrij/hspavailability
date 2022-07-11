@@ -432,7 +432,7 @@ JAZZMIN_SETTINGS = {
                   'social_django', 'oidc_provider', ],
 
     # Hide these models when generating side menu (e.g auth.user)
-    "hide_models": [],
+    "hide_models": ["Tokens"],
 
     # for the full list of 5.13.0 free icon classes
     "icons": {

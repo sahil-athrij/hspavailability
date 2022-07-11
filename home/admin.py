@@ -42,6 +42,8 @@ class ReviewsAdmin(admin.ModelAdmin):
 @admin.register(Patient)
 class PatientAdmin(admin.ModelAdmin):
     raw_id_fields = ('hospitalprefid',)
+    list_display = ["Name", "request_type"]
+    list_filter = ["request_type", ]
 
 
 admin.site.register(SuspiciousMarking)

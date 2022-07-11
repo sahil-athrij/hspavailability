@@ -428,23 +428,11 @@ JAZZMIN_SETTINGS = {
     "navigation_expanded": True,
 
     # Hide these apps when generating side menu e.g (auth)
-    "hide_apps": [],
+    "hide_apps": ['oauth2_provider',
+                  'social_django', ],
 
     # Hide these models when generating side menu (e.g auth.user)
     "hide_models": [],
-
-    # List of apps (and/or models) to base side menu ordering off of (does not need to contain all apps/models)
-    # "order_with_respect_to": ["auth", "books", "books.author", "books.book"],
-
-    # Custom links to append to app groups, keyed on app name
-    # "custom_links": {
-    #     "books": [{
-    #         "name": "Make Messages",
-    #         "url": "make_messages",
-    #         "icon": "fas fa-comments",
-    #         "permissions": ["books.view_book"]
-    #     }]
-    # },
 
     # for the full list of 5.13.0 free icon classes
     "icons": {
@@ -471,20 +459,11 @@ JAZZMIN_SETTINGS = {
     # Whether to show the UI customizer on the sidebar
     "show_ui_builder": False,
 
-    ###############
-    # Change view #
-    ###############
-    # Render out the change view as a single form, or in tabs, current options are
-    # - single
-    # - horizontal_tabs (default)
-    # - vertical_tabs
-    # - collapsible
-    # - carousel
+
     "changeform_format": "horizontal_tabs",
     # override change forms on a per modeladmin basis
     "changeform_format_overrides": {"auth.user": "collapsible", "auth.group": "vertical_tabs"},
-    # Add a language dropdown into the admin
-    # "language_chooser": True,
+
 }
 
 JAZZMIN_UI_TWEAKS = {

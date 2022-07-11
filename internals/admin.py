@@ -7,19 +7,13 @@ from internals.models import *
 class SlotInline(admin.StackedInline):
     model = AppointmentSlots
 
+
 class DoctorScheduleAdmin(admin.ModelAdmin):
     inlines = [SlotInline]
 
 
-
 @admin.register(Images)
 class ImagesAdmin(admin.ModelAdmin):
-    # def image_tag(self, obj):
-    #     print(obj.image)
-    #     return format_html('<img src="{}{}" width="450" />'.format(settings.MEDIA_URL, obj.image))
-    #
-    # image_tag.short_description = 'Image'
-    # #
     fields = ['hospital', 'review', 'image', 'department', 'useinmarker', 'equipment', 'user']
     raw_id_fields = ('hospital', 'review')
 
@@ -69,4 +63,4 @@ admin.site.register(Floors, )
 admin.site.register(Nurse, )
 admin.site.register(NurseReviews, )
 admin.site.register(DoctorReviews, )
-admin.site.register(DoctorSchedule, DoctorScheduleAdmin )
+admin.site.register(DoctorSchedule, DoctorScheduleAdmin)

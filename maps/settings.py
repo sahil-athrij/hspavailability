@@ -28,7 +28,7 @@ ADMIN_URL = os.environ.get('ADMIN_URL')
 application_name = 'Needmedi'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get("DEBUG")
+DEBUG = os.environ.get("DEBUG", False)
 
 ALLOWED_HOSTS = ['*']
 

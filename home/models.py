@@ -4,6 +4,9 @@ import string
 
 from django.contrib.auth.models import User
 from django.contrib.gis.db import models
+from django.core.exceptions import ValidationError
+from django.core.validators import FileExtensionValidator
+
 
 # Create your models here.
 
@@ -151,6 +154,13 @@ class SuspiciousMarking(models.Model):
 
 
 class Patient(models.Model):
+    
+    
+    def attachment_size_validator(value):
+        limit = 3 * 1024 * 1024
+        if value.size > limit:
+            raise ValidationError('File too large. Size should not exceed 3 MiB.')
+
     Name = models.CharField(max_length=40)
     age = models.IntegerField(default=0)
     gender = models.CharField(choices=gender, max_length=2)
@@ -177,8 +187,8 @@ class Patient(models.Model):
     srfid = models.CharField(max_length=30, blank=True, null=True)
     bunum = models.CharField(max_length=40, blank=True, null=True)
 
-    category = models.CharField(choices=category, default='U', max_length=2)
-    ownership = models.CharField(choices=ownership, default='U', max_length=2)
+    category = models.CharField(choices=category, default='U', max_length=2)#?
+    ownership = models.CharField(choices=ownership, default='U', max_length=2)#?
 
     user = models.ForeignKey(User, default=1, on_delete=models.CASCADE)
 
@@ -191,6 +201,12 @@ class Patient(models.Model):
     account_no = models.CharField(max_length=25, null=True, blank=True)
     ifsc = models.CharField(max_length=20, null=True, blank=True)
     bank_name = models.CharField(max_length=30, null=True, blank=True)
+
+
+    reason = models.TextField(max_length=1024, blank=True)
+    attachment = models.FileField(null=True, upload_to="patient_attachment", validators=[attachment_size_validator, FileExtensionValidator(allowed_extensions=['pdf', 'jpeg', 'png', 'jpg'])])
+
+    
 
 
 def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
